@@ -24,5 +24,5 @@ Orlando Schwery
 Maintainer: Orlando Schwery <oschwery@vols.utk.edu>
 }
 \seealso{
-\code{\link{AssessMonophyly}}, \code{\link{GetAncNodes}}, \code{\link{GetIntruderGenera}}, \code{\link{GetIntruderTips}}, \code{\link{GetResultMonophyly}}, \code{\link{GetSummaryMonophyly}}, \code{\link{PlotMonophyly}}
+\code{\link{AssessMonophyly}}, \code{\link{GetAncNodes}}, \code{\link{GetIntruderGenera}}, \code{\link{GetIntruderTips}}, \code{\link{GetResultMonophyly}}, \code{\link{GetSummaryMonophyly}}, \code{\link{MonophylyData}}, \code{\link{PlotMonophyly}}
 }
