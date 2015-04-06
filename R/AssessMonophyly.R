@@ -29,8 +29,18 @@ if (is.null(taxonomy)){  # extract list of genera from tree's tip labels
             stop('taxonomy file needs at least 2 columns: tip labels and taxonomic group')
         }
         for (i in 1:length(tree$tip.label)) {
-            if (tree$tip.label[i] != taxonomy[i, 1]) {  # checks and returns error if taxonomy names are different from tip labels
-                stop('taxonomy names do not correspond to tip labels of tree (possibly names in file are in different order than tip labels)')
+            if (tree$tip.label[i] != taxonomy[i, 1]) {  # checks if taxonomy names are different from tip labels, if they are, attempts to solve by resorting the table
+                taxonomy2 <- c()
+                for(i in 1:length(tree$tip.label)) {
+                    taxosort <- rbind(subset(taxonomy, taxonomy[, 1] == tree$tip.label[i]))  # extract taxon for each intruder tip...
+                    taxonomy2 <- rbind(taxonomy2, taxosort)  # ... and add them to a vector
+                }    
+                row.names(taxonomy2) <- row.names(taxonomy)
+                taxonomy <- as.data.frame(taxonomy2)
+                #colnames(taxonomy) <- NULL
+            }
+            if (tree$tip.label[i] != taxonomy[i, 1]) {  # checks again and returns error if taxonomy names are different from tip labels
+                stop('taxonomy names do not correspond to tip labels of tree (re-ordering rows in file did not solve the problem)')
             }   
         }
         taxa <- as.vector(unique(taxonomy[, 2]))  # if all is correct, makes vector taxonomic units (without doubles)
@@ -51,7 +61,7 @@ for (i in 1:length(taxa)) {  # for every genus in the tree
     if (is.null(taxonomy)){  # genera extracted from tip labels if no taxonomy file loaded
         ancnode <- getMRCA(tree, tip=c(tree$tip.label[c(grep(taxa[i], tree$tip.label))]))  # determine Most Recent Common Ancestor for all taxa of genus
     } else {  # units taken from file if loaded
-        subtips <- subset(taxonomy, taxonomy[, 2] == taxa[i])  # get tips associated with group
+        subtips <- subset(taxonomy, as.character(taxonomy[, 2]) == taxa[i])  # get tips associated with group
         ancnode <- getMRCA(tree, tip=c(subtips[, 1]))  # get MRCA for tips associated with group
     }
     if (length(ancnode) == 0) { # if singleton i.e. only tip of given group
