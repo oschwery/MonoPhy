@@ -14,7 +14,7 @@ AssessMonophyly(tree, taxonomy = NULL, verbosity = 5)
 An object of type 'phy', rooted and fully resolved phylogeny. If tip labels are in the format 'genus species' or 'genus_species', the function can extract the genus names and check their monophyly. If tip labels are in another format or if the monophyly of other taxonomic groups should be tested, a taxonomy file (see 'taxonomy') is required.
 }
   \item{taxonomy}{
-a csv file with at least two columns, one row per tip in tree and no header. Column one contains the tip labels, column two and higher the names of the taxonomic units the respective tip belongs to. Default is NULL.
+a csv file with at least two columns, one row per tip in tree and no header. Column one contains the tip labels, column two and higher the names of the taxonomic units the respective tip belongs to. If the order of tip labels in the file is different from the order in the tree, the function will re-order them to match. Default is NULL.
 }
   \item{verbosity}{
 An integer, default is 5. Determines how many intruder taxa should be listed by name in the result table (it will list up to this many names and then add 'and X more').
