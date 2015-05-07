@@ -1,4 +1,4 @@
-Package: MonophylyFinder
+Package: MonoPhy
 Type: Package
 Title: Allows to explore monophyly (or lack of it) of taxonomic groups in a phylogeny.
 Version: 1.0

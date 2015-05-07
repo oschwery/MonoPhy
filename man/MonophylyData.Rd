@@ -4,10 +4,10 @@
 \alias{Ericactree}
 \alias{Ericactribes}
 \title{
-Example dataset for the package MonophylyFinder.
+Example dataset for the package MonoPhy.
 }
 \description{
-Example dataset for the package MonophylyFinder. One phylogeny and one custom taxonomy file.
+Example dataset for the package MonoPhy. One phylogeny and one custom taxonomy file.
 }
 \usage{
 data(Ericactree)
