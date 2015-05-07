@@ -31,7 +31,7 @@ Orlando Schwery
 Can also be accessed by simply typing 'solution$Genera' or 'solution$Genera$genusname' and 'solution$Species' or 'solution$Species$genusname' respectively.
 }
 \seealso{
-\code{\link{AssessMonophyly}}, \code{\link{GetAncNodes}}
+\code{\link{AssessMonophyly}}, \code{\link{GetAncNodes}}, \code{\link{MonoPhy-package}}
 }
 \examples{
 data(Ericactree)

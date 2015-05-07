@@ -35,7 +35,7 @@ The output of the function is a list containing the results as lists and data fr
 Orlando Schwery
 }
 \seealso{
-\code{\link{GetAncNodes}}, \code{\link{GetIntruderGenera}}, \code{\link{GetIntruderTips}}, \code{\link{GetResultMonophyly}}, \code{\link{GetSummaryMonophyly}}, \code{\link{MonophylyData}}, \code{\link{PlotMonophyly}}
+\code{\link{GetAncNodes}}, \code{\link{GetIntruderGenera}}, \code{\link{GetIntruderTips}}, \code{\link{GetResultMonophyly}}, \code{\link{GetSummaryMonophyly}}, \code{\link{MonophylyData}}, \code{\link{PlotMonophyly}}, \code{\link{MonoPhy-package}}
 }
 \examples{
 data(Ericactree)

@@ -30,7 +30,7 @@ Orlando Schwery
 Can also be accessed by simply typing 'solution$result' or 'solution$summary' respectively.
 }
 \seealso{
-\code{\link{AssessMonophyly}}
+\code{\link{AssessMonophyly}}, \code{\link{MonoPhy-package}}
 }
 \examples{
 data(Ericactree)

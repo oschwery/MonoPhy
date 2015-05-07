@@ -53,7 +53,7 @@ Plots phylogeny or prints it to pdf.
 Orlando Schwery
 }
 \seealso{
-\code{\link{AssessMonophyly}}
+\code{\link{AssessMonophyly}}, \code{\link{MonoPhy-package}}
 }
 \examples{
 data(Ericactree)

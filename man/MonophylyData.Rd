@@ -19,4 +19,7 @@ Ericactree is a phylogeny of the angiosperm family Ericaceae, as presented in Sc
 \references{
 Schwery, O., Onstein, R.E., Bouchenak-Khelladi, Y., Xing, Y., Carter, R.J. and Linder, H.P. (2014), As old as the mountains: the radiations of the Ericaceae. New Phytologist. doi: 10.1111/nph.13234
 }
+\seealso{
+\code{\link{MonoPhy-package}}
+}
 \keyword{datasets}

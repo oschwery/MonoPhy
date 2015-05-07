@@ -27,7 +27,7 @@ Data frame.
 Orlando Schwery
 }
 \seealso{
-\code{\link{AssessMonophyly}}}
+\code{\link{AssessMonophyly}}}, \code{\link{MonoPhy-package}}
 \examples{
 data(Ericactree)
 solution <- AssessMonophyly(Ericactree, verbosity=5)
