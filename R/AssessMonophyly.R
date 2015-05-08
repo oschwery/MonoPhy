@@ -28,21 +28,6 @@ if (is.null(taxonomy)){  # extract list of genera from tree's tip labels
         if (length(taxonomy[1, ]) < 2) {  # checks and returns error if taxonomy file doesn't have at least two columns
             stop('taxonomy file needs at least 2 columns: tip labels and taxonomic group')
         }
-        for (i in 1:length(tree$tip.label)) {
-            if (tree$tip.label[i] != taxonomy[i, 1]) {  # checks if taxonomy names are different from tip labels, if they are, attempts to solve by resorting the table
-                taxonomy2 <- c()
-                for(i in 1:length(tree$tip.label)) {
-                    taxosort <- rbind(subset(taxonomy, taxonomy[, 1] == tree$tip.label[i]))  # extract taxon for each intruder tip...
-                    taxonomy2 <- rbind(taxonomy2, taxosort)  # ... and add them to a vector
-                }    
-                row.names(taxonomy2) <- row.names(taxonomy)
-                taxonomy <- as.data.frame(taxonomy2)
-                #colnames(taxonomy) <- NULL
-            }
-            if (tree$tip.label[i] != taxonomy[i, 1]) {  # checks again and returns error if taxonomy names are different from tip labels
-                stop('taxonomy names do not correspond to tip labels of tree (re-ordering rows in file did not solve the problem)')
-            }   
-        }
         taxa <- as.vector(unique(taxonomy[, 2]))  # if all is correct, makes vector taxonomic units (without doubles)
 }
 
