@@ -7,21 +7,24 @@ Get MRCA nodes of taxonomic groups from 'AssessMonophyly' output
 Print MRCA node numbers of taxonomic groups from the output of 'AssessMonophyly', either the whole list or for specific groups.
 }
 \usage{
-GetAncNodes(solution, genera = NULL)
+GetAncNodes(solution, taxa = NULL, taxlevels='ALL')
 }
 \arguments{
   \item{solution}{
 Object with saved output of the 'AssessMonophyly' function.
 }
-  \item{genera}{
+  \item{taxa}{
 Vector containing genus names (or names of whichever taxonomic unit was used).
+}
+  \item{taxlevels}{
+Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), or 'ALL'.  	
 }
 }
 \details{
-Can be used after 'AssessMonophyly' is run to extract MRCA nodes of groups from it. The argument 'genera' allows to limit the output to one or several genera (taxa) of interest.
+Can be used after 'AssessMonophyly' is run to extract MRCA nodes of groups from it. The argument 'taxa' allows to limit the output to one or several genera (taxa) of interest. The argument 'taxlevels' allows to limit the output if several taxonomic levels were used; 'ALL' is default, a specific level can be selected by entering its number instead.
 }
 \value{
-Data frame.
+List of data frames.
 }
 \author{
 Orlando Schwery
@@ -31,5 +34,5 @@ Orlando Schwery
 \examples{
 data(Ericactree)
 solution <- AssessMonophyly(Ericactree, verbosity=5)
-GetAncNodes(solution=solution, genera=c("Phyllodoce", "Vaccinium", "Erica"))
+GetAncNodes(solution=solution, taxa=c("Phyllodoce", "Vaccinium", "Erica"))
 }
