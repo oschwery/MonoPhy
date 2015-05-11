@@ -2,10 +2,33 @@
 # written by Orlando Schwery 2015
 
 GetAncNodes <-
-function(solution, genera=NULL) {
-    if (length(genera) == 0){  # display all if no genera specified
-    print(solution$result[, "MRCA", drop=FALSE])
-    } else {  # display specific genera if specified
-        print(solution$result[genera, "MRCA", drop=FALSE])  # display invading tips/species
+function(solution, taxa=NULL, taxlevels='ALL') {
+    allnodes <- list()
+    if (taxlevels=='ALL') {
+        for (i in 1:length(solution)){
+            namenod <- paste('Taxlevel',i,sep='_')
+            if (length(taxa) == 0){  # display all if no genera specified
+                tmp <- solution[[i]]$result[, "MRCA", drop=FALSE]
+                allnodes[[namenod]] <- tmp
+            } else {  # display specific genera if specified
+                tmp <- solution[[i]]$result[taxa, "MRCA", drop=FALSE]  # display invading tips/species
+                allnodes[[namenod]] <- tmp
+            }
+        }
+    } else {
+        if (taxlevels > length(solution)){
+            stop('Requested taxonomic level not available (less levels specified as analysis input)!')
+        }
+        #for (j in 1:length(taxlevels)) {
+            namenod <- paste('Taxlevel', taxlevels, sep='_')
+            if (length(taxa) == 0){  # display all if no genera specified
+                tmp <- solution[[taxlevels]]$result[, "MRCA", drop=FALSE]
+                allnodes[[namenod]] <- tmp
+            } else {  # display specific genera if specified
+                tmp <- solution[[taxlevels]]$result[taxa, "MRCA", drop=FALSE]  # display invading tips/species
+                allnodes[[namenod]] <- tmp
+            }
+        #}
     }
+    allnodes
 }
