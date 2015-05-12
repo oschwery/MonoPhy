@@ -93,7 +93,7 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
         if (is.null(taxonomy)){  # genera extracted from tip labels if no taxonomy file loaded
             ancnode <- getMRCA(tree, tip=c(tree$tip.label[c(grep(taxa[i], tree$tip.label))]))  # determine Most Recent Common Ancestor for all taxa of genus
         } else {  # units taken from file if loaded
-            subtips <- subset(taxonomy, as.character(taxonomy[, 2]) == taxa[i])  # get tips associated with group
+            subtips <- subset(taxonomy, as.character(taxonomy[, (ifullround+1)]) == taxa[i])  # get tips associated with group
             ancnode <- getMRCA(tree, tip=c(subtips[, 1]))  # get MRCA for tips associated with group
         }
         if (length(ancnode) == 0) { # if singleton i.e. only tip of given group

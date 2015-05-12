@@ -61,7 +61,7 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
                 taxai <- c(taxai, tipdataII[i])
             }
         }
-        if (length(taxai)==NULL) {
+        if (length(taxai)==0) {
             stop('No intruders present to be plotted! Get on with it!')
         }
 	taxaI <- as.vector(unique(taxai))  # create vector of intruder taxa (without doubles)
