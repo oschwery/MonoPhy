@@ -2,8 +2,14 @@
 # written by Orlando Schwery 2015
 
 PlotMonophyly <-
-function(solution, tree, type='momophyly', ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='gwp', tax.colour='rainbow', intrud.colour='rainbow', ...) {
+function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='gwp', tax.colour='rainbow', intrud.colour='rainbow', ...) {
     
+    if (taxlevels > length(solution)) {
+	stop('Requested taxonomic level not available (less levels specified as analysis input)!')
+    }
+    if (type!='monophyly' & type!='monoVStax' & type!='intruders') {
+	stop('Invalid plot type!')
+    }
     if (ladderize==TRUE) {  # ladderizes the tree before starting, if specified
         tree <- ladderize(tree)
     }
@@ -14,7 +20,7 @@ function(solution, tree, type='momophyly', ladderize=TRUE, PDF=FALSE, PDF_filena
         mono.tree <- tree  # assigns tree specifically to reconstruction to avoid conflicts
         
         # assign numbers to tip status
-        tipdata <- as.character(solution$TipStates[, "Status"])  # extracting monophyly status of tips from solution
+        tipdata <- as.character(solution[[taxlevels]]$TipStates[, "Status"])  # extracting monophyly status of tips from solution
         tipdata[tipdata == "Monophyletic"] <- 1  # number-coding monophyly status
         tipdata[tipdata == "Non-Monophyletic"] <- 2  # number-coding monophyly status
         tipdata[tipdata == "Intruder"] <- 3  # number-coding monophyly status
@@ -41,21 +47,24 @@ function(solution, tree, type='momophyly', ladderize=TRUE, PDF=FALSE, PDF_filena
         int.tree <- tree  # assigns tree specifically to reconstruction to avoid conflicts
         
         # assign numbers to tip status
-        tipdataI <- as.character(solution$TipStates[, "Status"])  # extracting monophyly status of tips from solution
+        tipdataI <- as.character(solution[[taxlevels]]$TipStates[, "Status"])  # extracting monophyly status of tips from solution
         tipdataI[tipdataI == "Monophyletic"] <- 1  # number-coding monophyly status
         tipdataI[tipdataI == "Non-Monophyletic"] <- 2  # number-coding monophyly status
         tipdataI[tipdataI == "Intruder"] <- 3  # number-coding monophyly status
         tipdataI <- as.factor(tipdataI)
         
         #assign numbers to tip genus
-        tipdataII <- as.character(solution$TipStates[, "Genus"])  #vector with genus names
+        tipdataII <- as.character(solution[[taxlevels]]$TipStates[, "Genus"])  #vector with genus names
         taxai <- c()
         for (i in 1:length(tipdataI)){
             if (tipdataI[i] == 3){  # list taxa of tips classified as intruders
                 taxai <- c(taxai, tipdataII[i])
             }
         }
-        taxaI <- as.vector(unique(taxai))  # create vector of intruder taxa (without doubles)
+        if (length(taxai)==NULL) {
+            stop('No intruders present to be plotted! Get on with it!')
+        }
+	taxaI <- as.vector(unique(taxai))  # create vector of intruder taxa (without doubles)
         
         taxaII <- c()
         for (i in 1:length(taxaI)){
@@ -100,8 +109,8 @@ function(solution, tree, type='momophyly', ladderize=TRUE, PDF=FALSE, PDF_filena
     # reconstruct taxonomy
     if (type=='monoVStax' | type=='taxonomy') {  # for the plot variants that require monophyly status reconstructed
         tax.tree <- tree  # assigns tree specifically to reconstruction to avoid conflicts
-        tipdataT <- as.character(solution$TipStates[, "Genus"])  # extract taxon of tip from solution
-        taxaT <- as.vector(unique(solution$TipStates[, "Genus"])) # vector with taxon names (no doubles)
+        tipdataT <- as.character(solution[[taxlevels]]$TipStates[, "Genus"])  # extract taxon of tip from solution
+        taxaT <- as.vector(unique(solution[[taxlevels]]$TipStates[, "Genus"])) # vector with taxon names (no doubles)
         for (i in 1:length(taxaT)){
             tipdataT[tipdataT == taxaT[i]] <- i  # translate taxon associated to tip into taxon specific number
         }

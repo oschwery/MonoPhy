@@ -7,7 +7,7 @@ Plot output of AssessMonophyly
 Allows plotting different visualisations of the results of AssessMonophyly, based on its output
 }
 \usage{
-PlotMonophyly(solution, tree, type = "momophyly", ladderize = TRUE, PDF = FALSE, PDF_filename = "Monophylyplot.pdf", mono.colour = "gwp", tax.colour = "rainbow", intrud.colour = "rainbow", ...)
+PlotMonophyly(solution, tree, taxlevels=1, type = "monophyly", ladderize = TRUE, PDF = FALSE, PDF_filename = "Monophylyplot.pdf", mono.colour = "gwp", tax.colour = "rainbow", intrud.colour = "rainbow", ...)
 }
 \arguments{
   \item{solution}{
@@ -15,6 +15,9 @@ Object with saved output of the 'AssessMonophyly' function.
 }
   \item{tree}{
 An object of type 'phy', rooted and fully resolved phylogeny.
+}
+  \item{taxlevels}{
+An integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names). Default is 1.  	
 }
   \item{type}{
 Either "monophyly", "taxonomy", "intruders" or "monoVStax", see details. Default is "monophyly".
