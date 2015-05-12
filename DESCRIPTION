@@ -7,4 +7,4 @@ Author: Orlando Schwery
 Maintainer: Orlando Schwery <oschwery@vols.utk.edu>
 Depends: ape, phytools, phangorn, RColorBrewer
 Description: Requires rooted resolved phylogeny as input and creates a table of genera, their monophyly-status, which taxa cause problems in monophyly etc. Different information can be extracted from the output and a plot function allows visualization of the results in a number of ways.
-License: What license is it under?
+License: GPL-3
