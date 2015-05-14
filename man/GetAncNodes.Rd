@@ -30,7 +30,8 @@ List of data frames.
 Orlando Schwery
 }
 \seealso{
-\code{\link{AssessMonophyly}}}, \code{\link{MonoPhy-package}}
+\code{\link{AssessMonophyly}}, \code{\link{MonoPhy-package}}
+}
 \examples{
 data(Ericactree)
 solution <- AssessMonophyly(Ericactree, verbosity=5)
