@@ -7,7 +7,7 @@ Plot output of AssessMonophyly
 Allows plotting different visualisations of the results of AssessMonophyly, based on its output
 }
 \usage{
-PlotMonophyly(solution, tree, taxlevels=1, type = "monophyly", ladderize = TRUE, PDF = FALSE, PDF_filename = "Monophylyplot.pdf", mono.colour = "gwp", tax.colour = "rainbow", intrud.colour = "rainbow", ...)
+function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, ...)
 }
 \arguments{
   \item{solution}{
@@ -32,7 +32,7 @@ If TRUE will print a pdf with lenght adjusted to number of tips instead of plott
 Used to customize the name of pdf file created when PDF=TRUE. Default is Monophylyplot.pdf.
 }
   \item{mono.colour}{
-Colour vector for plot type "monophyly" (and left side of "monoVStax"). Default is "gwp", which colours monophyletic taxa green, non-monophyletic (intruded) taxa whiteish and intruders purple using ColorBrewer.
+Colour vector for plot type "monophyly" (and left side of "monoVStax"). Default is "PRGn", which colours monophyletic taxa green, non-monophyletic (intruded) taxa light purple and intruders purple using colours as specified in the corresponding ColorBrewer palette. Other predefined palettes are 'RdBu' (blue and red), 'PuOr' (purple and orange), 'PiYG' (green and pink) and 'BrBG' (petrol and brown). Alternatively, the colours can be customized as a vector in the order: c('monophyletic', 'intruded', 'intruder').
 }
   \item{tax.colour}{
 Colour vector for plot type "taxonomy" (and right side of "monoVStax"). Default is "rainbow", which assigns every taxon a different colour using the command 'rainbow()'.

@@ -2,7 +2,7 @@
 # written by Orlando Schwery 2015
 
 PlotMonophyly <-
-function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='gwp', tax.colour='rainbow', intrud.colour='rainbow', ...) {
+function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, ...) {
     
     if (taxlevels > length(solution)) {
 	stop('Requested taxonomic level not available (less levels specified as analysis input)!')
@@ -135,19 +135,27 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
     # plotting itself
     # monophyly plot
     if (type=='monophyly' ) {
-        if (mono.colour=='gwp') {
-            co <- rev(brewer.pal(3, 'PRGn'))  # use predefined colour brewer colours
-        } else {
+        if (mono.colour=='PRGn') {  # use colours from colourblind friendly palettes of RColorBrewer
+	    co <- c('#5aae61','#c2a5cf', '#762a83') #green and purple 
+	} else if (mono.colour=='RdBu') {
+	    co <- c('#4393c3','#f4a582', '#b2182b') #red and blue
+	} else if (mono.colour=='PuOr') {
+	    co <- c('#542788','#fdb863', '#b35806') #orange and purple
+	} else if (mono.colour=='PiYG') {
+	    co <- c('#4d9221','#f1b6da', '#8e0152') #green and pink
+	} else if (mono.colour=='BrBG') {
+	    co <- c('#35978f','#dfc27d', '#543005') #petrol and brown
+	} else {
             co <- mono.colour  # use custom colours
         }
 
         if (PDF==TRUE) {
             pdf(PDF_filename, width=9-(3-(3*(2^-(length(mono.tree$tip.label)/100)))), height=(length(mono.tree$tip.label)/10))  # create PDF with width and lenght adjusted to tree size
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=0.2, label.offset=3-(2-(2.5*(2^-(length(mono.tree$tip.label)/100)))), edge.width=2, ...)  # plot tree with edge colours according to reconstruction
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=0.2, label.offset=3-(2-(2.5*(2^-(length(mono.tree$tip.label)/100)))), edge.width=edge.width, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
             dev.off()
         } else {
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=0.2, label.offset=3, edge.width=2, ...)  # plot tree with edge colours according to reconstruction
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=0.2, label.offset=3, edge.width=edge.width, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
         }
     }
@@ -163,11 +171,11 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
 
         if (PDF==TRUE) {
             pdf(PDF_filename, width=9-(3-(3*(2^-(length(tax.tree$tip.label)/100)))), height=(length(tax.tree$tip.label)/10))   # create PDF with lenght adjusted to tree size
-            plot(tax.tree, edge.col=coTax[tax.tree$edge[, 3]], cex=0.2, label.offset=3-(2-(2.5*(2^-(length(tax.tree$tip.label)/100)))), edge.width=2, ...)  # plot tree with edge colours according to reconstruction
+            plot(tax.tree, edge.col=coTax[tax.tree$edge[, 3]], cex=0.2, label.offset=3-(2-(2.5*(2^-(length(tax.tree$tip.label)/100)))), edge.width=edge.width, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 1)  # add tip labels with tip state colour
             dev.off()
         } else {
-            plot(tax.tree, edge.col=coTax[tax.tree$edge[, 3]], cex=0.2, label.offset=3, edge.width=2, ...)  # plot tree with edge colours according to reconstruction
+            plot(tax.tree, edge.col=coTax[tax.tree$edge[, 3]], cex=0.2, label.offset=3, edge.width=edge.width, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 1)  # add tip labels with tip state colour
         }
     }
@@ -183,11 +191,11 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
    
         if (PDF==TRUE) {
             pdf(PDF_filename, width=9-(3-(3*(2^-(length(int.tree$tip.label)/100)))), height=(length(int.tree$tip.label)/10))   # create PDF with lenght adjusted to tree size
-            plot(int.tree, edge.col=coInt[int.tree$edge[, 3]], show.tip.label = TRUE, cex=0.2, label.offset=3-(2-(2.5*(2^-(length(int.tree$tip.label)/100)))), edge.width=2, ...)  # plot tree with edge colours according to reconstruction
+            plot(int.tree, edge.col=coInt[int.tree$edge[, 3]], show.tip.label = TRUE, cex=0.2, label.offset=3-(2-(2.5*(2^-(length(int.tree$tip.label)/100)))), edge.width=edge.width, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = coInt[tipdataIII], cex = 1, adj = 1)  # add tip labels with tip state colour
             dev.off()
         } else {     
-            plot(int.tree, edge.col=coInt[int.tree$edge[, 3]], show.tip.label = TRUE, cex=0.2, label.offset=3, edge.width=2, ...)  # plot tree with edge colours according to reconstruction
+            plot(int.tree, edge.col=coInt[int.tree$edge[, 3]], show.tip.label = TRUE, cex=0.2, label.offset=3, edge.width=edge.width, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = coInt[tipdataIII], cex = 1, adj = 1)  # add tip labels with tip state colour
         } 
     }
@@ -195,10 +203,18 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
 
        # monophyly vs taxonomy mirror tree plot
     if (type=='monoVStax') {
-        if (mono.colour=='gwp') {
-            co <- rev(brewer.pal(3, 'PRGn'))  # use default colour brewer colours
-        } else {
-            co <- mono.colour  # use custom monophyly colour
+        if (mono.colour=='PRGn') {  # use colours from colourblind friendly palettes of RColorBrewer
+	    co <- c('#5aae61','#c2a5cf', '#762a83') #green and purple 
+	} else if (mono.colour=='RdBu') {
+	    co <- c('#4393c3','#f4a582', '#b2182b') #red and blue
+	} else if (mono.colour=='PuOr') {
+	    co <- c('#542788','#fdb863', '#b35806') #orange and purple
+	} else if (mono.colour=='PiYG') {
+	    co <- c('#4d9221','#f1b6da', '#8e0152') #green and pink
+	} else if (mono.colour=='BrBG') {
+	    co <- c('#35978f','#dfc27d', '#543005') #petrol and brown
+	} else {
+            co <- mono.colour  # use custom colours
         }
         if (tax.colour=='rainbow') {
             coTax <- rainbow(length(taxaT))  # use default rainbow colours based on number of taxa
@@ -211,17 +227,17 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
             pdf(PDF_filename, width=9-(3-(3*(2^-(length(tax.tree$tip.label)/100)))), height=(length(tax.tree$tip.label)/10))   # create PDF with lenght adjusted to tree size
             par(oma=c(1, 1, 1, 1), mar=c(0,0,0,0))  # set up plotting margins
             layout(matrix(c(1,2), 1, 2, byrow = TRUE), widths=c(2,1))  # set up for plotting two trees next to each other
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=0.2, adj=0.5, label.offset=3-(2-(2.5*(2^-(length(mono.tree$tip.label)/100)))), edge.width=2, no.margin=TRUE, ...)  # plot tree with edge colours according to reconstruction
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=0.2, adj=0.5, label.offset=3-(2-(2.5*(2^-(length(mono.tree$tip.label)/100)))), edge.width=edge.width, no.margin=TRUE, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
-            plot(tax.tree, edge.col=coTax[tax.tree$edge[, 3]], show.tip.label = FALSE, cex=0.2, label.offset=3-(2-(2.5*(2^-(length(tax.tree$tip.label)/100)))), edge.width=2, direction = "leftwards", no.margin=TRUE, ...)  # plot mirrored tree with edge colours according to reconstruction
+            plot(tax.tree, edge.col=coTax[tax.tree$edge[, 3]], show.tip.label = FALSE, cex=0.2, label.offset=3-(2-(2.5*(2^-(length(tax.tree$tip.label)/100)))), edge.width=edge.width, direction = "leftwards", no.margin=TRUE, ...)  # plot mirrored tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 1)  # add tip labels with tip state colour
             dev.off()
         } else {
             par(oma=c(1, 1, 1, 1), mar=c(0,0,0,0))  # set up plotting margins
             layout(matrix(c(1,2), 1, 2, byrow = TRUE), widths=c(2,1))  # set up for plotting two trees next to each other
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=0.2, adj=0.5, label.offset=15, edge.width=2, no.margin=TRUE, ...)  # plot tree with edge colours according to reconstruction
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=0.2, adj=0.5, label.offset=15, edge.width=edge.width, no.margin=TRUE, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
-            plot(tax.tree, edge.col=coTax[tax.tree$edge[, 3]], show.tip.label = FALSE, cex=0.2, label.offset=(-3), edge.width=2, direction = "leftwards", no.margin=TRUE, ...)  # plot mirrored tree with edge colours according to reconstruction
+            plot(tax.tree, edge.col=coTax[tax.tree$edge[, 3]], show.tip.label = FALSE, cex=0.2, label.offset=(-3), edge.width=edge.width, direction = "leftwards", no.margin=TRUE, ...)  # plot mirrored tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 0)  # add tip labels with tip state colour
         }
 
