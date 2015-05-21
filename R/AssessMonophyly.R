@@ -93,8 +93,14 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
         if (is.null(taxonomy)){  # genera extracted from tip labels if no taxonomy file loaded
             ancnode <- getMRCA(tree, tip=c(tree$tip.label[c(grep(taxa[i], tree$tip.label))]))  # determine Most Recent Common Ancestor for all taxa of genus
         } else {  # units taken from file if loaded
-            subtips <- subset(taxonomy, as.character(taxonomy[, (ifullround+1)]) == taxa[i])  # get tips associated with group
-            ancnode <- getMRCA(tree, tip=c(subtips[, 1]))  # get MRCA for tips associated with group
+            subtips <- subset(taxonomy, as.character(taxonomy[, (ifullround+1)]) == as.character(taxa[i]))  # get tips associated with group
+            subtipsnr <- c()
+            for (sbts in 1: nrow(subtips)) {
+                sbtname <- subtips[sbts,1]
+                sbtnr <- which(tree$tip.label==sbtname)
+                subtipsnr <- c(subtipsnr, sbtnr)
+            }
+            ancnode <- getMRCA(tree, tip=c(subtipsnr))  # get MRCA for tips associated with group
         }
         if (length(ancnode) == 0) { # if singleton i.e. only tip of given group
             outlist[i, ] <- c(taxa[i], "Singleton", "NA", "NA", "NA", "")  # UPDATE OUTPUT MATRIX, mark as singleton if only one tip for this genus
@@ -159,11 +165,12 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
     rownames(outframe.summary) <- outframe.summary[, 1]  # assign first column as row names
     outframe.summary[, 1] <- NULL  # delete first column (since now row names)
     
-    tip.states.matrix[, 1] <- tree$tip.label  # adding species names to matrix
     if (is.null(taxonomy)){
+        tip.states.matrix[, 1] <- tree$tip.label  # adding species names to matrix
         f3 <- function(s) strsplit(s, ("_| "))[[1]][1]  # function with split criteria: split names at underscore and keep first part (genus name)
         tip.states.matrix[, 2] <- sapply(tip.states.matrix[, 1], f3)  # apply split function, create genus name column
     } else {
+        tip.states.matrix[, 1] <- as.vector(taxonomy[, 1])  # adding species names to matrix
         tip.states.matrix[, 2] <- as.vector(taxonomy[, ifullround+1])  # create taxon name column
     }
     for (i in 1:length(tree$tip.label)){  #for every matrix entry
