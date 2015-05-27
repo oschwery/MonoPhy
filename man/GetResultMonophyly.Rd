@@ -5,7 +5,7 @@
 Get main result table from 'AssessMonophyly' output
 }
 \description{
-Extracts data frame with main result table or containing summary information such as number of tips, number of monophyletic genera, etc. from the output of 'AssessMonophyly'.
+Extracts data frame with main result table or containing summary information such as number of tips, number of monophyletic taxa, etc. from the output of 'AssessMonophyly'.
 }
 \usage{
 GetResultMonophyly(solution, taxlevels='ALL')
@@ -20,8 +20,8 @@ Either an integer corresponding to the desired taxonomic level (i.e. the number 
 }
 }
 \details{
-Can be used after 'AssessMonophyly' is run to extract the results or summary table from it. In the results table, rows are the taxonomic groups used, columns are 'Monophyly' (yes, no or singleton), 'MRCA' (node number of inferred ancestor), 'Delta-Tips' (number of tips which share this ancestral node but do not belong to the same group), '#Intruders'(how many other groups interfere with the monophyly of the group in quesiton) and 'Intruders' (names of interfering groups, how many of these are written out is determined by the argument 'verbosity').
-The summary table contains number of genera (taxa), tips (species), monophyletic and non-monophyletic groups, singletons, intruder genera and intruder tips.
+Can be used after 'AssessMonophyly' is run to extract the results or summary table from it. In the results table, rows are the taxonomic groups used, columns are 'Monophyly' ('Yes', 'No' or 'Monotypic'), 'MRCA' (node number of inferred ancestor), 'Delta-Tips' (number of tips which share this ancestral node but do not belong to the same taxon), '#Intruders'(how many other taxa interfere with the monophyly of the taxon in quesiton) and 'Intruders' (names of interfering taxa, how many of these are written out is determined by the argument 'verbosity').
+The summary table contains number of taxa (e.g. genera), tips (e.g. species), monophyletic, non-monophyletic and monotypic taxa, intruder taxa and intruder tips.
 The argument 'taxlevels' allows to limit the output if several taxonomic levels were used; 'ALL' is default, a specific level can be selected by entering its corresponding number instead.
 }
 \value{

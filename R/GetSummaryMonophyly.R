@@ -4,6 +4,9 @@
 GetSummaryMonophyly <-
 function(solution, taxlevels='ALL') {
     Allsummaries <- list()
+    if (taxlevels!='ALL' & class(taxlevels)!='numeric') {
+	stop("taxlevels must be either 'ALL' or numeric!")
+    }
     if (taxlevels=='ALL') {
         for (i in 1:length(solution)){
             namesum <- paste('Taxlevel',i,sep='_')

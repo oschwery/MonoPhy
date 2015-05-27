@@ -4,6 +4,9 @@
 PlotMonophyly <-
 function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, ...) {
     
+    if (taxlevels == 'ALL' | class(taxlevels)!='numeric') {
+	stop("taxlevels must be numeric (also 'ALL' is not an option for plotting)!")
+    }    
     if (taxlevels > length(solution)) {
 	stop('Requested taxonomic level not available (less levels specified as analysis input)!')
     }
@@ -54,7 +57,7 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
         tipdataI <- as.factor(tipdataI)
         
         #assign numbers to tip genus
-        tipdataII <- as.character(solution[[taxlevels]]$TipStates[, "Genus"])  #vector with genus names
+        tipdataII <- as.character(solution[[taxlevels]]$TipStates[, "Taxon"])  #vector with genus names
         taxai <- c()
         for (i in 1:length(tipdataI)){
             if (tipdataI[i] == 3){  # list taxa of tips classified as intruders
@@ -109,8 +112,8 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
     # reconstruct taxonomy
     if (type=='monoVStax' | type=='taxonomy') {  # for the plot variants that require monophyly status reconstructed
         tax.tree <- tree  # assigns tree specifically to reconstruction to avoid conflicts
-        tipdataT <- as.character(solution[[taxlevels]]$TipStates[, "Genus"])  # extract taxon of tip from solution
-        taxaT <- as.vector(unique(solution[[taxlevels]]$TipStates[, "Genus"])) # vector with taxon names (no doubles)
+        tipdataT <- as.character(solution[[taxlevels]]$TipStates[, "Taxon"])  # extract taxon of tip from solution
+        taxaT <- as.vector(unique(solution[[taxlevels]]$TipStates[, "Taxon"])) # vector with taxon names (no doubles)
         for (i in 1:length(taxaT)){
             tipdataT[tipdataT == taxaT[i]] <- i  # translate taxon associated to tip into taxon specific number
         }

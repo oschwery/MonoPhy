@@ -14,7 +14,7 @@ if (!is.rooted(tree)) {  # checks and returns error if tree is not rooted
 if (is.null(taxonomy)){  # extract list of genera from tree's tip labels
     for (i in 1:length(tree$tip.label)) {
         if (grepl(("_| "), tree$tip.label[i]) == FALSE){  # checks if genus and species epithet of tip labels are separated by space or underscore and returns error if not
-            stop('Tip labels do not contain underscore/space separating genus name from species epithet!')
+            stop('Tip labels do not contain underscore separating genus name from species epithet!')
         }
     }
     
@@ -24,7 +24,7 @@ if (is.null(taxonomy)){  # extract list of genera from tree's tip labels
     taxsetnames <- c('taxa')
     } else {  # use loaded taxonomy file
         if (length(taxonomy[, 1]) != length(tree$tip.label)) {  # checks and returns error if taxonomy file has more entries than tree has tips
-            stop('Number of rows of taxonomy file is not equal to number of taxa (possibility: if table has header, header=TRUE must be specified when loading file)!')
+            stop('Number of rows of taxonomy file is not equal to number of taxa (note: table should not have a header)!')
         }
         if (length(taxonomy[1, ]) < 2) {  # checks and returns error if taxonomy file doesn't have at least two columns
             stop('Taxonomy file needs at least 2 columns: tip labels and taxonomic group!')
@@ -102,8 +102,8 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
             }
             ancnode <- getMRCA(tree, tip=c(subtipsnr))  # get MRCA for tips associated with group
         }
-        if (length(ancnode) == 0) { # if singleton i.e. only tip of given group
-            outlist[i, ] <- c(taxa[i], "Singleton", "NA", "NA", "NA", "")  # UPDATE OUTPUT MATRIX, mark as singleton if only one tip for this genus
+        if (length(ancnode) == 0) { # if monotypic i.e. only tip of given group
+            outlist[i, ] <- c(taxa[i], "Monotypic", "NA", "NA", "NA", "")  # UPDATE OUTPUT MATRIX, mark as monotypic if only one tip for this genus
         } else {
                 anctips <- getDescendants(tree, ancnode)  # determine all descendants of previously determined MRCA
                 ancnames <- tree$tip.label[c(anctips)]  # extract names of those descendants
@@ -155,12 +155,12 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
     outframe[, 1] <- NULL  # delete first column (since now row names)
     names(intruder.genus) <- intruder.names  # apply names (of intruded genera) to intruder genus lists
     names(intruder.species) <- intruder.names  # apply names (of intruded genera) to intruder species lists
-    outlist.summary[, 1] <- c("Total Genera", "Total Tips", "Monophyletic", "Non-Monophyletic", "Singletons", "Intruder Genera", "Intruder Tips")  # row names for summary table
+    outlist.summary[, 1] <- c("Total Taxa", "Total Tips", "Monophyletic", "Non-Monophyletic", "Monotypic", "Intruder Taxa", "Intruder Tips")  # row names for summary table
     counttable <- table(outframe[, "Monophyly"])  # tabulate monophyly results
     countframe <- as.data.frame(counttable)  # turn into data frame
     rownames(countframe) <- countframe[, 1]  # assign first column as row names
     countframe[, 1] <- NULL  # delete first column (since now row names)
-    outlist.summary[, 2] <- c(length(taxa), length(tree$tip.label), countframe["Yes","Freq"], countframe["No","Freq"], countframe["Singleton","Freq"], length(intruder.genus.all), length(intruder.species.all))  # populate summary table with counts of respective groups
+    outlist.summary[, 2] <- c(length(taxa), length(tree$tip.label), countframe["Yes","Freq"], countframe["No","Freq"], countframe["Monotypic","Freq"], length(intruder.genus.all), length(intruder.species.all))  # populate summary table with counts of respective groups
     outframe.summary <- data.frame(outlist.summary)  # turn final output matrix summary into data frame
     rownames(outframe.summary) <- outframe.summary[, 1]  # assign first column as row names
     outframe.summary[, 1] <- NULL  # delete first column (since now row names)
@@ -177,13 +177,13 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
         if (tip.states.matrix[i, 1] %in% intruder.species.all == TRUE){  # score species as intruder if in global intruder list
             tip.states.matrix[i, 3] <- "Intruder"
         } else {
-            if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Singleton"){  # if not intruder, score as monophyletic if singleton
+            if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Monotypic"){  # if not intruder, score as monophyletic if monotypic
                 tip.states.matrix[i, 3] <- "Monophyletic"
             } else {
-            if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Yes"){  # if not intruder nor singleton, score as monophyletic if monophyletic
+            if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Yes"){  # if not intruder nor monotypic, score as monophyletic if monophyletic
                 tip.states.matrix[i, 3] <- "Monophyletic"
             } else {
-                tip.states.matrix[i, 3] <- "Non-Monophyletic"  # if not intruder, singleton or monophyletic, score as non-monophyletic
+                tip.states.matrix[i, 3] <- "Non-Monophyletic"  # if not intruder, monotypic or monophyletic, score as non-monophyletic
             }      
             }
         }
@@ -191,9 +191,9 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
     tip.states.frame <- as.data.frame(tip.states.matrix)  # turn into data frame
     #rownames(tip.states.frame) <- tip.states.matrix[, 1]  # assign tip labels as row names
     #tip.states.frame[, 1] <- NULL  # delete first row, since now row names
-    colnames(tip.states.frame) <- c("Tip", "Genus", "Status")  # assign column names
-    outputlist <- list(Genera=intruder.genus, Species=intruder.species, result=outframe, summary=outframe.summary, TipStates=tip.states.frame) # concatenate intruder lists, final output table and summmary to one list object
-    nameout <- paste("taxonomy", ifullround, sep = "")  # name for output subsection
+    colnames(tip.states.frame) <- c("Tip", "Taxon", "Status")  # assign column names
+    outputlist <- list(Taxa=intruder.genus, Tips=intruder.species, result=outframe, summary=outframe.summary, TipStates=tip.states.frame) # concatenate intruder lists, final output table and summmary to one list object
+    nameout <- paste("Taxlevel", ifullround, sep = "_")  # name for output subsection
     finallist[[nameout]] <- outputlist #add list for this round of the loop to final list
     }
 finallist

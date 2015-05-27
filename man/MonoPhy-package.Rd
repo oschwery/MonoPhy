@@ -6,7 +6,7 @@
 Allows to explore monophyly (or lack of it) of taxonomic groups in a phylogeny.
 }
 \description{
-Requires rooted resolved phylogeny as input and creates a table of genera, their monophyly-status, which taxa cause problems in monophyly etc. Different information can be extracted from the output and a plot function allows visualization of the results in a number of ways.
+Requires rooted resolved phylogeny as input and creates a table of taxa, their monophyly-status, which other taxa cause problems in monophyly etc. Different information can be extracted from the output and a plot function allows visualization of the results in a number of ways.
 }
 \details{
 \tabular{ll}{
