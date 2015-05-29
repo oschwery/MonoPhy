@@ -7,7 +7,7 @@ Plot output of AssessMonophyly
 Allows plotting different visualisations of the results of AssessMonophyly, based on its output
 }
 \usage{
-function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, ...)
+function(solution, tree, taxlevels=1, type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, ...)
 }
 \arguments{
   \item{solution}{
@@ -21,6 +21,9 @@ An integer corresponding to the desired taxonomic level (i.e. the number of its 
 }
   \item{type}{
 Either "monophyly", "taxonomy", "intruders" or "monoVStax", see details. Default is "monophyly".
+}
+  \item{monocoll}{
+  	If TRUE will collapse all monophyletic taxa to one single tip labelled with the taxon name. Default is FALSE.
 }
   \item{ladderize}{
 If TRUE will ladderize tree before reconstruction and plotting. Default is TRUE.
@@ -48,6 +51,7 @@ Other plot.phylo arguments.
 Using the output object of \code{\link{AssessMonophyly}}, the result can be visualized in a couple of ways. Specifying the 'type' "monophyly" plots a tree colouring the branches according to whether the respective clades are monophyletic, non-monophyletic or intruders. 'taxonomy' simply colour codes the different taxa. 'intruders' colours monophyletic groups gray, non-monophyletic groups black and the intruders according to the taxonomic group they belong to. Finally, 'monoVStax', plots two trees in a mirrored fashion, with the 'monophyly' type on the left and the 'taxonomy' type on the right.
 It is important to note that this is merely supposed to be a useful visualization and not a biologically meaningful reconstruction.
 The colour vectors must be of sufficient length if customized, i.e. three colours for mono.colour, as many as taxa for tax.colour and as many as intruder taxa for intrud.colour.
+Collapsing monophyletic taxa by specifying 'monocoll = TRUE' allows to focus on the problem zones and should especially be useful for bigger phylogenies.
 }
 \value{
 Plots phylogeny or prints it to pdf.

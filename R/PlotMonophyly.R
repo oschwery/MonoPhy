@@ -2,7 +2,7 @@
 # written by Orlando Schwery 2015
 
 PlotMonophyly <-
-function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, ...) {
+function(solution, tree, taxlevels=1, type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, ...) {
     
     if (taxlevels == 'ALL' | class(taxlevels)!='numeric') {
 	stop("taxlevels must be numeric (also 'ALL' is not an option for plotting)!")
@@ -16,14 +16,42 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
     if (ladderize==TRUE) {  # ladderizes the tree before starting, if specified
         tree <- ladderize(tree)
     }
-
+    tip.states <- solution[[taxlevels]]$TipStates
+    
+    if (monocoll== TRUE) {
+	alltaxa <- as.vector(unique(tip.states[, "Taxon"]))
+	keeptips <- c()
+	colltipse <- c()
+	for (icoll in 1:length(alltaxa)) {
+	    if (solution[[taxlevels]]$result[alltaxa[icoll], "Monophyly"] == "Yes") {
+		matchtips <- c(tip.states[(tip.states[, "Taxon"] == alltaxa[icoll]), "Tip"])
+		colltips <- c(matchtips[2:length(matchtips)])
+		colltipse <- c(colltipse,colltips)
+		keeptip <- c(matchtips[1])
+		keeptips <- c(keeptips, keeptip)
+	    }
+	}
+	newlabels <- tree$tip.label
+	for (itips in 1:length(keeptips)) {
+	    newlabels[keeptips[itips]] <- as.character(tip.states[keeptips[itips],"Taxon"])
+	}
+	tree$tip.label <- newlabels
+	tree.temp <- drop.tip(tree,colltipse)
+       
+	for (icollstates in 1:length(colltipse)) {
+	    tip.states <- tip.states[!(as.character(tip.states$Tip) == tree$tip.label[colltipse[icollstates]]),]
+	}
+	row.names(tip.states) <- 1:nrow(tip.states)
+	tree <- tree.temp
+    }
+    
 # Reconstruct Monophyly
     
     if (type=='monophyly' | type=='monoVStax' | type=='intruders') {  # for the plot variants that require monophyly status reconstructed
         mono.tree <- tree  # assigns tree specifically to reconstruction to avoid conflicts
         
         # assign numbers to tip status
-        tipdata <- as.character(solution[[taxlevels]]$TipStates[, "Status"])  # extracting monophyly status of tips from solution
+        tipdata <- as.character(tip.states[, "Status"])  # extracting monophyly status of tips from solution
         tipdata[tipdata == "Monophyletic"] <- 1  # number-coding monophyly status
         tipdata[tipdata == "Non-Monophyletic"] <- 2  # number-coding monophyly status
         tipdata[tipdata == "Intruder"] <- 3  # number-coding monophyly status
@@ -50,14 +78,14 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
         int.tree <- tree  # assigns tree specifically to reconstruction to avoid conflicts
         
         # assign numbers to tip status
-        tipdataI <- as.character(solution[[taxlevels]]$TipStates[, "Status"])  # extracting monophyly status of tips from solution
+        tipdataI <- as.character(tip.states[, "Status"])  # extracting monophyly status of tips from solution
         tipdataI[tipdataI == "Monophyletic"] <- 1  # number-coding monophyly status
         tipdataI[tipdataI == "Non-Monophyletic"] <- 2  # number-coding monophyly status
         tipdataI[tipdataI == "Intruder"] <- 3  # number-coding monophyly status
         tipdataI <- as.factor(tipdataI)
         
         #assign numbers to tip genus
-        tipdataII <- as.character(solution[[taxlevels]]$TipStates[, "Taxon"])  #vector with genus names
+        tipdataII <- as.character(tip.states[, "Taxon"])  #vector with genus names
         taxai <- c()
         for (i in 1:length(tipdataI)){
             if (tipdataI[i] == 3){  # list taxa of tips classified as intruders
@@ -112,8 +140,8 @@ function(solution, tree, taxlevels=1, type='monophyly', ladderize=TRUE, PDF=FALS
     # reconstruct taxonomy
     if (type=='monoVStax' | type=='taxonomy') {  # for the plot variants that require monophyly status reconstructed
         tax.tree <- tree  # assigns tree specifically to reconstruction to avoid conflicts
-        tipdataT <- as.character(solution[[taxlevels]]$TipStates[, "Taxon"])  # extract taxon of tip from solution
-        taxaT <- as.vector(unique(solution[[taxlevels]]$TipStates[, "Taxon"])) # vector with taxon names (no doubles)
+        tipdataT <- as.character(tip.states[, "Taxon"])  # extract taxon of tip from solution
+        taxaT <- as.vector(unique(tip.states[, "Taxon"])) # vector with taxon names (no doubles)
         for (i in 1:length(taxaT)){
             tipdataT[tipdataT == taxaT[i]] <- i  # translate taxon associated to tip into taxon specific number
         }
