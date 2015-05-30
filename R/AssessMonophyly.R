@@ -125,9 +125,9 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                             subtaxa <- c()
                             for (j in 1:length(intruder.tips)) {
                                 subtaxon <- rbind(subset(taxonomy, taxonomy[, 1] == intruder.tips[j]))  # extract taxon for each intruder tip...
-                                subtaxa <- rbind(subtaxa, subtaxon)  # ... and add them to a vector
+                                subtaxa <- rbind(subtaxa, subtaxon)  # ... and add them up
                             }                      
-                            intruder.taxa <- as.vector(unique(subtaxa[, 2]))  # create vector of intruder taxa
+                            intruder.taxa <- as.vector(unique(subtaxa[, ifullround+1]))  # create vector of intruder taxa
                         }
                         
                         intruder.genus <- c(intruder.genus, list(Taxa=intruder.taxa))  # update list of intruder genera
