@@ -11,17 +11,6 @@ if (!is.rooted(tree)) {  # checks and returns error if tree is not rooted
     stop('Phylogeny must be rooted!')
 }
 
-if (taxonomy == 'taxize') {  # build taxonomy file from web ressources using taxize
-    taxafromweb <- tax_name(tree$tip.label, get=taxizelevel, db=taxizedb, pref=taxizepref)  # get taxonomy data
-    taxafromwebtable <- matrix(data = NA, nrow=length(tree$tip.label),ncol=ncol(taxafromweb)+1)  #build empty matrix
-    taxafromwebtable[, 1] <- tree$tip.label  # add tip names from tree
-    for (iweb in 1:ncol(taxafromweb)) {  #add acquired taxon names for tips for each taxonomic level acquired
-        taxafromwebtable[, iweb+1] <- taxafromweb[, iweb]
-    }
-    taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"
-    taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
-}
-
 if (is.null(taxonomy)){  # extract list of genera from tree's tip labels
     for (i in 1:length(tree$tip.label)) {
         if (grepl(("_| "), tree$tip.label[i]) == FALSE){  # checks if genus and species epithet of tip labels are separated by space or underscore and returns error if not
@@ -33,53 +22,66 @@ if (is.null(taxonomy)){  # extract list of genera from tree's tip labels
     split.taxa <- sapply(tree$tip.label, f)  # apply split functon to tree
     taxa <- as.vector(unique(split.taxa))  # create vector of genera in tree without duplicates
     taxsetnames <- c('taxa')
-    } else {  # use loaded taxonomy file
-        if (length(taxonomy[, 1]) != length(tree$tip.label)) {  # checks and returns error if taxonomy file has more entries than tree has tips
-            stop('Number of rows of taxonomy file is not equal to number of taxa (note: table should not have a header)!')
+    } else {
+        if (!is.null(taxonomy) && taxonomy != 'taxize') {  # use loaded taxonomy file
+            if (length(taxonomy[, 1]) != length(tree$tip.label)) {  # checks and returns error if taxonomy file has more entries than tree has tips
+                stop('Number of rows of taxonomy file is not equal to number of taxa (note: table should not have a header)!')
+            }
+            if (length(taxonomy[1, ]) < 2) {  # checks and returns error if taxonomy file doesn't have at least two columns
+                stop('Taxonomy file needs at least 2 columns: tip labels and taxonomic group!')
+            }
+            taxchecktree <- c()
+            for (itaxcheck in 1:length(tree$tip.label)) {
+                taxchecktree <- c(taxchecktree, tree$tip.label[itaxcheck] %in% taxonomy[, 1])
+            }
+            taxintruderstree <- c()
+            if ('FALSE' %in% taxchecktree) {
+                positionstree <- grep('FALSE', taxchecktree)
+                taxintruderstree <- c(taxintruderstree, tree$tip.label[positionstree])
+                message(paste('\n'), appendLF=TRUE)
+                message(paste('Tip-labels which do not occur in taxonfile:', '[', length(taxintruderstree), '/', length(tree$tip.label), ']', collapse=" "), appendLF=TRUE)
+                message(paste(taxintruderstree, collapse=", "), appendLF=TRUE)
+                message(paste('\n'), appendLF=TRUE)
+            }
+            taxcheckfile <- c()
+            for (itaxcheck2 in 1:length(taxonomy[, 1])) {
+                taxcheckfile <- c(taxcheckfile, taxonomy[itaxcheck2, 1] %in% tree$tip.label)
+            }
+            taxintrudersfile <- c()
+            if ('FALSE' %in% taxcheckfile) {
+                positionsfile <- grep('FALSE', taxcheckfile)
+                taxintrudersfile <- c(taxintrudersfile,as.character(taxonomy[positionsfile, 1]))
+                message(paste('Taxon names in file which do not occur in tip-labels of tree:', '[', length(taxintrudersfile), '/', length(taxonomy[, 1]), ']', collapse=" "), appendLF=TRUE)
+                message(paste(taxintrudersfile, collapse=", "), appendLF=TRUE)
+                message(paste('\n'), appendLF=TRUE)
+            }
+            if ('FALSE' %in% (taxchecktree)) {
+                stop('The taxon names of tree and taxonfile do not match (see above)!')
+            }
+            if ('FALSE' %in% (taxcheckfile)) {
+                stop('The taxon names of tree and taxonfile do not match (see above)!')
+            }
+            taxsetnames <- c()
+            taxsets <- list()
+            for (jtax in 1:(length(taxonomy[1, ])-1)){
+                nametax <- paste("taxa", jtax, sep = "")
+                taxsetnames <- c(taxsetnames, nametax)
+                tmp <- as.vector(unique(taxonomy[, (jtax)+1]))  # if all is correct, makes vector taxonomic units (without doubles) 
+                taxsets[[nametax]] <- tmp
+            }
+        } else {
+            if (taxonomy == 'taxize') {  # build taxonomy file from web ressources using taxize
+                taxafromweb <- tax_name(tree$tip.label, get=taxizelevel, db=taxizedb, pref=taxizepref)  # get taxonomy data
+                taxafromwebtable <- matrix(data = NA, nrow=length(tree$tip.label),ncol=ncol(taxafromweb)+1)  #build empty matrix
+                taxafromwebtable[, 1] <- tree$tip.label  # add tip names from tree
+                for (iweb in 1:ncol(taxafromweb)) {  #add acquired taxon names for tips for each taxonomic level acquired
+                    taxafromwebtable[, iweb+1] <- taxafromweb[, iweb]
+                }
+                taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"
+                taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
+            }  
         }
-        if (length(taxonomy[1, ]) < 2) {  # checks and returns error if taxonomy file doesn't have at least two columns
-            stop('Taxonomy file needs at least 2 columns: tip labels and taxonomic group!')
-        }
-        taxchecktree <- c()
-        for (itaxcheck in 1:length(tree$tip.label)) {
-            taxchecktree <- c(taxchecktree, tree$tip.label[itaxcheck] %in% taxonomy[, 1])
-        }
-        taxintruderstree <- c()
-        if ('FALSE' %in% taxchecktree) {
-            positionstree <- grep('FALSE', taxchecktree)
-            taxintruderstree <- c(taxintruderstree, tree$tip.label[positionstree])
-            message(paste('\n'), appendLF=TRUE)
-            message(paste('Tip-labels which do not occur in taxonfile:', '[', length(taxintruderstree), '/', length(tree$tip.label), ']', collapse=" "), appendLF=TRUE)
-            message(paste(taxintruderstree, collapse=", "), appendLF=TRUE)
-            message(paste('\n'), appendLF=TRUE)
-        }
-        taxcheckfile <- c()
-        for (itaxcheck2 in 1:length(taxonomy[, 1])) {
-            taxcheckfile <- c(taxcheckfile, taxonomy[itaxcheck2, 1] %in% tree$tip.label)
-        }
-        taxintrudersfile <- c()
-        if ('FALSE' %in% taxcheckfile) {
-            positionsfile <- grep('FALSE', taxcheckfile)
-            taxintrudersfile <- c(taxintrudersfile,as.character(taxonomy[positionsfile, 1]))
-            message(paste('Taxon names in file which do not occur in tip-labels of tree:', '[', length(taxintrudersfile), '/', length(taxonomy[, 1]), ']', collapse=" "), appendLF=TRUE)
-            message(paste(taxintrudersfile, collapse=", "), appendLF=TRUE)
-            message(paste('\n'), appendLF=TRUE)
-        }
-        if ('FALSE' %in% (taxchecktree)) {
-            stop('The taxon names of tree and taxonfile do not match (see above)!')
-        }
-        if ('FALSE' %in% (taxcheckfile)) {
-            stop('The taxon names of tree and taxonfile do not match (see above)!')
-        }
-        taxsetnames <- c()
-        taxsets <- list()
-        for (jtax in 1:(length(taxonomy[1, ])-1)){
-            nametax <- paste("taxa", jtax, sep = "")
-            taxsetnames <- c(taxsetnames, nametax)
-            tmp <- as.vector(unique(taxonomy[, (jtax)+1]))  # if all is correct, makes vector taxonomic units (without doubles) 
-            taxsets[[nametax]] <- tmp
-        }
-}
+    }
 # actual assessment
 finallist <- list()
 for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon set used
