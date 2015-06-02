@@ -84,7 +84,7 @@ function(solution, tree, taxlevels=1, type='monophyly', monocoll=FALSE, ladderiz
         tipdataI[tipdataI == "Non-Monophyletic"] <- 3  # number-coding monophyly status
         tipdataI[tipdataI == "Intruder"] <- 4  # number-coding monophyly status
         tipdataI[tipdataI == "unknown"] <- 1  # number-coding monophyly status
-        tipdataI <- as.factor(tipdataI)
+        tipdataI <- as.numeric(tipdataI)
         
         #assign numbers to tip genus
         tipdataII <- as.character(tip.states[, "Taxon"])  #vector with genus names
