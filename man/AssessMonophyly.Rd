@@ -7,17 +7,26 @@ Assesses monophyly (or lack of it) of taxonomic groups in a phylogeny.
 Requires rooted resolved phylogeny as input and creates a table of taxa, their monophyly-status, which taxa cause problems in monophyly etc. Output can be accessed with related functions and a plot function can be used to plot the results in a number of ways.
 }
 \usage{
-AssessMonophyly(tree, taxonomy = NULL, verbosity = 5)
+AssessMonophyly(tree, taxonomy = NULL, verbosity = 5, taxizelevel= NULL, taxizedb='both', taxizepref='ncbi')
 }
 \arguments{
   \item{tree}{
 An object of type 'phy', rooted and fully resolved phylogeny. If tip labels are in the format 'genus_species', the function can extract the genus names and check their monophyly. If tip labels are in another format or if the monophyly of other taxonomic groups should be tested, a taxonomy file (see 'taxonomy') is required.
 }
   \item{taxonomy}{
-A data frame (e.g. an imported .csv file) with at least two columns, one row per tip in tree and no header (unless specified when loading the file). Column one contains the tip labels, column two and higher the names of the taxonomic units the respective tip belongs to. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. Default is NULL.
+A data frame (e.g. an imported .csv file) with at least two columns, one row per tip in tree and no header (unless specified when loading the file). Column one contains the tip labels, column two and higher the names of the taxonomic units the respective tip belongs to. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown and left empty for certain tips, NAs will be introduced. Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed. Alternatively, specifying taxonomy as 'taxize' allows to use the package with the same name to download taxonomic names from online databases. Default is NULL.
 }
   \item{verbosity}{
 An integer, default is 5. Determines how many intruder taxa should be listed by name in the result table (it will list up to this many names and then add 'and X more').
+}
+  \item{taxizelevel}{
+If taxonomy is set to 'taxize', it will download the taxonomic level specified here. Default is NULL.
+}
+  \item{taxizedb}{
+If taxonomy is set to 'taxize', the desired taxonomic levels from the specified database. Either 'itis' or 'ncbi' or 'both', the latter is default.
+}
+  \item{taxizepref}{
+If taxonomy is set to 'taxize' and taxizedb to 'both', either 'itis' or 'ncbi' can be set to be preferred if both databases have records for the tip in question. Default is 'ncbi'.
 }
 }
 \details{
