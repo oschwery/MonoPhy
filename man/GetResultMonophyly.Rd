@@ -20,8 +20,8 @@ Either an integer corresponding to the desired taxonomic level (i.e. the number 
 }
 }
 \details{
-Can be used after 'AssessMonophyly' is run to extract the results or summary table from it. In the results table, rows are the taxonomic groups used, columns are 'Monophyly' ('Yes', 'No' or 'Monotypic'), 'MRCA' (node number of inferred ancestor), 'Delta-Tips' (number of tips which share this ancestral node but do not belong to the same taxon), '#Intruders'(how many other taxa interfere with the monophyly of the taxon in quesiton) and 'Intruders' (names of interfering taxa, how many of these are written out is determined by the argument 'verbosity').
-The summary table contains number of taxa (e.g. genera), tips (e.g. species), monophyletic, non-monophyletic and monotypic taxa, intruder taxa and intruder tips.
+Can be used after 'AssessMonophyly' is run to extract the results or summary table from it. In the results table, rows are the taxonomic groups used, columns are 'Monophyly' ('Yes', 'No' or 'Monotypic'), 'MRCA' (node number of inferred ancestor), '#Tips' (number of tips assigned to this taxon),'Delta-Tips' (number of tips which share this ancestral node but do not belong to the same taxon), '#Intruders'(how many other taxa interfere with the monophyly of the taxon in quesiton) and 'Intruders' (names of interfering taxa, how many of these are written out is determined by the argument 'verbosity'). If the argument outliercheck was set to TRUE when running 'AssessMonophyly', the table will additionally include '#Outliers' (number of tips which are placed outside the core clade for that group) and 'Outliers' (names of outlier taxa, the number of which also depending on the argument 'verbosity').
+The summary table contains two rows with the number of taxa (e.g. genera) and tips (e.g. species) for the total tree, and which were inferred to be monophyletic, non-monophyletic, monotypic, intruders and (if applicable) outliers.
 The argument 'taxlevels' allows to limit the output if several taxonomic levels were used; 'ALL' is default, a specific level can be selected by entering its corresponding number instead.
 }
 \value{
