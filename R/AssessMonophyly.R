@@ -333,10 +333,6 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
     countframe <- as.data.frame(counttable)  # turn into data frame
     rownames(countframe) <- countframe[, 1]  # assign first column as row names
     countframe[, 1] <- NULL  # delete first column (since now row names)
-    #counttable2 <- table(tip.states.frame[, "Status"])  # tabulate monophyly results on tip level
-    #countframe2 <- as.data.frame(counttable2)  # turn into data frame
-    #rownames(countframe2) <- countframe2[, 1]  # assign first column as row names
-    #countframe2[, 1] <- NULL  # delete first column (since now row names)
     taxcount.monoph <- sapply(levels(outframe$Monophyly),function(x){sum(as.numeric(outframe$'#Tips'[outframe$Monophyly==x]))},USE.NAMES=F)
     taxcount.frame <- data.frame(status=levels(outframe$Monophyly), taxcount.monoph)
     rownames(taxcount.frame) <- taxcount.frame[, 1]
