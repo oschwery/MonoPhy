@@ -53,6 +53,9 @@ It is important to note that this is merely supposed to be a useful visualizatio
 The colour vectors must be of sufficient length if customized, i.e. three colours for mono.colour, as many as taxa for tax.colour and as many as intruder taxa for intrud.colour.
 Collapsing monophyletic taxa by specifying 'monocoll = TRUE' allows to focus on the problem zones and should especially be useful for bigger phylogenies.
 }
+\note{
+Currently, if outliers are checked for (by specifying outliercheck as TRUE when running 'AssessMonophyly'), the plotting function will treat outliers and intruders the same way. This may be changed in future versions.
+}
 \value{
 Plots phylogeny or prints it to pdf.
 }
