@@ -55,7 +55,8 @@ function(solution, tree, taxlevels=1, type='monophyly', monocoll=FALSE, ladderiz
         tipdata[tipdata == "Monophyletic"] <- 2  # number-coding monophyly status
         tipdata[tipdata == "Non-Monophyletic"] <- 3  # number-coding monophyly status
         tipdata[tipdata == "Intruder"] <- 4  # number-coding monophyly status
-        tipdata[tipdata == "unknown"] <- 1  # number-coding monophyly status
+        tipdata[tipdata == "Outlier"] <- 4  # number-coding monophyly status
+	tipdata[tipdata == "unknown"] <- 1  # number-coding monophyly status
 	tipdata <- as.numeric(tipdata)
          # run reco model
         monophyly.reco <- fastAnc(mono.tree, tipdata, vars=FALSE, CI=FALSE)
@@ -83,7 +84,8 @@ function(solution, tree, taxlevels=1, type='monophyly', monocoll=FALSE, ladderiz
         tipdataI[tipdataI == "Monophyletic"] <- 2  # number-coding monophyly status
         tipdataI[tipdataI == "Non-Monophyletic"] <- 3  # number-coding monophyly status
         tipdataI[tipdataI == "Intruder"] <- 4  # number-coding monophyly status
-        tipdataI[tipdataI == "unknown"] <- 1  # number-coding monophyly status
+        tipdataI[tipdataI == "Outlier"] <- 4  # number-coding monophyly status
+	tipdataI[tipdataI == "unknown"] <- 1  # number-coding monophyly status
         tipdataI <- as.numeric(tipdataI)
         
         #assign numbers to tip genus
