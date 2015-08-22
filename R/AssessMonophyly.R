@@ -188,29 +188,25 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                                     nodechoice <- which(c(length(taxtips1), length(taxtips2))==max(c(length(taxtips1), length(taxtips2))))  # determine daughter with more tips of focal taxon
                                     if (length(nodechoice) > 1) {  # if equal number of taxon tips in both daughers:
                                         nodechoice2 <- which(c((length(taxtips1)/length(anctips1)), (length(taxtips2)/length(anctips2)))==max(c((length(taxtips1)/length(anctips1)), (length(taxtips2)/length(anctips2)))))  # determine daugther with higher ratio of focal taxon
-                                        if (nodechoice2 == 1) {  # if daughter 1 chosen: set as new start-node and -clade
-                                            subtaxtips <- taxtips1
-                                            subancnames <- ancnames1
-                                            start.node <- daughter1
-                                        }
-                                        if (nodechoice2 == 2) {  # if daughter 2 chosen: set as new start-node and -clade
-                                            subtaxtips <- taxtips2
-                                            subancnames <- ancnames2
-                                            start.node <- daughter2
-                                        }
                                         if (length(nodechoice2) > 1) {  # if equal ratio of taxon tips in both daughters: keep both daughters as core clade
                                             subtaxtips <- c(taxtips1, taxtips2)
                                             subancnames <- c(ancnames1, ancnames2)
                                             start.node <- parent.node
                                             break
+                                        } else if (nodechoice2 == 1) {  # if daughter 1 chosen: set as new start-node and -clade
+                                            subtaxtips <- taxtips1
+                                            subancnames <- ancnames1
+                                            start.node <- daughter1
+                                        } else if (nodechoice2 == 2) {  # if daughter 2 chosen: set as new start-node and -clade
+                                            subtaxtips <- taxtips2
+                                            subancnames <- ancnames2
+                                            start.node <- daughter2
                                         }
-                                    }
-                                    if (nodechoice == 1) {  # if daughter 1 chosen: set as new start-node and -clade
+                                    } else if (nodechoice == 1) {  # if daughter 1 chosen: set as new start-node and -clade
                                         subtaxtips <- taxtips1
                                         subancnames <- ancnames1
                                         start.node <- daughter1
-                                    }
-                                    if (nodechoice == 2) {  # if daughter 2 chosen: set as new start-node and -clade
+                                    } else if (nodechoice == 2) {  # if daughter 2 chosen: set as new start-node and -clade
                                         subtaxtips <- taxtips2
                                         subancnames <- ancnames2
                                         start.node <- daughter2
