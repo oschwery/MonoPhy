@@ -129,7 +129,7 @@ GetOutlierTaxa(solution, taxlevels='ALL')
 GetOutlierTips(solution, taxa = NULL, taxlevels='ALL')
 ```
 ### 3.4 Plotting ###
-Needless to say, the most intuitive way to get an impression of how many issues there are in 
+Needless to say, the most intuitive way to get an impression of how many issues there are in the monophyly within a phylogeny is to visually inspect it. Thus, there are a number of ways to look at our results as well.
 #### 3.4.1 Monophyly Plot ####
 
 #### 3.4.2 Taxonomy Plot ####
