@@ -62,9 +62,9 @@ If you want to analyze your own data (which should ultimately be the goal), you 
 ```{r}
 phy <- read.tree(file="/your_path/your_phylogeny.tre")
 ```
-At this point, the package requires the input tree to be rooted and fully resolved.
-[enter data file requirements here]
-You can load them like this:
+At this point, the package requires the input tree to be rooted and fully resolved; it can also only handle single input trees so far. This may change in the future.
+The taxonomy file should be a data frame without header and one row per tip in the phylogeny. The first column should be the tip names, any further column should assign the respective tips to taxonomic groups, in the format of one column per group (testing monophyly on several taxonomic levels is possible). If it is unknown or not applicable what group a tip belongs to on a certain taxonomic level, it should be encoded as 'NA'.
+You can load the taxonomy file like this:
 ```{r}
 your_clades <- read.csv(file="/your_path/your_taxonomy_file.csv", header=FALSE)
 ```
@@ -118,10 +118,8 @@ GetIntruderTaxa(solution0, taxa="Erica")  # get list of all genera that cause is
 ```
 Similarly, if we have multiple taxonomic levels, we can limit the output to the one of interest:
 ```{r}
-GetIntruderTips(solution1, taxa="Erica", taxlevels=2)  # get list of all species that cause issues for the monophyly of the subfamily Erica
+GetIntruderTips(solution1, taxa="Ericoideae", taxlevels=2)  # get list of all species that cause issues for the monophyly of the subfamily Ericoideae
 ```
-[FIX THIS]
-
 This works similarly for MRCA-nodes, outlier tips and outlier taxa (note that the later cannot be constrained to focal taxa, because a tip can only be an outlier to its own taxon):
 ```{r}
 GetAncNodes(solution, taxa = NULL, taxlevels='ALL')
@@ -131,15 +129,53 @@ GetOutlierTips(solution, taxa = NULL, taxlevels='ALL')
 ### 3.4 Plotting ###
 Needless to say, the most intuitive way to get an impression of how many issues there are in the monophyly within a phylogeny is to visually inspect it. Thus, there are a number of ways to look at our results as well.
 #### 3.4.1 Monophyly Plot ####
-
+The monophyly plot is the standard plot for this package. It will colour tips (and clades) according to their monophyly status, allowing to quickly spot areas of the tree where problems occur. The __standard colours__ are:
+- green: monophyletic
+- light purple: non-monophyletic
+- dark puprle: intruder/outlier
+A number of other __ColorBrewer palettes__ are available (as listed in helpfile) and using __customized colours__ is possible as well.
+The simplest way of plotting monophyly is like this:
+```{r}
+PlotMonophyly(solution0, Ericactree, type='monophyly', ladderize=TRUE)
+```
+This shows us the monophyly situation on the genus level. By default, the tree will be __ladderized__.
+[add some observations]
 #### 3.4.2 Taxonomy Plot ####
-
+This rather auxiliary plot type allows to view clades coloured by the taxon they belong to. Here we want to look at a different __taxonomic level__, the subfamilies, hence we can specify in the command to display 'r taxlevels=2` (as subfamilies was the second taxonomy column in our input file) and pick the output object `r solution1`, which contains the results of the analysis incorporating the taxonomy file. The default colours are `r rainbow`, which means that every taxon will get a different colour from the rainbow spectrum.
+```{r}
+PlotMonophyly(solution1, Ericactree, taxlevels=2, type='taxonomy')
+```
+[add some observations]
 #### 3.4.3 Monophyly-Taxonomy Mirror Plot ####
-
+This plot type simply combines the two previous ones and displays them on two mirrored trees. We use the subfamilies again in this case.
+```{r}
+PlotMonophyly(solution1, Ericactree, taxlevels=2, type='monoVStax') 
+```
+[add some observations]
 #### 3.4.4 Intruder Plot ####
+For a more condensed view on the monophyly issues in your tree and who is causing them, you might want to choose the intruder plot, which will especially highlight intruders and outliers and which taxon they belong to. In order to focus the plot on the issues even more, we set `r monocoll=TRUE`, to __collapse monophyletic taxa__ to be represented by one tip each.
+This time, we display tribes. The default colouring is:
+- gray: monophyletic
+- black: non-monophyletic
+- rainbow: Intruders/Outliers [CHECK IF THAT IS TRUE]
+```{r}
+PlotMonophyly(solution1, Ericactree, taxlevels=1, type='intruders', monocoll=TRUE)
+```
+__Note__: intruders are coloured using `r rainbow` as well, but the palette will be newly created and the colours do will not correspond to the ones in the taxonomy plot.
+[add some observations]
+#### 3.4.5 Solutions for Large Trees ####
+A difficulty for viewing phylogenies in R can be that trees can be too large to see much detail in an R plotting window. To this end, we can choose to print the plot directly to a PDF file instead, in which we can then easily search and zoom into the desired portions of the tree. To achieve this, we simply set `r PDF=TRUE` and set our desired filename in `r PDF_filename='ourdesiredfilename.pdf'`.
 
-#### 3.4.5 Other Options ####
-
+Here two examples which are printed to PDF, first a monophyly plot with collapsed monophyletic clades on genus level:
+```{r}
+PlotMonophyly(solution0, Ericactree, taxlevels=1, type='monophyly', monocoll=TRUE, ladderize=TRUE, PDF=TRUE, PDF_filename='Monophylyplot_Ericac_Example.pdf')
+```
+and second an intruder plot on subfamily level:
+```{r}
+PlotMonophyly(solution1, Ericactree, taxlevels=2, type='intruders', ladderize=TRUE, PDF=TRUE, PDF_filename='Intruderplot_Ericac_Example.pdf')
+```
+__Note__: The command will automatically scale the PDF document to be created according to the number of taxa in the tree. However, PDF files seem to be constrained to a maximum height of 200 inches, if your tree is very large, the resulting PDF might be difficult to inspect and you might want to consider choping your tree up into subtrees to plot.
+[add some observations]
 
 [check other vignettes to see what else is still missing there...]
 
