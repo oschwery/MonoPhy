@@ -11,18 +11,18 @@ vignette: >
 ## 1 Introduction ##
 This is a tutorial vignette to provide a quick and easy introduction to the use of MonoPhy. It will make use of the inbuilt example files and lead through the most important functions of the package.
 
-[add some intro here about what it does... and how... and alternative uses... SHORT]
+In order to be aware of discrepancies between a newly generated phylogeny and the current taxonomy, it is necessary to assess monophyly of the taxa in the tree. MonoPhy allows to do this in a quick and simple way, both using the phylogeny only and including a file assigning tips to taxonomic groups. Notably, such a file can contain any type of information for which to test monophyly in a tree (_e.g._ traits or geographic occurance), as long as attention is paid on that the assessment makes sense biologically.
 
 ## 2 Installation ##
 ### 2.1 CRAN ###
-In order to install the stable CRAN version of the package, 
+In order to install the stable CRAN version of the package: 
 
-```{r}
+```{r, eval=FALSE}
 install.packages("MonoPhy")
 ```
 ### 2.2 Development Version from GitHub ###
-If - for any reason - you would want to install the development version from GitHub, I suggest doing so by installing it temporarily with the help of the package devtools:
-```{r}
+If - for any reason - you would want to install the development version from GitHub, I suggest doing so by installing it temporarily with the help of the package **devtools**:
+```{r, eval=FALSE}
 # 1. Install package 'devtools' (if not already installed):
 install.packages("devtools")
 
@@ -34,7 +34,8 @@ library(MonoPhy)  # load the package
 
 #3. Leave developers mode after done trying out 'MonoPhy':
 dev_mode(on=F)
-# the package will not stay on your system permanently like that, which make sense in case of the development version, as opposed to the stable version
+# the package will not stay on your system permanently like that, which make sense in case of the
+# development version, as opposed to the stable version
 ```
 
 ## 3 Use ##
@@ -42,14 +43,14 @@ dev_mode(on=F)
 #### 3.1.1 Example Files ####
 The package comes with example files for you to try out its functions, which will be used throughout this tutorial. The phylogeny is of the plant family Ericaceae, as published in Schwery _et al._ (2015) pruned down to 77 taxa. Two taxon files assign tribes or tribes and subfamilies to the tips.
 
-```{r}
+```{r, eval=FALSE}
 #load data
 data(Ericactree)
 data(Ericactribes)
 data(Ericacsubfams)
 ```
 It is generally a good idea (especially with own data) to check whether the format of the data is correct:
-```{r}
+```{r, eval=FALSE}
 #check data
 Ericactree
 head(Ericactribes)
@@ -59,165 +60,139 @@ head(Ericacsubfams)
 
 #### 3.1.2 Own Files ####
 If you want to analyze your own data (which should ultimately be the goal), you can load your phylogeny like this:
-```{r}
+```{r, eval=FALSE}
 phy <- read.tree(file="/your_path/your_phylogeny.tre")
 ```
-At this point, the package requires the input tree to be rooted and fully resolved; it can also only handle single input trees so far. This may change in the future.
+At this point, the package requires the input tree to be rooted and fully resolved; also, it can only handle single input trees so far. This may change in the future.
+
 The taxonomy file should be a data frame without header and one row per tip in the phylogeny. The first column should be the tip names, any further column should assign the respective tips to taxonomic groups, in the format of one column per group (testing monophyly on several taxonomic levels is possible). If it is unknown or not applicable what group a tip belongs to on a certain taxonomic level, it should be encoded as 'NA'.
 You can load the taxonomy file like this:
-```{r}
+```{r, eval=FALSE}
 your_clades <- read.csv(file="/your_path/your_taxonomy_file.csv", header=FALSE)
 ```
-[check if this is correct]
+
 Again to check whether the format of the data is correct:
-```{r}
+```{r, eval=FALSE}
 #check data
 phy
 head(your_clades)
 ```
 
 ### 3.2 Run Main Analysis ###
-The command for the main analysis-step is `r AssessMonophyly`. This will check the monophyly of all taxa in the tree, identify which intruders and outliers are responsible for the non-monophyly of a taxon and determine their status for later plotting. Depending on the number of tips in the tree and the number of monophyly-issues, this step will take more or less time. For the example files, this step should only take few secons, but for a conflict-rich tree with several 10k tips it could easily end up being 3-4 hours. Accessing the information afterwards however is fairly quick.
+The command for the main analysis-step is **AssessMonophyly**. This will check the monophyly of all taxa in the tree, identify which intruders and outliers are responsible for the non-monophyly of a taxon and determine their status for later plotting. Depending on the number of tips in the tree and the number of monophyly-issues, this step will take more or less time. For the example files, this step should only take few secons, but for a conflict-rich tree with several 10k tips it could easily end up being 3-4 hours. Accessing the information afterwards however is fairly quick.
+
 #### 3.2.1 Taxonomy Based on Tip Labels ####
 If we run the analysis using only the tree, the function will check whether the tip labels are in the format *Genus_species*, and if so, will extract the genus name from each tip label and use it as the taxonomic group associated to this tip.
-```{r}
+```{r, eval=FALSE}
 solution0 <- AssessMonophyly(Ericactree)
 ```
-The resulting output object will be a list which will contain all the output information for all taxon levels in a nested fashion. We will explore in the following how to access this information effectively
+The resulting output object will be a list which will contain all the output information for all taxon levels in a nested fashion. We will explore in the following how to access this information effectively.
+
 #### 3.2.2 Taxonomy Based on File ####
 If the tip labels have a format different from *Genus_species*, or if we want to asses a different taxonomic level, we can do that by adding a taxonomy file to the command. The taxonomy file should be a simple table (data frame, maybe easiest based off a .csv file) without header, at least two columns and one row per tip. The first column contains the tip labels and all further columns (one or more) the names of the taxa associated to the respective tip, whereas every column stands for a different taxon level. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed.
-```{r}
+```{r, eval=FALSE}
 solution1 <- AssessMonophyly(Ericactree, Ericacsubfams)
 ```
 #### 3.2.3 Taxonomy Downloaded from Web ####
-If a taxonomy file cannot be generated easily, specifying taxonomy as `r taxize` allows to use the package with the same name to download taxonomic names of groups indicated under `r taxizelevel` from the online databases NCBI, ITIS or both, as set under `r taxizedb` and `r taxizepref`. The downloaded records will then be used as a taxonomy file.
+If a taxonomy file cannot be generated easily, specifying taxonomy as **taxize** allows to use the package with the same name to download taxonomic names of groups indicated under **taxizelevel** from the online databases NCBI, ITIS or both, as set under **taxizedb** and **taxizepref**. The downloaded records will then be used as a taxonomy file.
 
 #### 3.2.4 Other Options ####
-There are a few remaining specifications for this function. `r verbosity` allows to customize the maximal number of intruders/outliers to be displayed in the results table. `r outliercheck`, if set to `r TRUE`, will let the function consider taxon members which are 'too far away' in the tree from the rest of their taxon as outliers, instead of all tips 'in between them' as intruders, thereby hopefully making the result biologically more meaningful. It will start to look for outliers if the ratio of taxon members in a clade is below the value specified as `r outlierlevel` and will try and find a 'core clade' with a ratio higher than that.
+There are a few remaining specifications for this function. **verbosity** allows to customize the maximal number of intruders/outliers to be displayed in the results table. **outliercheck**, if set to **TRUE**, will let the function consider taxon members which are 'too far away' in the tree from the rest of their taxon as outliers, instead of all tips 'in between them' as intruders, thereby hopefully making the result biologically more meaningful. It will start to look for outliers if the ratio of taxon members in a clade is below the value specified as **outlierlevel** and will try and find a 'core clade' with a ratio higher than that.
 
 The default values for this command are as follows:
-```{r}
-AssessMonophyly(tree, taxonomy = NULL, verbosity = 5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='both', taxizepref='ncbi')
+```{r, eval=FALSE}
+AssessMonophyly(tree, taxonomy = NULL, verbosity = 5, outliercheck=TRUE, outlierlevel=0.5,
+taxizelevel= NULL, taxizedb='both', taxizepref='ncbi')
 ```
 ### 3.3 Accessing the Results ###
 #### 3.3.1 First Impression - Summary and Results Tables ####
 To get a first look on the results, we can pull the summary and result tables out of the output object:
-```{r}
+```{r, eval=FALSE}
 GetSummaryMonophyly(solution0)  # pull out summary table
 GetResultMonophyly(solution0)  #pull out result table
 ```
-If we used a taxonomy file and had several taxonomic levels, the function will by default return all of them. If we only want to look at a specific one, we can specify the number of the one we want under `r taxlevels`.
-```{r}
-GetSummaryMonophyly(solution1, taxlevels=1)  # pull out summary only for taxlevel 1, which is tribes in this case
+If we used a taxonomy file and had several taxonomic levels, the function will by default return all of them. If we only want to look at a specific one, we can specify the number of the one we want under **taxlevels**.
+```{r, eval=FALSE}
+GetSummaryMonophyly(solution1, taxlevels=1)  # pull out summary only for taxlevel 1, tribes in this case
 ```
 #### 3.3.2 Further Look - Customized Access to Detailed Results ####
 In order to really dig into the analysis outputs, we can access information on wich taxa and tips cause the monophyly issues as either intruders or outliers and which nodes have been inferred as MRCA of each taxon.
 When exploring intruders, we can either list them for all taxa or limit the list to taxa we're interested in, _e.g._ only for the genus _Erica_: 
-```{r}
-GetIntruderTaxa(solution0, taxa="Erica")  # get list of all genera that cause issues for the monophyly of Erica
+```{r, eval=FALSE}
+GetIntruderTaxa(solution0, taxa="Erica")  # get list of genera that cause monophyly-issues for Erica
 ```
+We learn that the genus _Bruckenthalia_ invades _Erica_, which turns out not to be problematic, as _Bruckenthalia_ is now considered part of _Erica_.
+
 Similarly, if we have multiple taxonomic levels, we can limit the output to the one of interest:
-```{r}
-GetIntruderTips(solution1, taxa="Ericoideae", taxlevels=2)  # get list of all species that cause issues for the monophyly of the subfamily Ericoideae
+```{r, eval=FALSE}
+GetIntruderTips(solution1, taxa="Ericoideae", taxlevels=2)  # get list of species causing monophyly-issues for the subfamily Ericoideae
 ```
 This works similarly for MRCA-nodes, outlier tips and outlier taxa (note that the later cannot be constrained to focal taxa, because a tip can only be an outlier to its own taxon):
-```{r}
-GetAncNodes(solution, taxa = NULL, taxlevels='ALL')
-GetOutlierTaxa(solution, taxlevels='ALL')
-GetOutlierTips(solution, taxa = NULL, taxlevels='ALL')
+```{r, eval=FALSE}
+GetAncNodes(solution1, taxa = NULL, taxlevels='ALL')
+GetOutlierTaxa(solution0, taxlevels='ALL')
+GetOutlierTips(solution1, taxa = NULL, taxlevels='ALL')
 ```
 ### 3.4 Plotting ###
 Needless to say, the most intuitive way to get an impression of how many issues there are in the monophyly within a phylogeny is to visually inspect it. Thus, there are a number of ways to look at our results as well.
+
 #### 3.4.1 Monophyly Plot ####
 The monophyly plot is the standard plot for this package. It will colour tips (and clades) according to their monophyly status, allowing to quickly spot areas of the tree where problems occur. The __standard colours__ are:
+
 - green: monophyletic
 - light purple: non-monophyletic
 - dark puprle: intruder/outlier
-A number of other __ColorBrewer palettes__ are available (as listed in helpfile) and using __customized colours__ is possible as well.
+
+A number of other __ColorBrewer palettes__ are available (as listed in helpfile) and using __customized colours__ is possible as well. By default, the tree will be __ladderized__.
+
 The simplest way of plotting monophyly is like this:
-```{r}
+```{r, eval=FALSE}
 PlotMonophyly(solution0, Ericactree, type='monophyly', ladderize=TRUE)
 ```
-This shows us the monophyly situation on the genus level. By default, the tree will be __ladderized__.
-[add some observations]
+This shows us the monophyly situation on the genus level. It is easy to see, how _Orthilia_ invades _Pyrola_, _Kalmiopsis_ invades _Phyllodoce_, _Bruckenthalia_ invades _Erica_ and how _Dimorphanthera_ and _Paphia_ reciprocally invade each other. We further see how _Vaccinium_ is invaded by _Agapetes_ and _Gaylussacia_, while having two outlier species of its own as well. Note how a more conservative ( _i.e._ higher) **outlierlevel** would tell us that only _Gaylussacia_ invades _Vaccinium_, which would then have _Vaccinium bracteatum_ as additional outlier instead.
+
 #### 3.4.2 Taxonomy Plot ####
-This rather auxiliary plot type allows to view clades coloured by the taxon they belong to. Here we want to look at a different __taxonomic level__, the subfamilies, hence we can specify in the command to display 'r taxlevels=2` (as subfamilies was the second taxonomy column in our input file) and pick the output object `r solution1`, which contains the results of the analysis incorporating the taxonomy file. The default colours are `r rainbow`, which means that every taxon will get a different colour from the rainbow spectrum.
-```{r}
+This rather auxiliary plot type allows to view clades coloured by the taxon they belong to. Here we want to look at a different __taxonomic level__, the subfamilies, hence we can specify in the command to display **taxlevels=2** (as subfamilies was the second taxonomy column in our input file) and pick the output object **solution1**, which contains the results of the analysis incorporating the taxonomy file. The default colours are **rainbow**, which means that every taxon will get a different colour from the rainbow spectrum.
+```{r, eval=FALSE}
 PlotMonophyly(solution1, Ericactree, taxlevels=2, type='taxonomy')
 ```
-[add some observations]
+This plot shows us nicely how the subfamilies are mostly monophyletic, apart from one rogue in red, which is _Rhodothamnus chamaecystus_, which notably was mislabeled as a member of the Vaccinioideae (whereas in reality - belonging to Ericoideae - it is in the right place).
+
 #### 3.4.3 Monophyly-Taxonomy Mirror Plot ####
 This plot type simply combines the two previous ones and displays them on two mirrored trees. We use the subfamilies again in this case.
-```{r}
+```{r, eval=FALSE}
 PlotMonophyly(solution1, Ericactree, taxlevels=2, type='monoVStax') 
 ```
-[add some observations]
+Seeing the previous plot mirrored with the corresponding monophyly plot lets us understand how the whole Ericoideae and Cassiopoideae come out as intruders to Vaccinioideae: The intruder _Rhodothamnus chamaecystus_ pulls the MRCA node of the Vaccinioideae down to inlcude both other subfamilies. Once again, a more conservative **outlierlevel** would have led to the biologically more meaningful result that only _Rhodothamnus_ is an outlier to Vaccinioideae (and an intruder to Ericoideae), while everything else is well.
+
 #### 3.4.4 Intruder Plot ####
-For a more condensed view on the monophyly issues in your tree and who is causing them, you might want to choose the intruder plot, which will especially highlight intruders and outliers and which taxon they belong to. In order to focus the plot on the issues even more, we set `r monocoll=TRUE`, to __collapse monophyletic taxa__ to be represented by one tip each.
+For a more condensed view on the monophyly issues in your tree and who is causing them, you might want to choose the intruder plot, which will especially highlight intruders and outliers and which taxon they belong to. In order to focus the plot on the issues even more, we set **monocoll=TRUE**, to __collapse monophyletic taxa__ to be represented by one tip each.
 This time, we display tribes. The default colouring is:
+
 - gray: monophyletic
 - black: non-monophyletic
-- rainbow: Intruders/Outliers [CHECK IF THAT IS TRUE]
-```{r}
+- rainbow: Intruders/Outliers
+
+```{r, eval=FALSE}
 PlotMonophyly(solution1, Ericactree, taxlevels=1, type='intruders', monocoll=TRUE)
 ```
-__Note__: intruders are coloured using `r rainbow` as well, but the palette will be newly created and the colours do will not correspond to the ones in the taxonomy plot.
-[add some observations]
+
+Collapsing all monophyletic tribes slimmed this plot down and increased the overview. We immediately see that the issues are confined to the Vaccinieae and their sister clade, the Andromedeae, and the colouration reveals that _Andromeda polifolia_, _Vaccinium vitis-ideae_ and _Zenobia pulverulenta_ are causing it. Apparently, _Andromeda_ and the _Vaccinium_ are supposed to belong to the same tribe (Andromedeae), whereas _Zenobia_ should belong to a different one (being an intruder to Andromedeae from Vaccinieae). The solution behind this issue is, that the tribe names assigned to _Vaccinium vitis-ideae_ and _Zenobia pulverulenta_ where (intentionally) switched.
+
+__Note__: Intruders are coloured using **rainbow** as well, but the palette will be newly created and the colours do will not correspond to the ones in the taxonomy plot.
+
 #### 3.4.5 Solutions for Large Trees ####
-A difficulty for viewing phylogenies in R can be that trees can be too large to see much detail in an R plotting window. To this end, we can choose to print the plot directly to a PDF file instead, in which we can then easily search and zoom into the desired portions of the tree. To achieve this, we simply set `r PDF=TRUE` and set our desired filename in `r PDF_filename='ourdesiredfilename.pdf'`.
+A difficulty for viewing phylogenies in R can be that trees can be too large to see much detail in an R plotting window. To this end, we can choose to print the plot directly to a PDF file instead, in which we can then easily search and zoom into the desired portions of the tree. To achieve this, we simply set **PDF=TRUE** and set our desired filename in **PDF_filename='ourdesiredfilename.pdf'**.
 
 Here two examples which are printed to PDF, first a monophyly plot with collapsed monophyletic clades on genus level:
-```{r}
-PlotMonophyly(solution0, Ericactree, taxlevels=1, type='monophyly', monocoll=TRUE, ladderize=TRUE, PDF=TRUE, PDF_filename='Monophylyplot_Ericac_Example.pdf')
+```{r, eval=FALSE}
+PlotMonophyly(solution0, Ericactree, taxlevels=1, type='monophyly', monocoll=TRUE, ladderize=TRUE,
+PDF=TRUE, PDF_filename='Monophylyplot_Ericac_Example.pdf')
 ```
 and second an intruder plot on subfamily level:
-```{r}
-PlotMonophyly(solution1, Ericactree, taxlevels=2, type='intruders', ladderize=TRUE, PDF=TRUE, PDF_filename='Intruderplot_Ericac_Example.pdf')
+```{r, eval=FALSE}
+PlotMonophyly(solution1, Ericactree, taxlevels=2, type='intruders', ladderize=TRUE, PDF=TRUE,
+PDF_filename='Intruderplot_Ericac_Example.pdf')
 ```
 __Note__: The command will automatically scale the PDF document to be created according to the number of taxa in the tree. However, PDF files seem to be constrained to a maximum height of 200 inches, if your tree is very large, the resulting PDF might be difficult to inspect and you might want to consider choping your tree up into subtrees to plot.
-[add some observations]
 
-[check other vignettes to see what else is still missing there...]
-
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
