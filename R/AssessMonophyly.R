@@ -213,7 +213,37 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                                     }
                                     tiplevels <- length(subtaxtips)/length(subancnames)  # reassess status of current clade
                                 }
-
+                                if (tiplevels < 1) {  # if intruders are present, check if early-diverging
+                                    EDtaxtips1 <- c()
+                                    EDtaxtips2 <- c()
+                                    while (length(EDtaxtips1) == 0 | length(EDtaxtips2) == 0) {  # search for node whose daughers both include members of the focal taxon
+                                        EDparent.node <- start.node # set parent node
+                                        EDdaughter.nodes <- Children(tree, EDparent.node)  # find direct descendant nodes
+                                        EDdaughter1 <- EDdaughter.nodes[1]
+                                        EDdaughter2 <- EDdaughter.nodes[2]
+                                        
+                                        EDanctips1 <- getDescendants(tree, EDdaughter1)  # determine all descendants of EDdaughter1
+                                        EDancnames1 <- tree$tip.label[c(EDanctips1)]  # extract names of those descendants
+                                        EDancnames1 <- EDancnames1[!is.na(EDancnames1)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
+                                        EDtaxtips1 <- intersect(taxtips, EDancnames1)  # get taxon members of subclade1
+                                        
+                                        EDanctips2 <- getDescendants(tree, EDdaughter2)  # determine all descendants of EDdaughter2
+                                        EDancnames2 <- tree$tip.label[c(EDanctips2)]  # extract names of those descendants
+                                        EDancnames2 <- EDancnames2[!is.na(EDancnames2)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
+                                        EDtaxtips2 <- intersect(taxtips, EDancnames2)  # get taxon members of subclade2
+                                        # select node to continue
+                                        if (length(EDtaxtips1) == 0) {  # if EDdaugher1 has no decendant of focal taxon, continue with EDdaughter2
+                                            start.node <- EDdaughter2
+                                        } else if (length(EDtaxtips2) == 0) {  # if EDdaugher2 has no decendant of focal taxon, continue with EDdaughter1
+                                            start.node <- EDdaughter1
+                                        } else if (length(EDtaxtips1) != 0 & length(EDtaxtips2) != 0) {
+                                            subtaxtips <- c(EDtaxtips1, EDtaxtips2)
+                                            subancnames <- c(EDancnames1, EDancnames2)
+                                            start.node <- EDparent.node
+                                            break
+                                        }
+                                    }
+                                }
                                 outlier.tips <- setdiff(taxtips, subtaxtips)  # determine outliers
                                 
                                 if (length(outlier.tips) != 0) {
