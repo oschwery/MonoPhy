@@ -116,7 +116,7 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
     # loop assessing monophyly
     for (i in 1:length(taxa)) {  # for every genus in the tree
         if (is.null(taxonomy)){  # genera extracted from tip labels if no taxonomy file loaded
-            ancnode <- getMRCA(tree, tip=c(tree$tip.label[c(grep(taxa[i], tree$tip.label))]))  # determine Most Recent Common Ancestor for all taxa of genus
+            ancnode <- getMRCA(tree, tip=c(tree$tip.label[c(grep(paste("^",taxa[i],"_", sep=""), tree$tip.label))]))  # determine Most Recent Common Ancestor for all taxa of genus
         } else {  # units taken from file if loaded
             subtips <- subset(taxonomy, as.character(taxonomy[, (ifullround+1)]) == as.character(taxa[i]))  # get tips associated with group
             subtipsnr <- c()
@@ -138,7 +138,7 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                 ancnames <- tree$tip.label[c(anctips)]  # extract names of those descendants
                 ancnames <- ancnames[!is.na(ancnames)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
                 if (is.null(taxonomy)){  # genera extracted from tip labels if no taxonomy file loaded
-                    taxtips <- tree$tip.label[c(grep(taxa[i], tree$tip.label))]  # get tip names of genus in question
+                    taxtips <- tree$tip.label[c(grep(paste("^",taxa[i],"_", sep=""), tree$tip.label))]  # get tip names of genus in question
                 } else {  # if taxonomy file loaded
                     taxtips <- subtips[, 1]  # get vector of tip names of genus in question
                 }
