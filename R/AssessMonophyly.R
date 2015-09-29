@@ -71,7 +71,7 @@ if (is.null(taxonomy)){  # extract list of genera from tree's tip labels
             }
         } else {
             if (taxonomy == 'taxize') {  # build taxonomy file from web ressources using taxize
-                taxafromweb <- tax_name(tree$tip.label, get=taxizelevel, db=taxizedb, pref=taxizepref)  # get taxonomy data
+                taxafromweb <- tax_name(tree$tip.label, get=taxizelevel, db=taxizedb, pref=taxizepref, ask=FALSE)  # get taxonomy data
                 taxafromwebtable <- matrix(data = NA, nrow=length(tree$tip.label),ncol=ncol(taxafromweb)+1)  #build empty matrix
                 taxafromwebtable[, 1] <- tree$tip.label  # add tip names from tree
                 for (iweb in 1:ncol(taxafromweb)) {  #add acquired taxon names for tips for each taxonomic level acquired
@@ -216,7 +216,8 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                                 if (tiplevels < 1) {  # if intruders are present, check if early-diverging
                                     EDtaxtips1 <- c()
                                     EDtaxtips2 <- c()
-                                    while (length(EDtaxtips1) == 0 | length(EDtaxtips2) == 0) {  # search for node whose daughers both include members of the focal taxon
+                                    #while (length(EDtaxtips1) == 0 | length(EDtaxtips2) == 0) {  # search for node whose daughers both include members of the focal taxon
+                                    repeat{
                                         EDparent.node <- start.node # set parent node
                                         EDdaughter.nodes <- Children(tree, EDparent.node)  # find direct descendant nodes
                                         EDdaughter1 <- EDdaughter.nodes[1]
@@ -236,7 +237,7 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                                             start.node <- EDdaughter2
                                         } else if (length(EDtaxtips2) == 0) {  # if EDdaugher2 has no decendant of focal taxon, continue with EDdaughter1
                                             start.node <- EDdaughter1
-                                        } else if (length(EDtaxtips1) != 0 & length(EDtaxtips2) != 0) {
+                                        } else {
                                             subtaxtips <- c(EDtaxtips1, EDtaxtips2)
                                             subancnames <- c(EDancnames1, EDancnames2)
                                             start.node <- EDparent.node
