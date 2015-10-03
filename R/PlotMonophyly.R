@@ -171,7 +171,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
     if (PDF==TRUE) {
 	if (PDF_width=='auto') {
 	    if (type=="radial" | type =="fan") {
-		pdf_width <- ((2.5/sqrt(length(tree$tip.label)))*length(tree$tip.label)/pi)  # create PDF with width adjusted to tree size (square shaped for round trees)
+		pdf_width <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with width adjusted to tree size (square shaped for round trees)
 	    } else {
 		pdf_width <- (9-(3-(3*(2^-(length(tree$tip.label)/100)))))  # create PDF with width adjusted to tree size (rectangular for straight trees)
 	    }
@@ -180,7 +180,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 	}
 	if (PDF_height=='auto') {
 	    if (type=="radial" | type =="fan") {
-		pdf_height <- ((2.5/sqrt(length(tree$tip.label)))*length(tree$tip.label)/pi)  # create PDF with lenght adjusted to tree size (square shaped for round trees)
+		pdf_height <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with lenght adjusted to tree size (square shaped for round trees)
 	    } else {
 		pdf_height <- (length(mono.tree$tip.label)/10)  # create PDF with lenght adjusted to tree size (rectangular for straight trees)
 	    }
@@ -188,7 +188,14 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 	    pdf_height <- PDF_height
 	}	
     }
-    
+    if (pdf_height > 200) {
+	pdf_height <- 200
+	print('Warning: pdf_height too large, capped to 200in. If output not satisfying, consider different plotting type or tree slicing.')
+    }
+    if (pdf_width > 200) {
+	pdf_width <- 200
+	print('Warning: pdf_width too large, capped to 200in. If output not satisfying, consider different plotting type or tree slicing.')
+    }
     # monophyly plot
     if (plot.type=='monophyly' ) {
         if (mono.colour=='PRGn') {  # use colours from colourblind friendly palettes of RColorBrewer
