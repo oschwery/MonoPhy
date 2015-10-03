@@ -2,7 +2,7 @@
 # written by Orlando Schwery 2015
 
 PlotMonophyly <-
-function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, type='phylogram', ...) {
+function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', PDF_width='auto', PDF_height='auto', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, type='phylogram', ...) {
     
     if (taxlevels == 'ALL' | class(taxlevels)!='numeric') {
 	stop("taxlevels must be numeric (also 'ALL' is not an option for plotting)!")
@@ -168,6 +168,27 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 
 ################        
     # plotting itself
+    if (PDF==TRUE) {
+	if (PDF_width=='auto') {
+	    if (type=="radial" | type =="fan") {
+		pdf_width <- ((2.5/sqrt(length(tree$tip.label)))*length(tree$tip.label)/pi)  # create PDF with width adjusted to tree size (square shaped for round trees)
+	    } else {
+		pdf_width <- (9-(3-(3*(2^-(length(tree$tip.label)/100)))))  # create PDF with width adjusted to tree size (rectangular for straight trees)
+	    }
+	} else {
+	    pdf_width <- PDF_width
+	}
+	if (PDF_height=='auto') {
+	    if (type=="radial" | type =="fan") {
+		pdf_height <- ((2.5/sqrt(length(tree$tip.label)))*length(tree$tip.label)/pi)  # create PDF with lenght adjusted to tree size (square shaped for round trees)
+	    } else {
+		pdf_height <- (length(mono.tree$tip.label)/10)  # create PDF with lenght adjusted to tree size (rectangular for straight trees)
+	    }
+	} else {
+	    pdf_height <- PDF_height
+	}	
+    }
+    
     # monophyly plot
     if (plot.type=='monophyly' ) {
         if (mono.colour=='PRGn') {  # use colours from colourblind friendly palettes of RColorBrewer
@@ -185,11 +206,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
         }
 
         if (PDF==TRUE) {
-            if (type=="radial" | type =="fan") {
-		pdf(PDF_filename, width=((2.5/sqrt(length(mono.tree$tip.label)))*length(mono.tree$tip.label)/pi), height=((2.5/sqrt(length(mono.tree$tip.label)))*length(mono.tree$tip.label)/pi))  # create PDF with width and lenght adjusted to tree size (square shaped for round trees)
-	    } else {
-		pdf(PDF_filename, width=9-(3-(3*(2^-(length(mono.tree$tip.label)/100)))), height=(length(mono.tree$tip.label)/10))  # create PDF with width and lenght adjusted to tree size (rectangular for straight trees)
-	    }
+	    pdf(PDF_filename, width=pdf_width, height=pdf_height)  # create PDF frame
             plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, label.offset=3-(2-(2.5*(2^-(length(mono.tree$tip.label)/100)))), edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
             dev.off()
@@ -209,11 +226,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
         names(coTax) <- 1:length(taxaT) 
 
         if (PDF==TRUE) {
-            if (type=="radial" | type =="fan") {
-		pdf(PDF_filename, width=((2.5/sqrt(length(tax.tree$tip.label)))*length(tax.tree$tip.label)/pi), height=((2.5/sqrt(length(tax.tree$tip.label)))*length(tax.tree$tip.label)/pi))  # create PDF with width and lenght adjusted to tree size (square shaped for round trees)
-	    } else {
-		pdf(PDF_filename, width=9-(3-(3*(2^-(length(tax.tree$tip.label)/100)))), height=(length(tax.tree$tip.label)/10))  # create PDF with width and lenght adjusted to tree size (rectangular for straight trees)
-	    }
+	    pdf(PDF_filename, width=pdf_width, height=pdf_height)  # create PDF frame
             plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], cex=cex, label.offset=3-(2-(2.5*(2^-(length(tax.tree$tip.label)/100)))), edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 1)  # add tip labels with tip state colour
             dev.off()
@@ -233,12 +246,8 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
         names(coInt) <- 1:(length(taxaI) + 2)
    
         if (PDF==TRUE) {
-            if (type=="radial" | type =="fan") {
-		pdf(PDF_filename, width=((2.5/sqrt(length(int.tree$tip.label)))*length(int.tree$tip.label)/pi), height=((2.5/sqrt(length(int.tree$tip.label)))*length(int.tree$tip.label)/pi))  # create PDF with width and lenght adjusted to tree size (square shaped for round trees)
-	    } else {
-		pdf(PDF_filename, width=9-(3-(3*(2^-(length(int.tree$tip.label)/100)))), height=(length(int.tree$tip.label)/10))  # create PDF with width and lenght adjusted to tree size (rectangular for straight trees)
-	    }
-            plot(int.tree, edge.col=coInt[as.numeric(int.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, label.offset=3-(2-(2.5*(2^-(length(int.tree$tip.label)/100)))), edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
+	    pdf(PDF_filename, width=pdf_width, height=pdf_height)  # create PDF frame
+	    plot(int.tree, edge.col=coInt[as.numeric(int.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, label.offset=3-(2-(2.5*(2^-(length(int.tree$tip.label)/100)))), edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
             tiplabels(pch = 22, bg = coInt[tipdataIII], cex = 1, adj = 1)  # add tip labels with tip state colour
             dev.off()
         } else {     
