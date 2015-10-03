@@ -219,6 +219,12 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                                     #while (length(EDtaxtips1) == 0 | length(EDtaxtips2) == 0) {  # search for node whose daughers both include members of the focal taxon
                                     repeat{
                                         EDparent.node <- start.node # set parent node
+                                        if (EDparent.node <= length(tree$tip.label)) {
+                                            subtaxtips <- tree$tip.label[EDparent.node]
+                                            subancnames <-tree$tip.label[EDparent.node]
+                                            start.node <- EDparent.node
+                                            break
+                                        }
                                         EDdaughter.nodes <- Children(tree, EDparent.node)  # find direct descendant nodes
                                         EDdaughter1 <- EDdaughter.nodes[1]
                                         EDdaughter2 <- EDdaughter.nodes[2]
