@@ -290,24 +290,21 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
         names(coTax) <- 1:length(taxaT) 
 
         if (PDF==TRUE) {
-            pdf(PDF_filename, width=9-(3-(3*(2^-(length(tax.tree$tip.label)/100)))), height=(length(tax.tree$tip.label)/10))   # create PDF with lenght adjusted to tree size
+            pdf(PDF_filename, width=pdf_width, height=pdf_height)   # create PDF with lenght adjusted to tree size
             par(oma=c(1, 1, 1, 1), mar=c(0,0,0,0))  # set up plotting margins
-            layout(matrix(c(1,2), 1, 2, byrow = TRUE), widths=c(2,1))  # set up for plotting two trees next to each other
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, adj=0.5, label.offset=3-(2-(2.5*(2^-(length(mono.tree$tip.label)/100)))), edge.width=edge.width, no.margin=TRUE, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
-            plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], show.tip.label = FALSE, cex=cex, label.offset=3-(2-(2.5*(2^-(length(tax.tree$tip.label)/100)))), edge.width=edge.width, direction = "leftwards", no.margin=TRUE, type=type, ...)  # plot mirrored tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 1)  # add tip labels with tip state colour
+            layout(matrix(c(1,2), 1, 2, byrow = TRUE), widths=c(1.5,1))  # set up for plotting two trees next to each other
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, adj=0.5, label.offset=200000/(length(mono.tree$tip.label)^2), edge.width=edge.width, no.margin=TRUE, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 0.5)  # add tip labels with tip state colour
+            plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], show.tip.label = FALSE, cex=cex, label.offset=0, edge.width=edge.width, direction = "leftwards", no.margin=TRUE, type=type, ...)  # plot mirrored tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 0.5)  # add tip labels with tip state colour
             dev.off()
         } else {
             par(oma=c(1, 1, 1, 1), mar=c(0,0,0,0))  # set up plotting margins
-            layout(matrix(c(1,2), 1, 2, byrow = TRUE), widths=c(2,1))  # set up for plotting two trees next to each other
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, adj=0.5, label.offset=15, edge.width=edge.width, no.margin=TRUE, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
-            plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], show.tip.label = FALSE, cex=cex, label.offset=(-3), edge.width=edge.width, direction = "leftwards", no.margin=TRUE, type=type, ...)  # plot mirrored tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 0)  # add tip labels with tip state colour
+            layout(matrix(c(1,2), 1, 2, byrow = TRUE), widths=c(1.5,1))  # set up for plotting two trees next to each other
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, adj=0.5, label.offset=200000/(length(mono.tree$tip.label)^2), edge.width=edge.width, no.margin=TRUE, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 0.5)  # add tip labels with tip state colour
+            plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], show.tip.label = FALSE, cex=cex, label.offset=0, edge.width=edge.width, direction = "leftwards", no.margin=TRUE, type=type, ...)  # plot mirrored tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 0.5)  # add tip labels with tip state colour
         }
-
     }
-    
-
 }
