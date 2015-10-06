@@ -17,32 +17,47 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
         tree <- ladderize(tree)
     }
     tip.states <- solution[[taxlevels]]$TipStates
-    
-    if (monocoll== TRUE) {
-	alltaxa <- as.vector(unique(tip.states[, "Taxon"]))
-	keeptips <- c()
-	colltipse <- c()
-	for (icoll in 1:length(alltaxa)) {
-	    if (solution[[taxlevels]]$result[alltaxa[icoll], "Monophyly"] == "Yes") {
-		matchtips <- c(tip.states[(tip.states[, "Taxon"] == alltaxa[icoll]), "Tip"])
-		colltips <- c(matchtips[2:length(matchtips)])
-		colltipse <- c(colltipse,colltips)
-		keeptip <- c(matchtips[1])
-		keeptips <- c(keeptips, keeptip)
-	    }
-	}
-	newlabels <- tree$tip.label
-	for (itips in 1:length(keeptips)) {
-	    newlabels[keeptips[itips]] <- as.character(tip.states[keeptips[itips],"Taxon"])
-	}
-	tree$tip.label <- newlabels
-	tree.temp <- drop.tip(tree,colltipse)
-       
-	for (icollstates in 1:length(colltipse)) {
-	    tip.states <- tip.states[!(as.character(tip.states$Tip) == tree$tip.label[colltipse[icollstates]]),]
-	}
+    tip.states <- tip.states[match(tree$tip.label, tip.states$Tip),]
 	row.names(tip.states) <- 1:nrow(tip.states)
-	tree <- tree.temp
+	
+    if (monocoll== TRUE) {
+		tip.states$Tip <- as.character(tip.states$Tip)
+		tip.states$Taxon <- as.character(tip.states$Taxon)
+		tip.states$Status <- as.character(tip.states$Status)		
+
+		alltaxa <- as.vector(unique(tip.states[, "Taxon"]))
+		keeptips <- c()
+		colltipse <- c()
+		for (icoll in 1:length(alltaxa)) {
+		    if (solution[[taxlevels]]$result[alltaxa[icoll], "Monophyly"] == "Yes") {
+			matchtips <- which(tip.states[, "Taxon"] == alltaxa[icoll])
+			colltips <- c(matchtips[2:length(matchtips)])
+			colltipse <- c(colltipse,colltips)
+			keeptip <- c(matchtips[1])
+			keeptips <- c(keeptips, keeptip)
+		    }
+		}
+		
+		tip.states.temp <- tip.states
+		
+		for (icollstates in 1:length(colltipse)) {
+		    tip.states.temp <- tip.states.temp[!(tip.states.temp$Tip == tree$tip.label[colltipse[icollstates]]),]
+		}
+		row.names(tip.states.temp) <- 1:nrow(tip.states.temp)
+
+		for (inameadj in 1:length(tip.states.temp$Tip)) {
+			if (solution[[taxlevels]]$result[tip.states.temp$Taxon[inameadj], "Monophyly"] == "Yes") {
+				tip.states.temp$Tip[inameadj] <- tip.states.temp$Taxon[inameadj]
+			}
+		}
+		
+		newlabels <- tree$tip.label
+		for (itips in 1:length(keeptips)) {
+		    newlabels[keeptips[itips]] <- as.character(tip.states[keeptips[itips],"Taxon"])
+		}
+		tree$tip.label <- newlabels
+		tree <- drop.tip(tree,colltipse)
+		tip.states <- tip.states.temp
     }
     
 # Reconstruct Monophyly
@@ -56,8 +71,9 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
         tipdata[tipdata == "Non-Monophyletic"] <- 3  # number-coding monophyly status
         tipdata[tipdata == "Intruder"] <- 4  # number-coding monophyly status
         tipdata[tipdata == "Outlier"] <- 4  # number-coding monophyly status
-	tipdata[tipdata == "unknown"] <- 1  # number-coding monophyly status
-	tipdata <- as.numeric(tipdata)
+		tipdata[tipdata == "unknown"] <- 1  # number-coding monophyly status
+		tipdata <- as.numeric(tipdata)
+		names(tipdata) <- tip.states[, "Tip"]
          # run reco model
         monophyly.reco <- fastAnc(mono.tree, tipdata, vars=FALSE, CI=FALSE)
     
@@ -116,7 +132,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
             }
         }
 	tipdataIII <- as.numeric(tipdataIII)
-        
+	names(tipdataIII) <- tip.states[, "Tip"]
         # run reco model
         int.reco <- fastAnc(int.tree, tipdataIII, vars=FALSE, CI=FALSE)
 
