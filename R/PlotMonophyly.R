@@ -5,15 +5,18 @@ PlotMonophyly <-
 function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', PDF_width='auto', PDF_height='auto', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, type='phylogram', ...) {
     
     if (taxlevels == 'ALL' | class(taxlevels)!='numeric') {
-	stop("taxlevels must be numeric (also 'ALL' is not an option for plotting)!")
+		stop("taxlevels must be numeric (also 'ALL' is not an option for plotting)!")
     }    
     if (taxlevels > length(solution)) {
-	stop('Requested taxonomic level not available (less levels specified as analysis input)!')
+		stop('Requested taxonomic level not available (less levels specified as analysis input)!')
     }
     if (plot.type!='monophyly' & plot.type!='monoVStax' & plot.type!='intruders' & plot.type!='taxonomy') {
-	stop('Invalid plot.type!')
+		stop('Invalid plot.type!')
     }
-    if (ladderize==TRUE) {  # ladderizes the tree before starting, if specified
+    if (type == "radial") {
+		stop("Type 'radial' is currently not supported!")
+	}
+	if (ladderize==TRUE) {  # ladderizes the tree before starting, if specified
         tree <- ladderize(tree)
     }
     tip.states <- solution[[taxlevels]]$TipStates
@@ -186,7 +189,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
     # plotting itself
     if (PDF==TRUE) {
 		if (PDF_width=='auto') {
-			if (type=="radial" | type =="fan") {
+			if (type =="fan") {
 				pdf_width <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with width adjusted to tree size (square shaped for round trees)
 			} else {
 				pdf_width <- (9-(3-(3*(2^-(length(tree$tip.label)/100)))))  # create PDF with width adjusted to tree size (rectangular for straight trees)
@@ -195,7 +198,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 			pdf_width <- PDF_width
 		}
 		if (PDF_height=='auto') {
-			if (type=="radial" | type =="fan") {
+			if (type =="fan") {
 				pdf_height <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with lenght adjusted to tree size (square shaped for round trees)
 			} else {
 				pdf_height <- (length(tree$tip.label)/10)  # create PDF with lenght adjusted to tree size (rectangular for straight trees)
@@ -282,8 +285,8 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 
        # monophyly vs taxonomy mirror tree plot
     if (plot.type=='monoVStax') {
-        if (type == 'fan' | type == 'unrooted' | type == 'radial') {
-	    stop("Phylogeny types 'fan', 'unrooted' and 'radial' aren't suited for plot.type 'monoVStax', use types 'phylogram' or 'cladogram' instead!")
+        if (type == 'fan' | type == 'unrooted') {
+	    stop("Phylogeny types 'fan' and 'unrooted' aren't suited for plot.type 'monoVStax', use types 'phylogram' or 'cladogram' instead!")
         }
         if (mono.colour=='PRGn') {  # use colours from colourblind friendly palettes of RColorBrewer
 	    co <- c('gray', '#5aae61','#c2a5cf', '#762a83') #green and purple 
