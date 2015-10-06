@@ -198,7 +198,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 			if (type=="radial" | type =="fan") {
 				pdf_height <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with lenght adjusted to tree size (square shaped for round trees)
 			} else {
-				pdf_height <- (length(mono.tree$tip.label)/10)  # create PDF with lenght adjusted to tree size (rectangular for straight trees)
+				pdf_height <- (length(tree$tip.label)/10)  # create PDF with lenght adjusted to tree size (rectangular for straight trees)
 			}
 		} else {
 			pdf_height <- PDF_height
