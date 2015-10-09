@@ -13,7 +13,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
     if (plot.type!='monophyly' & plot.type!='monoVStax' & plot.type!='intruders' & plot.type!='taxonomy') {
 		stop('Invalid plot.type!')
     }
-    if (type == "radial") {
+    if (type == 'radial') {
 		stop("Type 'radial' is currently not supported!")
 	}
 	if (ladderize==TRUE) {  # ladderizes the tree before starting, if specified
