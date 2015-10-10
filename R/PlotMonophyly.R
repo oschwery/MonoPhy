@@ -2,7 +2,7 @@
 # written by Orlando Schwery 2015
 
 PlotMonophyly <-
-function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', PDF_width='auto', PDF_height='auto', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, type='phylogram', ...) {
+function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', PDF_width='auto', PDF_height='auto', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, adj.names='auto', adj.tips=0.5, label.offset='auto', type='phylogram', ...) {
     
     if (taxlevels == 'ALL' | class(taxlevels)!='numeric') {
 		stop("taxlevels must be numeric (also 'ALL' is not an option for plotting)!")
@@ -13,9 +13,9 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
     if (plot.type!='monophyly' & plot.type!='monoVStax' & plot.type!='intruders' & plot.type!='taxonomy') {
 		stop('Invalid plot.type!')
     }
-    if (type == 'radial') {
-		stop("Type 'radial' is currently not supported!")
-	}
+#    if (type == 'radial') {
+#		stop("Type 'radial' is currently not supported!")
+#	}
 	if (ladderize==TRUE) {  # ladderizes the tree before starting, if specified
         tree <- ladderize(tree)
     }
@@ -188,35 +188,53 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 ################        
     # plotting itself
     if (PDF==TRUE) {
-		if (PDF_width=='auto') {
-			if (type =="fan") {
-				pdf_width <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with width adjusted to tree size (square shaped for round trees)
-			} else {
-				pdf_width <- (9-(3-(3*(2^-(length(tree$tip.label)/100)))))  # create PDF with width adjusted to tree size (rectangular for straight trees)
-			}
-		} else {
-			pdf_width <- PDF_width
-		}
-		if (PDF_height=='auto') {
-			if (type =="fan") {
-				pdf_height <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with lenght adjusted to tree size (square shaped for round trees)
-			} else {
-				pdf_height <- (length(tree$tip.label)/10)  # create PDF with lenght adjusted to tree size (rectangular for straight trees)
-			}
-		} else {
-			pdf_height <- PDF_height
-		}
-		if (pdf_height > 200) {
-			pdf_height <- 200
-			print('Warning: pdf_height too large, capped to 200in. If output not satisfying, consider different plotting type or tree slicing.')
-		}
-		if (pdf_width > 200) {
-			pdf_width <- 200
-			print('Warning: pdf_width too large, capped to 200in. If output not satisfying, consider different plotting type or tree slicing.')
-		}
+	if (PDF_width=='auto') {
+	    if (type == "fan" | type == "radial") {
+		pdf_width <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with width adjusted to tree size (square shaped for round trees)
+	    } else {
+		pdf_width <- (9-(3-(3*(2^-(length(tree$tip.label)/100)))))  # create PDF with width adjusted to tree size (rectangular for straight trees)
+	    }
+	} else {
+	    pdf_width <- PDF_width
 	}
+	if (PDF_height=='auto') {
+	    if (type == "fan" | type == "radial") {
+		pdf_height <- 2.5*sqrt(length(tree$tip.label))/pi  # create PDF with lenght adjusted to tree size (square shaped for round trees)
+	    } else {
+		pdf_height <- (length(tree$tip.label)/10)  # create PDF with lenght adjusted to tree size (rectangular for straight trees)
+	    }
+	} else {
+	    pdf_height <- PDF_height
+	}
+	if (pdf_height > 200) {
+	    pdf_height <- 200
+	    print('Warning: pdf_height too large, capped to 200in. If output not satisfying, consider different plotting type or tree slicing.')
+	}
+	if (pdf_width > 200) {
+	    pdf_width <- 200
+	    print('Warning: pdf_width too large, capped to 200in. If output not satisfying, consider different plotting type or tree slicing.')
+	}
+    }
+    if (adj.names == 'auto') {
+	if (plot.type == 'monophyly' | plot.type == 'intruders' | plot.type == 'taxonomy') {
+	    adj.name <- 0
+	} else if (plot.type == 'monoVstax') {
+	    adj.name <- 0.5
+	}
+    } else {
+	adj.name <- adj.names
+    }
+    if (label.offset == 'auto') {
+	if (plot.type == 'monophyly' | plot.type == 'intruders' | plot.type == 'taxonomy') {
+	    labelOffset <- 50000/(length(tree$tip.label)^2)
+	} else if (plot.type == 'monoVStax') {
+	    labelOffset <- 200000/(length(tree$tip.label)^2)
+	}
+    } else {
+	labelOffset <- label.offset
+    }
     # monophyly plot
-    if (plot.type=='monophyly' ) {
+    if (plot.type=='monophyly') {
         if (mono.colour=='PRGn') {  # use colours from colourblind friendly palettes of RColorBrewer
 	    co <- c('gray', '#5aae61', '#c2a5cf', '#762a83') #green and purple 
 	} else if (mono.colour=='RdBu') {
@@ -233,12 +251,12 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 
         if (PDF==TRUE) {
 	    pdf(PDF_filename, width=pdf_width, height=pdf_height)  # create PDF frame
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, label.offset=3-(2-(2.5*(2^-(length(mono.tree$tip.label)/100)))), edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, adj = adj.name, label.offset=labelOffset, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
             dev.off()
         } else {
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, label.offset=3, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 1)  # add tip labels with tip state colour
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, adj = adj.name, label.offset=labelOffset, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
         }
     }
     
@@ -253,12 +271,12 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 
         if (PDF==TRUE) {
 	    pdf(PDF_filename, width=pdf_width, height=pdf_height)  # create PDF frame
-            plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], cex=cex, label.offset=3-(2-(2.5*(2^-(length(tax.tree$tip.label)/100)))), edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 1)  # add tip labels with tip state colour
+            plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, adj = adj.name, label.offset=labelOffset, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
             dev.off()
         } else {
-            plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], cex=cex, label.offset=3, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 1)  # add tip labels with tip state colour
+            plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, adj = adj.name, label.offset=labelOffset, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
         }
     }
 
@@ -273,20 +291,20 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
    
         if (PDF==TRUE) {
 	    pdf(PDF_filename, width=pdf_width, height=pdf_height)  # create PDF frame
-	    plot(int.tree, edge.col=coInt[as.numeric(int.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, label.offset=3-(2-(2.5*(2^-(length(int.tree$tip.label)/100)))), edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = coInt[tipdataIII], cex = 1, adj = 1)  # add tip labels with tip state colour
+	    plot(int.tree, edge.col=coInt[as.numeric(int.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, adj = adj.name, label.offset=labelOffset, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = coInt[tipdataIII], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
             dev.off()
         } else {     
-            plot(int.tree, edge.col=coInt[as.numeric(int.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, label.offset=3, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = coInt[tipdataIII], cex = 1, adj = 1)  # add tip labels with tip state colour
+            plot(int.tree, edge.col=coInt[as.numeric(int.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, adj = adj.name, label.offset=labelOffset, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = coInt[tipdataIII], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
         } 
     }
     
 
        # monophyly vs taxonomy mirror tree plot
     if (plot.type=='monoVStax') {
-        if (type == 'fan' | type == 'unrooted') {
-	    stop("Phylogeny types 'fan' and 'unrooted' aren't suited for plot.type 'monoVStax', use types 'phylogram' or 'cladogram' instead!")
+        if (type == 'fan' | type == 'unrooted' | type == "radial") {
+	    stop("Phylogeny types 'fan', 'radial' and 'unrooted' aren't suited for plot.type 'monoVStax', use types 'phylogram' or 'cladogram' instead!")
         }
         if (mono.colour=='PRGn') {  # use colours from colourblind friendly palettes of RColorBrewer
 	    co <- c('gray', '#5aae61','#c2a5cf', '#762a83') #green and purple 
@@ -312,18 +330,18 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
             pdf(PDF_filename, width=pdf_width, height=pdf_height)   # create PDF with lenght adjusted to tree size
             par(oma=c(1, 1, 1, 1), mar=c(0,0,0,0))  # set up plotting margins
             layout(matrix(c(1,2), 1, 2, byrow = TRUE), widths=c(1.5,1))  # set up for plotting two trees next to each other
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, adj=0.5, label.offset=200000/(length(mono.tree$tip.label)^2), edge.width=edge.width, no.margin=TRUE, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 0.5)  # add tip labels with tip state colour
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, adj=adj.name, label.offset=labelOffset, edge.width=edge.width, no.margin=TRUE, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
             plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], show.tip.label = FALSE, cex=cex, label.offset=0, edge.width=edge.width, direction = "leftwards", no.margin=TRUE, type=type, ...)  # plot mirrored tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 0.5)  # add tip labels with tip state colour
+            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
             dev.off()
         } else {
             par(oma=c(1, 1, 1, 1), mar=c(0,0,0,0))  # set up plotting margins
             layout(matrix(c(1,2), 1, 2, byrow = TRUE), widths=c(1.5,1))  # set up for plotting two trees next to each other
-            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], cex=cex, adj=0.5, label.offset=200000/(length(mono.tree$tip.label)^2), edge.width=edge.width, no.margin=TRUE, type=type, ...)  # plot tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = 0.5)  # add tip labels with tip state colour
+            plot(mono.tree, edge.col=co[as.numeric(mono.tree$edge[, 3])], show.tip.label = TRUE, cex=cex, adj=adj.name, label.offset=labelOffset, edge.width=edge.width, no.margin=TRUE, type=type, ...)  # plot tree with edge colours according to reconstruction
+            tiplabels(pch = 22, bg = co[tipdata], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
             plot(tax.tree, edge.col=coTax[as.numeric(tax.tree$edge[, 3])], show.tip.label = FALSE, cex=cex, label.offset=0, edge.width=edge.width, direction = "leftwards", no.margin=TRUE, type=type, ...)  # plot mirrored tree with edge colours according to reconstruction
-            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = 0.5)  # add tip labels with tip state colour
+            tiplabels(pch = 22, bg = coTax[tipdataT], cex = 1, adj = adj.tips)  # add tip labels with tip state colour
         }
     }
 }
