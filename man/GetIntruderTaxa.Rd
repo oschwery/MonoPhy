@@ -44,6 +44,6 @@ Noteworthy difference: intruder tips for e.g. Vaccinium will be tips of OTHER ta
 data(Ericactree)
 solution <- AssessMonophyly(Ericactree, verbosity=5)
 GetIntruderTaxa(solution=solution)
-GetIntruderTaxa(solution=solution, taxa=c("Vaccinium"))
+GetIntruderTaxa(solution=solution, taxa="Vaccinium")
 GetIntruderTips(solution=solution, taxa=c("Phyllodoce", "Vaccinium", "Erica"))
 }
