@@ -15,9 +15,9 @@ function(solution, taxa=NULL, taxlevels='ALL') {
                 alltips[[nametip]] <- tmp
             } else {  # display specific taxon if specified
                 alltips2 <- list()
-                for (i in 1:length(taxa)) {  # loop to go through vector of taxon names
-                    nametip2 <- taxa[i]  # display name of invaded taxon first
-                    tmp <- solution[[i]]$IntruderTips[[taxa[i]]]  # display invading taxa
+                for (itx in 1:length(taxa)) {  # loop to go through vector of taxon names
+                    nametip2 <- taxa[itx]  # display name of invaded taxon first
+                    tmp <- solution[[i]]$IntruderTips[[taxa[itx]]]  # display invading taxa
                     alltips2[[nametip2]] <- tmp
                 }
                 alltips[[nametip]] <- alltips2
@@ -34,9 +34,9 @@ function(solution, taxa=NULL, taxlevels='ALL') {
                 alltips[[nametip]] <- tmp
             } else {  # display specific taxa if specified
                 alltips2 <- list()
-                for (i in 1:length(taxa)) {  # loop to go through vector of taxon names
-                    nametip2 <- taxa[i]  # display name of invaded taxon first
-                    tmp <- solution[[taxlevels]]$IntruderTips[[taxa[i]]]  # display invading taxa
+                for (itx in 1:length(taxa)) {  # loop to go through vector of taxon names
+                    nametip2 <- taxa[itx]  # display name of invaded taxon first
+                    tmp <- solution[[taxlevels]]$IntruderTips[[taxa[itx]]]  # display invading taxa
                     alltips2[[nametip2]] <- tmp
                 }
                 alltips[[nametip]] <- alltips2
