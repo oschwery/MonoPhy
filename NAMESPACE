@@ -1,3 +1,5 @@
 export(AssessMonophyly, GetSummaryMonophyly, GetResultMonophyly, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa, GetOutlierTips, GetAncNodes, PlotMonophyly)
 
-import(ape, phytools, phangorn, RColorBrewer, taxize)
+import(ape, phytools, phangorn, RColorBrewer)
+
+importFrom(taxize, tax_name)
