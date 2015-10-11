@@ -218,7 +218,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
     if (adj.names == 'auto') {
 	if (plot.type == 'monophyly' | plot.type == 'intruders' | plot.type == 'taxonomy') {
 	    adj.name <- 0
-	} else if (plot.type == 'monoVstax') {
+	} else if (plot.type == 'monoVStax') {
 	    adj.name <- 0.5
 	}
     } else {
