@@ -367,16 +367,26 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
     countframe <- as.data.frame(counttable)  # turn into data frame
     rownames(countframe) <- countframe[, 1]  # assign first column as row names
     countframe[, 1] <- NULL  # delete first column (since now row names)
-    taxcount.monoph <- sapply(levels(outframe$Monophyly),function(x){sum(as.numeric(outframe$'#Tips'[outframe$Monophyly==x]))},USE.NAMES=F)
-    taxcount.frame <- data.frame(status=levels(outframe$Monophyly), taxcount.monoph)
-    rownames(taxcount.frame) <- taxcount.frame[, 1]
-    taxcount.frame[, 1] <- NULL
+
+    mono.count <- c()
+    nonmono.count <-c()
+
+    for (itaxcount1 in 1:length(taxa)) {
+        if (outlist[itaxcount1,2] == "Yes") {
+            mono.count <- c(mono.count, as.numeric(outlist[itaxcount1,4]))
+        }
+    }
+    for (itaxcount2 in 1:length(taxa)) {
+        if (outlist[itaxcount2,2] == "No") {
+            nonmono.count <- c(nonmono.count, as.numeric(outlist[itaxcount2,4]))
+        }
+    }
     if (outliercheck == TRUE) {
         outlist.summary[, 2] <- c(length(taxa), countframe["Yes","Freq"], countframe["No","Freq"], countframe["Monotypic","Freq"], length(intruder.genus.all), length(outlier.names))  # populate summary table with counts of respective groups
-        outlist.summary[, 3] <- c(length(tree$tip.label), taxcount.frame["Yes", "taxcount.monoph"], taxcount.frame["No", "taxcount.monoph"], countframe["Monotypic","Freq"], length(intruder.species.all), length(outlier.species.all))
+        outlist.summary[, 3] <- c(length(tree$tip.label), sum(mono.count), sum(nonmono.count), countframe["Monotypic","Freq"], length(intruder.species.all), length(outlier.species.all))
     } else {
         outlist.summary[, 2] <- c(length(taxa), countframe["Yes","Freq"], countframe["No","Freq"], countframe["Monotypic","Freq"], length(intruder.genus.all))  # populate summary table with counts of respective groups
-        outlist.summary[, 3] <- c(length(tree$tip.label), taxcount.frame["Yes", "taxcount.monoph"], taxcount.frame["No", "taxcount.monoph"], countframe["Monotypic","Freq"], length(intruder.species.all))
+        outlist.summary[, 3] <- c(length(tree$tip.label), sum(mono.count), sum(nonmono.count), countframe["Monotypic","Freq"], length(intruder.species.all))
     }
     outframe.summary <- data.frame(outlist.summary)  # turn final output matrix summary into data frame
     rownames(outframe.summary) <- outframe.summary[, 1]  # assign first column as row names
