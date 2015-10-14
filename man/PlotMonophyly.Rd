@@ -7,7 +7,11 @@ Plot output of AssessMonophyly
 Allows plotting different visualisations of the results of AssessMonophyly, based on its output
 }
 \usage{
-PlotMonophyly(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', PDF_width='auto', PDF_height='auto', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, adj.names='auto', adj.tips=0.5, label.offset='auto', type='phylogram', ...)
+PlotMonophyly(solution, tree, taxlevels=1, plot.type='monophyly',
+monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf',
+PDF_width='auto', PDF_height='auto', mono.colour='PRGn',
+tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2,
+adj.names='auto', adj.tips=0.5, label.offset='auto', type='phylogram', ...)
 }
 \arguments{
   \item{solution}{
@@ -93,10 +97,14 @@ Orlando Schwery
 data(Ericactree)
 solution <- AssessMonophyly(Ericactree, verbosity=5)
 
-PlotMonophyly(solution=solution, tree=Ericactree, plot.type='monophyly', ladderize=TRUE, mono.colour='PRGn')
+PlotMonophyly(solution=solution, tree=Ericactree, plot.type='monophyly', ladderize=TRUE,
+mono.colour='PRGn')
 PlotMonophyly(solution=solution, tree=Ericactree, plot.type='taxonomy', ladderize=TRUE)
 
-# especially for larger phylogenies it is recommended to print the plot to a pdf file instead of plotting, for easier inspection
-PlotMonophyly(solution=solution, tree=Ericactree, plot.type='monoVStax', ladderize=TRUE, PDF=TRUE, mono.colour='PRGn', PDF_filename='MonoTaxplot.pdf')
-PlotMonophyly(solution=solution, tree=Ericactree, plot.type='taxonomy', ladderize=TRUE, PDF=TRUE, PDF_filename='Taxplot.pdf')
+# especially for larger phylogenies it is recommended to print the plot to a pdf file instead of
+#plotting, for easier inspection
+PlotMonophyly(solution=solution, tree=Ericactree, plot.type='monoVStax', ladderize=TRUE,
+PDF=TRUE, mono.colour='PRGn', PDF_filename='MonoTaxplot.pdf')
+PlotMonophyly(solution=solution, tree=Ericactree, plot.type='taxonomy', ladderize=TRUE,
+PDF=TRUE, PDF_filename='Taxplot.pdf')
 }

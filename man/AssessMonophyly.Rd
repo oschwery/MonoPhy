@@ -7,7 +7,8 @@ Assesses monophyly (or lack of it) of taxonomic groups in a phylogeny.
 Requires rooted resolved phylogeny as input and creates a table of taxa, their monophyly-status, which taxa cause problems in monophyly (as intruders or outliers) etc. Output can be accessed with related functions and a plot function can be used to plot the results in a number of ways.
 }
 \usage{
-AssessMonophyly(tree, taxonomy = NULL, verbosity = 5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='both', taxizepref='ncbi')
+AssessMonophyly(tree, taxonomy = NULL, verbosity = 5, outliercheck=TRUE, outlierlevel=0.5,
+taxizelevel= NULL, taxizedb='both', taxizepref='ncbi')
 }
 \arguments{
   \item{tree}{
