@@ -11,13 +11,13 @@ AssessMonophyly(tree, taxonomy = NULL, verbosity = 5, outliercheck=TRUE, outlier
 }
 \arguments{
   \item{tree}{
-An object of type 'phy', rooted and fully resolved phylogeny. If tip labels are in the format 'genus_species', the function can extract the genus names and check their monophyly. If tip labels are in another format or if the monophyly of other taxonomic groups should be tested, a taxonomy file (see 'taxonomy') is required.
+An object of type 'phy', a rooted and fully resolved phylogeny. If tip labels are in the format 'genus_species', the function can extract the genus names and check their monophyly. If tip labels are in another format or if the monophyly of other taxonomic groups should be tested, a taxonomy file (see 'taxonomy') is required.
 }
   \item{taxonomy}{
-A data frame (e.g. an imported .csv file) with at least two columns, one row per tip in tree and no header. Column one contains the tip labels, column two and higher the names of the taxonomic units the respective tip belongs to. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed. Alternatively, specifying taxonomy as 'taxize' allows to use the package with the same name to download taxonomic names from online databases. Default is NULL.
+A data frame (e.g. an imported .csv file) with at least two columns, one row per tip in the tree and no header. Column one contains the tip labels, column two and higher the names of the taxonomic units the respective tip belongs to. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed. Alternatively, specifying taxonomy as 'taxize' allows to use the package with the same name to download taxonomic names from online databases. Default is NULL.
 }
   \item{verbosity}{
-An integer, default is 5. Determines how many intruder taxa should be listed by name in the result table (it will list up to this many names and then add 'and X more').
+An integer, default is 5. Determines how many outlier/intruder taxa should be listed by name in the result table (it will list up to this many names and then add 'and X more').
 }
   \item{outliercheck}{
 If TRUE (default), the function will differenciate intruders or outliers as cause for non-monophyly. If the descendants of a taxon's MRCA contain less actual members of that taxon than specified under 'outlierlevel', the function will try to find a 'core clade', which is above this threshold. Taxon members outside of this core clade are then considered outliers and only the intruders within the core clade will actually be scored as intruders.

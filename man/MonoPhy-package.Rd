@@ -16,7 +16,7 @@ Version: \tab 1.0\cr
 Date: \tab 2015-03-22\cr
 License: \tab GPL-3\cr
 }
-The package allows to explore monophyly in phylogenetic trees in a simple and quick way. AssessMonophyly determines whether taxa in a phylogeny are monophyletic. GetSummaryMonophyly extracts a summary table from the results, GetResultMonophyly extracts the main result table, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa and GetOutlierTips extract names of taxa which interfer with the monophyly of another or the same taxon respectively and GetAncNodes a table of MRCA nodes. PlotMonophyly finally allows visualizing the results in a couple of different ways.
+The package allows to explore monophyly in phylogenetic trees in a  and simple  way. AssessMonophyly determines whether taxa in a phylogeny are monophyletic. GetSummaryMonophyly extracts a summary table from the results, GetResultMonophyly extracts the main result table, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa and GetOutlierTips extract names of taxa which interfere with the monophyly of another or the same taxon respectively and GetAncNodes a table of MRCA nodes. PlotMonophyly finally, allows visualizing the results in a couple of different ways.
 }
 \author{
 Orlando Schwery
