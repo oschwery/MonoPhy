@@ -3,45 +3,43 @@
 
 GetOutlierTips <-
 function(solution, taxa=NULL, taxlevels='ALL') {
-    alltips <- list()
-    if (taxlevels!='ALL' & class(taxlevels)!='numeric') {
+    alltips <- list()  # create empty list to be filled
+    if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # test format of taxlevels argument and display error if format is wrong
 	stop("taxlevels must be either 'ALL' or numeric!")
     }
-    if (taxlevels=='ALL') {
-        for (i in 1:length(solution)){
-            nametip <- paste('Taxlevel',i,sep='_')
-            if (length(taxa) == 0){  # display all if no taxon specified
-                tmp <- solution[[i]]$OutlierTips
-                alltips[[nametip]] <- tmp
+    if (taxlevels == 'ALL') {  # if all taxlevels are looked for
+        for (i in 1:length(solution)){  # loop through all taxlevels
+            nametip <- paste('Taxlevel', i, sep='_')  # create namelabel for current taxlevel
+            if (length(taxa) == 0) {  # pick all if no taxon specified
+                tmp <- solution[[i]]$OutlierTips  # extract sub-list of outlier tips from solution
+                alltips[[nametip]] <- tmp  # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.
             } else {  # display specific taxon if specified
-                alltips2 <- list()
+                alltips2 <- list()  # create empty list to be filled
                 for (i in 1:length(taxa)) {  # loop to go through vector of taxon names
-                    nametip2 <- taxa[i]  # display name of invaded taxon first
-                    tmp <- solution[[i]]$OutlierTips[[taxa[i]]]  # display invading taxa
-                    alltips2[[nametip2]] <- tmp
+                    nametip2 <- taxa[i]  # create label with name of taxon with outliers first
+                    tmp <- solution[[i]]$OutlierTips[[taxa[i]]]  # extract outliers for this taxon from respective sub-object of solution
+                    alltips2[[nametip2]] <- tmp  # add extracted outliers to output list, named after the that taxon
                 }
-                alltips[[nametip]] <- alltips2
+                alltips[[nametip]] <- alltips2  # add compiled outliers of this taxlevel as sub-list to outputlist, named after current taxlevel
             }
         }
-    } else {
-        if (taxlevels > length(solution)){
+    } else {  # if only a specific taxlevel is requested
+        if (taxlevels > length(solution)) {  # test whether requested taxlevel is among available ones and display error if not
             stop('Requested taxonomic level not available (less levels specified as analysis input)!')
         }
-                #for (j in 1:length(taxlevels)) {
-            nametip <- paste('Taxlevel', taxlevels, sep='_')
-            if (length(taxa) == 0){  # display all if no taxa specified
-                tmp <- solution[[taxlevels]]$OutlierTips
-                alltips[[nametip]] <- tmp
-            } else {  # display specific taxa if specified
-                alltips2 <- list()
-                for (i in 1:length(taxa)) {  # loop to go through vector of taxon names
-                    nametip2 <- taxa[i]  # display name of invaded taxon first
-                    tmp <- solution[[taxlevels]]$OutlierTips[[taxa[i]]]  # display invading taxa
-                    alltips2[[nametip2]] <- tmp
-                }
-                alltips[[nametip]] <- alltips2
+        nametip <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
+        if (length(taxa) == 0){  # pick all if no taxa specified
+            tmp <- solution[[taxlevels]]$OutlierTips   # extract sub-list of outlier tips from solution
+            alltips[[nametip]] <- tmp  # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.
+        } else {  # display specific taxa if requested
+            alltips2 <- list()  # create empty list to be filled
+            for (i in 1:length(taxa)) {  # loop through vector of taxon names
+				nametip2 <- taxa[i]  # create label with name of taxon with outliers first
+                tmp <- solution[[taxlevels]]$OutlierTips[[taxa[i]]]  # extract outliers for this taxon from respective sub-object of solution
+                alltips2[[nametip2]] <- tmp  # add extracted outliers to output list, named after that taxon
             }
-        #}
+            alltips[[nametip]] <- alltips2  # add compiled invaders of this taxlevel as sub-list to outputlist, named after current taxlevel
+		}
     }
     alltips
 }
