@@ -3,35 +3,33 @@
 
 GetAncNodes <-
 function(solution, taxa=NULL, taxlevels='ALL') {
-    allnodes <- list()
-    if (taxlevels!='ALL' & class(taxlevels)!='numeric') {
+    allnodes <- list() 	# create empty list to be filled
+    if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # test for wrong formats for taxlevels and display error if the case
 	stop("taxlevels must be either 'ALL' or numeric!")
     }
-    if (taxlevels=='ALL') {
-        for (i in 1:length(solution)){
-            namenod <- paste('Taxlevel',i,sep='_')
+    if (taxlevels == 'ALL') {  #if no specific taxlevel should be focused on
+        for (i in 1:length(solution)){  # for every taxlevel in the present solution
+            namenod <- paste('Taxlevel', i, sep='_')  # create namelabel for current taxlevel
             if (length(taxa) == 0){  # display all if no genera specified
-                tmp <- solution[[i]]$result[, "MRCA", drop=FALSE]
-                allnodes[[namenod]] <- tmp
+                tmp <- solution[[i]]$result[, "MRCA", drop=FALSE]  # extract MRCA column out of result table
+                allnodes[[namenod]] <- tmp  # add the extracted table as sub-entry to output list, named according to taxlevel
             } else {  # display specific genera if specified
-                tmp <- solution[[i]]$result[taxa, "MRCA", drop=FALSE]  # display invading tips/species
-                allnodes[[namenod]] <- tmp
+                tmp <- solution[[i]]$result[taxa, "MRCA", drop=FALSE]  # extract MRCA column out of result table for specified taxa only
+                allnodes[[namenod]] <- tmp  # add the extracted table as sub-entry to output list, named according to taxlevel
             }
         }
-    } else {
-        if (taxlevels > length(solution)){
+    } else {  # if a specific taxlevel should be focused on
+        if (taxlevels > length(solution)){  # test if taxlevel number exceeds number of present taxlevels in solution and display error if the case
             stop('Requested taxonomic level not available (less levels specified as analysis input)!')
         }
-        #for (j in 1:length(taxlevels)) {
-            namenod <- paste('Taxlevel', taxlevels, sep='_')
-            if (length(taxa) == 0){  # display all if no genera specified
-                tmp <- solution[[taxlevels]]$result[, "MRCA", drop=FALSE]
-                allnodes[[namenod]] <- tmp
-            } else {  # display specific genera if specified
-                tmp <- solution[[taxlevels]]$result[taxa, "MRCA", drop=FALSE]  # display invading tips/species
-                allnodes[[namenod]] <- tmp
-            }
-        #}
+		namenod <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
+		if (length(taxa) == 0){  # display all if no genera specified
+            tmp <- solution[[taxlevels]]$result[, "MRCA", drop=FALSE]  # extract MRCA column out of result table
+            allnodes[[namenod]] <- tmp  # add the extracted table as sub-entry to output list, named according to taxlevel
+        } else {  # display specific genera if specified
+            tmp <- solution[[taxlevels]]$result[taxa, "MRCA", drop=FALSE]  # extract MRCA column out of result table for specified taxa only
+            allnodes[[namenod]] <- tmp  # add the extracted table as sub-entry to output list, named according to taxlevel
+        }
     }
-    allnodes
+    allnodes  # return final list with MRCA nodes
 }
