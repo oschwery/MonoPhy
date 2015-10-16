@@ -1,8 +1,7 @@
 # assesses monophyly of genera (or customized units) and makes the result available in different ways (tables, onjects, plot...)
 # written by Orlando Schwery 2015
-
 AssessMonophyly <-
-function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='both', taxizepref='ncbi') {
+function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='both', taxizepref='ncbi', taxask=FALSE, taxverbose=FALSE) {
 # initial tests and data preparation
 if (!is.binary.tree(tree)) {  # checks and returns error if tree is not bifurcating
     stop('Phylogeny is not strictly bifurcating/resolved!')
@@ -10,95 +9,124 @@ if (!is.binary.tree(tree)) {  # checks and returns error if tree is not bifurcat
 if (!is.rooted(tree)) {  # checks and returns error if tree is not rooted
     stop('Phylogeny must be rooted!')
 }
-
-if (is.null(taxonomy)){  # extract list of genera from tree's tip labels
-    for (i in 1:length(tree$tip.label)) {
+if (is.null(taxonomy)){  # if no taxonomy file is specified, extract list of genera from tree's tip labels
+    for (i in 1:length(tree$tip.label)) {  # loop through tip labels of tree
         if (grepl(("_| "), tree$tip.label[i]) == FALSE){  # checks if genus and species epithet of tip labels are separated by space or underscore and returns error if not
             stop('Tip labels do not contain underscore separating genus name from species epithet!')
         }
     }
-    
     f <- function(s) strsplit(s, ("_| "))[[1]][1]  # function with split criteria: split names at underscore and keep first part (genus name)
     split.taxa <- sapply(tree$tip.label, f)  # apply split functon to tree
     taxa <- as.vector(unique(split.taxa))  # create vector of genera in tree without duplicates
-    taxsetnames <- c('taxa')
+    taxsetnames <- c('taxa')  # assign 'taxa' as taxsetnames
     } else {
-        if (!is.null(taxonomy) && taxonomy != 'taxize') {  # use loaded taxonomy file
-            if (length(taxonomy[, 1]) != length(tree$tip.label)) {  # checks and returns error if taxonomy file has more entries than tree has tips
+        if (!is.null(taxonomy) && taxonomy != 'taxize') {  # if argument 'taxonomy' is not NULL and not taxize, use loaded taxonomy file
+            if (length(taxonomy[, 1]) != length(tree$tip.label)) {  # checks and returns error if taxonomy file has more or less entries than tree has tips
                 stop('Number of rows of taxonomy file is not equal to number of taxa (note: table should not have a header)!')
             }
             if (length(taxonomy[1, ]) < 2) {  # checks and returns error if taxonomy file doesn't have at least two columns
                 stop('Taxonomy file needs at least 2 columns: tip labels and taxonomic group!')
             }
-            taxchecktree <- c()
-            for (itaxcheck in 1:length(tree$tip.label)) {
-                taxchecktree <- c(taxchecktree, tree$tip.label[itaxcheck] %in% taxonomy[, 1])
+            taxchecktree <- c()  # create empty vector to be filled with presence of tip labels in taxfile
+            for (itaxcheck in 1:length(tree$tip.label)) {  # loop through tip labels
+                taxchecktree <- c(taxchecktree, tree$tip.label[itaxcheck] %in% taxonomy[, 1])  # check for every name in tree if it is present in taxonomy file
             }
-            taxintruderstree <- c()
-            if ('FALSE' %in% taxchecktree) {
-                positionstree <- grep('FALSE', taxchecktree)
-                taxintruderstree <- c(taxintruderstree, tree$tip.label[positionstree])
+            taxintruderstree <- c()  # create empty vector to be filled with tip labels that are abesent in taxfile
+            if ('FALSE' %in% taxchecktree) {  # if there are any missing names in taxonomy file...
+                positionstree <- grep('FALSE', taxchecktree)  # ...get their position...
+                taxintruderstree <- c(taxintruderstree, tree$tip.label[positionstree])  # ...add tip labels of that position to vector
                 message(paste('\n'), appendLF=TRUE)
-                message(paste('Tip-labels which do not occur in taxonfile:', '[', length(taxintruderstree), '/', length(tree$tip.label), ']', collapse=" "), appendLF=TRUE)
-                message(paste(taxintruderstree, collapse=", "), appendLF=TRUE)
-                message(paste('\n'), appendLF=TRUE)
-            }
-            taxcheckfile <- c()
-            for (itaxcheck2 in 1:length(taxonomy[, 1])) {
-                taxcheckfile <- c(taxcheckfile, taxonomy[itaxcheck2, 1] %in% tree$tip.label)
-            }
-            taxintrudersfile <- c()
-            if ('FALSE' %in% taxcheckfile) {
-                positionsfile <- grep('FALSE', taxcheckfile)
-                taxintrudersfile <- c(taxintrudersfile,as.character(taxonomy[positionsfile, 1]))
-                message(paste('Taxon names in file which do not occur in tip-labels of tree:', '[', length(taxintrudersfile), '/', length(taxonomy[, 1]), ']', collapse=" "), appendLF=TRUE)
-                message(paste(taxintrudersfile, collapse=", "), appendLF=TRUE)
+                message(paste('Tip-labels which do not occur in taxonomy file:', '[', length(taxintruderstree), '/', length(tree$tip.label), ']', collapse=" "), appendLF=TRUE)  # display numbers of missing tip labels in taxonomy file
+                message(paste(taxintruderstree, collapse=", "), appendLF=TRUE)  # display names of missing tips
                 message(paste('\n'), appendLF=TRUE)
             }
-            if ('FALSE' %in% (taxchecktree)) {
+            taxcheckfile <- c()  # create empty vector to be filled with presence of taxfile names in tip labels
+            for (itaxcheck2 in 1:length(taxonomy[, 1])) {  # loop through names column of taxfile
+                taxcheckfile <- c(taxcheckfile, taxonomy[itaxcheck2, 1] %in% tree$tip.label)  # check for every name in taxonomy file if it is present in tip labels of the tree
+            }
+            taxintrudersfile <- c()  # create empty vector to be filled with taxfile names that are abesent in tip labels
+            if ('FALSE' %in% taxcheckfile) {  # if there are any missing names in tip labels...
+                positionsfile <- grep('FALSE', taxcheckfile)  # ...get their position...
+                taxintrudersfile <- c(taxintrudersfile,as.character(taxonomy[positionsfile, 1]))  # ...add names of that position to vector
+                message(paste('Taxon names in file which do not occur in tip-labels of tree:', '[', length(taxintrudersfile), '/', length(taxonomy[, 1]), ']', collapse=" "), appendLF=TRUE)  # display numbers of missing names in tip labels
+                message(paste(taxintrudersfile, collapse=", "), appendLF=TRUE)  # display names of missing taxa
+                message(paste('\n'), appendLF=TRUE)
+            }
+            if ('FALSE' %in% (taxchecktree)) {  # if missing names in file, stop and display error
                 stop('The taxon names of tree and taxonfile do not match (see above)!')
             }
-            if ('FALSE' %in% (taxcheckfile)) {
+            if ('FALSE' %in% (taxcheckfile)) {  # if missing names in tree, stop and display error
                 stop('The taxon names of tree and taxonfile do not match (see above)!')
             }
-            taxsetnames <- c()
-            taxsets <- list()
-            for (jtax in 1:(length(taxonomy[1, ])-1)){
-                nametax <- paste("taxa", jtax, sep = "")
-                taxsetnames <- c(taxsetnames, nametax)
-                tmp <- as.vector(unique(taxonomy[, (jtax)+1]))  # if all is correct, makes vector taxonomic units (without doubles) 
-                taxsets[[nametax]] <- tmp
+            taxsetnames <- c()  # create empty vector to fill with names for taxsets
+            taxsets <- list()  # create empty list to fill with taxonomic units
+            for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxon file
+                nametax <- paste("taxa", jtax, sep = "")  # create taxon name label
+                taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
+                tmp <- as.vector(unique(taxonomy[, (jtax)+1]))  # if all is correct, makes vector of taxonomic units (without doubles) 
+                taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
             }
-        } else {
+        } else {  # if not NULL and not taxfile but taxize
             if (taxonomy == 'taxize') {  # build taxonomy file from web ressources using taxize
-                taxafromweb <- tax_name(tree$tip.label, get=taxizelevel, db=taxizedb, pref=taxizepref, ask=FALSE)  # get taxonomy data
-                taxafromwebtable <- matrix(data = NA, nrow=length(tree$tip.label),ncol=ncol(taxafromweb)+1)  #build empty matrix
+                taxafromweb <- tax_name(tree$tip.label, get=taxizelevel, db=taxizedb, pref=taxizepref, ask=taxask, verbose=taxverbose)  # get taxonomy data from web
+                taxafromwebtable <- matrix(data = NA, nrow=length(tree$tip.label),ncol=ncol(taxafromweb)-1)  #build empty matrix with dimensions by number of tips and retrieved taxonomic data
                 taxafromwebtable[, 1] <- tree$tip.label  # add tip names from tree
-                for (iweb in 1:ncol(taxafromweb)) {  #add acquired taxon names for tips for each taxonomic level acquired
-                    taxafromwebtable[, iweb+1] <- taxafromweb[, iweb]
+                if (length(unique(taxafromweb[, 3])) == 1 & is.na(unique(taxafromweb[, 3])[1])) {  # check if there was any information retrieved and display error if not
+                    stop('There was no data found for any of the tips!')
                 }
-                taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"
+                if (nrow(taxafromweb) > length(tree$tip.label)) {  # check if more record entires retrieved than tips in tree
+                    taxafromweb <- unique(taxafromweb[, 2:3])  # if entires from two databases are the same, delete one
+                    rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber rows
+                }
+                if (nrow(taxafromweb) > length(tree$tip.label)) {  # check again if more record entires retrieved than tips in tree
+                    temp <- taxafromweb  # copy table to temporary object
+                    droppers <- c()  # create empty vector to be filled with entires to be dropped
+                    counterweb <- table(temp[, 1], useNA='ifany')  # create counting table with number of entries per taxon in retrieved data table
+                    for (iwebtax in 1:nrow(temp)) {  # loop through retrieved table
+                        if (counterweb[temp[iwebtax, 1]] > 1) {  # check if more than one entry per species is retrieved (according to count table)
+                            if (is.na(temp[iwebtax, 2])) {  # if the duplicate currently being looked at did not retrieve a result...
+                                droppers <- c(droppers, iwebtax)  # ...add it to droplist
+                            }
+                        }
+                        temp2 <- temp[-droppers, ]  # remove drop entires
+                        rownames(temp2) <- c(1:nrow(temp2))  # renumber rows
+                        taxafromweb <- temp2  # replace retrieved table with cleaned up version
+                    }
+                }
+                for (iweb in 1:(ncol(taxafromweb) - 2)) {  #add acquired taxon names for tips for each taxonomic level acquired
+                    taxafromwebtable[, iweb + 1] <- taxafromweb[, iweb + 1]  # add retrieved entries to matrix
+                    rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber rownames
+                }
+                taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"  # replace all NAs with "unknown"
                 taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
+                taxsetnames <- c()  # create empty vector to be filled with taxonomy set names
+                taxsets <- list()  # create empty list to be filled with taxonomy lists 
+                for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxonomy file
+                    nametax <- paste("taxa", jtax, sep = "")  # create taxon name label
+                    taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
+                    tmp <- as.vector(unique(taxonomy[, (jtax)+1]))  # if all is correct, makes vector taxonomic units (without doubles) 
+                    taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
+                }
             }  
         }
     }
 # actual assessment
-finallist <- list()
+finallist <- list()  # create empty list to be filled with final results
 for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon set used
-    if (is.null(taxonomy)){  # assing correct taxonset
-        taxa <- taxa
-    } else {
-        taxa <- unlist(taxsets[ifullround])
-        taxa <- taxa[!taxa %in% c("unknown", NA)]
+    if (is.null(taxonomy)){  # if no taxonomy file specified...
+        taxa <- taxa  # ...assign taxon list
+    } else {  # if taxonomy file or taxize...
+        taxa <- unlist(taxsets[ifullround])  # ...assign taxon list of current taxlevel...
+        taxa <- taxa[!taxa %in% c("unknown", NA)]  # ...and remove NA's and unknown taxa
     }
-    # create empty objects to be filled by function
-    intruder.genus <- list()  # list of genera causing non-monophyly
-    intruder.genus.full <- c()  # vector of ALL general causing non-monophyly
-    intruder.species <- list()  # list of species causing non-monophyly
-    intruder.species.full <- c()  # vector of ALL species causing non-monophyly
-    intruder.names <- c()  # names for intruder sub-lists
-    if (outliercheck == TRUE) {
-        outlist.summary <- matrix(NA, nrow=6, ncol=3)  # final output summary matrix
+# create empty objects to be filled by function
+    intruder.genus <- list()  # empty list for genera causing non-monophyly
+    intruder.genus.full <- c()  # empty vector for ALL general causing non-monophyly
+    intruder.species <- list()  # empty list for species causing non-monophyly
+    intruder.species.full <- c()  # empty vector for ALL species causing non-monophyly
+    intruder.names <- c()  # empty vector for names for intruder sub-lists
+    if (outliercheck == TRUE) {  # if outliers should be checked for (add additional objects and columns/rows
+        outlist.summary <- matrix(NA, nrow=6, ncol=3)  # create final output summary matrix
         dfheaders <- c("Taxon", "Monophyly", "MRCA", "#Tips", "Delta-Tips", "#Intruders", "Intruders", "#Outliers", "Outliers")  # headers for 'outlist'
         outlist <- matrix(NA, nrow=length(taxa), ncol=9)  # final output matrix
         outlier.genus <- list()  # list of genera causing non-monophyly as outliers
@@ -106,51 +134,50 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
         outlier.species <- list()  # list of species causing non-monophyly as outliers
         outlier.species.full <- c()  # vector of ALL species causing non-monophyly as outliers
         outlier.names <- c()  # names for outlier sub-lists
-    } else {
+    } else {  # if no outliers being checked for
         outlist.summary <- matrix(NA, nrow=5, ncol=3)  # final output summary matrix
         dfheaders <- c("Taxon", "Monophyly", "MRCA", "#Tips", "Delta-Tips", "#Intruders", "Intruders")  # headers for 'outlist'
         outlist <- matrix(NA, nrow=length(taxa), ncol=7)  # final output matrix
     }
     tip.states.matrix <- matrix(NA, nrow=length(tree$tip.label), ncol=3)  # states for plotting
-    
-    # loop assessing monophyly
-    for (i in 1:length(taxa)) {  # for every genus in the tree
-        if (is.null(taxonomy)){  # genera extracted from tip labels if no taxonomy file loaded
-            ancnode <- getMRCA(tree, tip=c(tree$tip.label[c(grep(paste("^",taxa[i],"_", sep=""), tree$tip.label))]))  # determine Most Recent Common Ancestor for all taxa of genus
+# loop assessing monophyly
+    for (i in 1:length(taxa)) {  # loop through every genus in the tree
+        if (is.null(taxonomy)) {  # genera extracted from tip labels if no taxonomy file loaded
+            ancnode <- getMRCA(tree, tip=c(tree$tip.label[c(grep(paste("^", taxa[i], "_", sep=""), tree$tip.label))]))  # determine Most Recent Common Ancestor for all taxa of genus
         } else {  # units taken from file if loaded
-            subtips <- subset(taxonomy, as.character(taxonomy[, (ifullround+1)]) == as.character(taxa[i]))  # get tips associated with group
-            subtipsnr <- c()
-            for (sbts in 1: nrow(subtips)) {
-                sbtname <- subtips[sbts,1]
-                sbtnr <- which(tree$tip.label==sbtname)
-                subtipsnr <- c(subtipsnr, sbtnr)
+            subtips <- subset(taxonomy, as.character(taxonomy[, (ifullround+1)]) == as.character(taxa[i]))  # get tips associated with current group
+            subtipsnr <- c()  # create empty vector to be filled with tip numbers
+            for (sbts in 1: nrow(subtips)) {  # looping through all subtips assigned to current group
+                sbtname <- subtips[sbts, 1]  # extract name
+                sbtnr <- which(tree$tip.label == sbtname)  # extract number of subtip
+                subtipsnr <- c(subtipsnr, sbtnr)  # add subtip nr to numbers vector
             }
             ancnode <- getMRCA(tree, tip=c(subtipsnr))  # get MRCA for tips associated with group
         }
         if (length(ancnode) == 0) { # if monotypic i.e. only tip of given group
-            if (outliercheck == TRUE) {
+            if (outliercheck == TRUE) {  # if outliers are checked for (more columns)
                 outlist[i, ] <- c(taxa[i], "Monotypic", "NA", 1, "NA", "NA", "", "NA", "")  # UPDATE OUTPUT MATRIX, mark as monotypic if only one tip for this genus
-            } else {
+            } else {  # if outliers are not checked for (less columns)
                 outlist[i, ] <- c(taxa[i], "Monotypic", "NA", 1, "NA", "NA", "")  # UPDATE OUTPUT MATRIX, mark as monotypic if only one tip for this genus
             }
-        } else {
-                anctips <- getDescendants(tree, ancnode)  # determine all descendants of previously determined MRCA
-                ancnames <- tree$tip.label[c(anctips)]  # extract names of those descendants
-                ancnames <- ancnames[!is.na(ancnames)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
-                if (is.null(taxonomy)){  # genera extracted from tip labels if no taxonomy file loaded
-                    taxtips <- tree$tip.label[c(grep(paste("^",taxa[i],"_", sep=""), tree$tip.label))]  # get tip names of genus in question
-                } else {  # if taxonomy file loaded
-                    taxtips <- subtips[, 1]  # get vector of tip names of genus in question
+        } else {  # if not monotypic
+            anctips <- getDescendants(tree, ancnode)  # determine all descendants of previously determined MRCA
+            ancnames <- tree$tip.label[c(anctips)]  # extract names of those descendants
+            ancnames <- ancnames[!is.na(ancnames)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
+            if (is.null(taxonomy)) {  # genera extracted from tip labels if no taxonomy file loaded
+                taxtips <- tree$tip.label[c(grep(paste("^",taxa[i],"_", sep=""), tree$tip.label))]  # get tip names of genus in question
+            } else {  # if taxonomy file loaded
+                taxtips <- subtips[, 1]  # get vector of tip names of genus in question
+            }
+            if (length(ancnames) == length(taxtips)) {  # determine if all MRCA descendants = genus members. Genus is monophyletic if yes.
+                if (outliercheck == TRUE) {  # if outliers are checked for (more columns)
+                    outlist[i, ] <- c(taxa[i], "Yes", ancnode, length(taxtips), "0", "0", "", "NA", "")  # UPDATE OUTPUT MATRIX, mark as monophyletic
+                } else {  # if outliers are checked for (less columns)
+                    outlist[i, ] <- c(taxa[i], "Yes", ancnode, length(taxtips), "0", "0", "")  # UPDATE OUTPUT MATRIX, mark as monophyletic
                 }
-                if (length(ancnames) == length(taxtips)) {  # determine if all MRCA descendants = genus members. Genus is monophyletic if yes.
-                    if (outliercheck == TRUE) {
-                        outlist[i, ] <- c(taxa[i], "Yes", ancnode, length(taxtips), "0", "0", "", "NA", "")  # UPDATE OUTPUT MATRIX, mark as monophyletic
-                    } else {
-                        outlist[i, ] <- c(taxa[i], "Yes", ancnode, length(taxtips), "0", "0", "")  # UPDATE OUTPUT MATRIX, mark as monophyletic
-                    }
-                    } else {
-                        intruder.tips <- setdiff(ancnames, taxtips)  # determine intruders tip labels, i.e. descendants of MRCA which are not genus members
-                        if (is.null(taxonomy)){  # get intruder genus names if no taxonomy file loaded
+            } else {  # if taxon is not monophyletic
+                intruder.tips <- setdiff(ancnames, taxtips)  # determine intruders tip labels, i.e. descendants of MRCA which are not genus members
+                if (is.null(taxonomy)){  # get intruder genus names if no taxonomy file loaded
                             f2 <- function(s) strsplit(s, ("_| "))[[1]][1]  # function with split criteria: split names at underscore and keep first part (genus name)
                             split.taxa2 <- sapply(intruder.tips, f2)  # apply split function to intruder tip labels
                             intruder.taxa <- as.vector(unique(split.taxa2))  # create vector of intruder genera
@@ -303,7 +330,7 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                                 outlist[i, ] <- c(taxa[i], "No", ancnode, length(taxtips), (length(ancnames) - length(taxtips)), length(intruder.taxa), paste(intruder.taxa[1], "and", (length(intruder.taxa) - 1), "more.", collapse=", "))  # UPDATE OUTPUT MATRIX, mark as non-monophyletic and list intruder genera
                             }
                         }
-                    }
+                }
             }
         }
     # prepare outputs
@@ -400,5 +427,5 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
     nameout <- paste("Taxlevel", ifullround, sep = "_")  # name for output subsection
     finallist[[nameout]] <- outputlist #add list for this round of the loop to final list
     }
-finallist
+    finallist  # return final outputlist
 }
