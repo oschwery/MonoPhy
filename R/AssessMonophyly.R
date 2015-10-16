@@ -182,163 +182,160 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
                             split.taxa2 <- sapply(intruder.tips, f2)  # apply split function to intruder tip labels
                             intruder.taxa <- as.vector(unique(split.taxa2))  # create vector of intruder genera
                         } else {  # get intruder taxonomic levels from taxonomy file
-                            subtaxa <- c()
-                            for (j in 1:length(intruder.tips)) {
+                            subtaxa <- c()  # create empty vector to be filled with intruder taxnames
+                            for (j in 1:length(intruder.tips)) {  # loop through intruder tips
                                 subtaxon <- rbind(subset(taxonomy, taxonomy[, 1] == intruder.tips[j]))  # extract taxon for each intruder tip...
                                 subtaxa <- rbind(subtaxa, subtaxon)  # ... and add them up
                             }                      
-                            intruder.taxa <- as.vector(unique(subtaxa[, ifullround+1]))  # create vector of intruder taxa
+                            intruder.taxa <- as.vector(unique(subtaxa[, ifullround + 1]))  # create vector of intruder taxa
                         }
-                        outlier.tips <- c()
+                        outlier.tips <- c()  # create empty vector to be filled with outlier tips
                         if (outliercheck == TRUE) {  # distinguish outliers if TRUE
-                            tiplevels <- length(taxtips)/length(ancnames)
+                            tiplevels <- length(taxtips)/length(ancnames)  # determine fraction of total tips to members of focal taxon among descendants of current MRCA
                             if (tiplevels < outlierlevel ) {  # check if meeting criteria
-                                start.node <- ancnode
+                                start.node <- ancnode  # set MRCA node as starting point
                                 while (tiplevels < outlierlevel) {  # search for subclade that meets criteria
                                     subtaxtips <- c()  # reset taxtips
                                     subancnames <- c()  # reset ancnames
                                     parent.node <- start.node # set parent node
                                     daughter.nodes <- Children(tree, parent.node) # find direct descendant nodes
-                                    daughter1 <- daughter.nodes[1]
-                                    daughter2 <- daughter.nodes[2]
-                                    
+                                    daughter1 <- daughter.nodes[1]  # assign daughter node 1 separately
+                                    daughter2 <- daughter.nodes[2]  # assign daughter node 2 separately
+                                # prepare descendants of daughter 1
                                     anctips1 <- getDescendants(tree, daughter1)  # determine all descendants of daughter1
                                     ancnames1 <- tree$tip.label[c(anctips1)]  # extract names of those descendants
                                     ancnames1 <- ancnames1[!is.na(ancnames1)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
                                     taxtips1 <- intersect(taxtips, ancnames1)  # get taxon members of subclade1
-                                    
+                                # prepare descendants of daughter2
                                     anctips2 <- getDescendants(tree, daughter2)  # determine all descendants of daughter2
                                     ancnames2 <- tree$tip.label[c(anctips2)]  # extract names of those descendants
                                     ancnames2 <- ancnames2[!is.na(ancnames2)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
                                     taxtips2 <- intersect(taxtips, ancnames2)  # get taxon members of subclade2
-                                    # pick from the daughter nodes
+                                # pick from the daughter nodes
                                     nodechoice <- which(c(length(taxtips1), length(taxtips2))==max(c(length(taxtips1), length(taxtips2))))  # determine daughter with more tips of focal taxon
                                     if (length(nodechoice) > 1) {  # if equal number of taxon tips in both daughers:
                                         nodechoice2 <- which(c((length(taxtips1)/length(anctips1)), (length(taxtips2)/length(anctips2)))==max(c((length(taxtips1)/length(anctips1)), (length(taxtips2)/length(anctips2)))))  # determine daugther with higher ratio of focal taxon
                                         if (length(nodechoice2) > 1) {  # if equal ratio of taxon tips in both daughters: keep both daughters as core clade
-                                            subtaxtips <- c(taxtips1, taxtips2)
-                                            subancnames <- c(ancnames1, ancnames2)
-                                            start.node <- parent.node
-                                            break
+                                            subtaxtips <- c(taxtips1, taxtips2)  # merge their taxon members
+                                            subancnames <- c(ancnames1, ancnames2)  # merge their node descendants
+                                            start.node <- parent.node  # set their parent node as start point
+                                            break  # end loop
                                         } else if (nodechoice2 == 1) {  # if daughter 1 chosen: set as new start-node and -clade
-                                            subtaxtips <- taxtips1
-                                            subancnames <- ancnames1
-                                            start.node <- daughter1
+                                            subtaxtips <- taxtips1  # assign taxon members
+                                            subancnames <- ancnames1  # assign node descendants
+                                            start.node <- daughter1  # set node as start point
                                         } else if (nodechoice2 == 2) {  # if daughter 2 chosen: set as new start-node and -clade
-                                            subtaxtips <- taxtips2
-                                            subancnames <- ancnames2
-                                            start.node <- daughter2
+                                            subtaxtips <- taxtips2  # assign taxon members
+                                            subancnames <- ancnames2  # assign node descendants
+                                            start.node <- daughter2  # set node as start point
                                         }
                                     } else if (nodechoice == 1) {  # if daughter 1 chosen: set as new start-node and -clade
-                                        subtaxtips <- taxtips1
-                                        subancnames <- ancnames1
-                                        start.node <- daughter1
+                                        subtaxtips <- taxtips1  # assign taxon members
+                                        subancnames <- ancnames1  # assign node descendants
+                                        start.node <- daughter1  # set node as start point
                                     } else if (nodechoice == 2) {  # if daughter 2 chosen: set as new start-node and -clade
-                                        subtaxtips <- taxtips2
-                                        subancnames <- ancnames2
-                                        start.node <- daughter2
+                                        subtaxtips <- taxtips2  # assign taxon members
+                                        subancnames <- ancnames2  # assign node descendants
+                                        start.node <- daughter2  # set node as start point
                                     }
                                     tiplevels <- length(subtaxtips)/length(subancnames)  # reassess status of current clade
                                 }
-                                if (tiplevels < 1) {  # if intruders are present, check if early-diverging
-                                    EDtaxtips1 <- c()
-                                    EDtaxtips2 <- c()
-                                    #while (length(EDtaxtips1) == 0 | length(EDtaxtips2) == 0) {  # search for node whose daughers both include members of the focal taxon
-                                    repeat{
+                                if (tiplevels < 1) {  # if intruders are present after outliercheck, check if early-diverging
+                                    EDtaxtips1 <- c()  # create empty vector to be filled with early diverging tips
+                                    EDtaxtips2 <- c()  # create empty vector to be filled with early diverging tips
+                                # search for node whose daughers both include members of the focal taxon
+                                    repeat {  # continue search until break conditions are met
                                         EDparent.node <- start.node # set parent node
-                                        if (EDparent.node <= length(tree$tip.label)) {
-                                            subtaxtips <- tree$tip.label[EDparent.node]
-                                            subancnames <-tree$tip.label[EDparent.node]
-                                            start.node <- EDparent.node
-                                            break
+                                        if (EDparent.node <= length(tree$tip.label)) {  # if parent node is actually a tip
+                                            subtaxtips <- tree$tip.label[EDparent.node]  # assign that tip to taxon members
+                                            subancnames <-tree$tip.label[EDparent.node]  # assign that tip to node descendants
+                                            start.node <- EDparent.node  # set that node as start point
+                                            break  # end checking for early diverging
                                         }
                                         EDdaughter.nodes <- Children(tree, EDparent.node)  # find direct descendant nodes
-                                        EDdaughter1 <- EDdaughter.nodes[1]
-                                        EDdaughter2 <- EDdaughter.nodes[2]
-                                        
+                                        EDdaughter1 <- EDdaughter.nodes[1]  # assign daughter node 1 separately
+                                        EDdaughter2 <- EDdaughter.nodes[2]  # assign daughter node 2 separately
+                                    # prepare descendants of daughter 1
                                         EDanctips1 <- getDescendants(tree, EDdaughter1)  # determine all descendants of EDdaughter1
                                         EDancnames1 <- tree$tip.label[c(EDanctips1)]  # extract names of those descendants
                                         EDancnames1 <- EDancnames1[!is.na(EDancnames1)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
                                         EDtaxtips1 <- intersect(taxtips, EDancnames1)  # get taxon members of subclade1
-                                        
+                                    # prepare descendants of daughter 2
                                         EDanctips2 <- getDescendants(tree, EDdaughter2)  # determine all descendants of EDdaughter2
                                         EDancnames2 <- tree$tip.label[c(EDanctips2)]  # extract names of those descendants
                                         EDancnames2 <- EDancnames2[!is.na(EDancnames2)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
                                         EDtaxtips2 <- intersect(taxtips, EDancnames2)  # get taxon members of subclade2
-                                        # select node to continue
+                                    # select node to continue
                                         if (length(EDtaxtips1) == 0) {  # if EDdaugher1 has no decendant of focal taxon, continue with EDdaughter2
-                                            start.node <- EDdaughter2
+                                            start.node <- EDdaughter2  # set daughter 2 as new start node
                                         } else if (length(EDtaxtips2) == 0) {  # if EDdaugher2 has no decendant of focal taxon, continue with EDdaughter1
-                                            start.node <- EDdaughter1
-                                        } else {
-                                            subtaxtips <- c(EDtaxtips1, EDtaxtips2)
-                                            subancnames <- c(EDancnames1, EDancnames2)
-                                            start.node <- EDparent.node
-                                            break
+                                            start.node <- EDdaughter1  # set daughter 1 as new start node
+                                        } else {  # if both daughers have descendants of focal taxon, stop by keeping their parent node as node of core clade
+                                            subtaxtips <- c(EDtaxtips1, EDtaxtips2)  # merge their taxon members
+                                            subancnames <- c(EDancnames1, EDancnames2)  # merge their node descendants
+                                            start.node <- EDparent.node # set their parent node as start point
+                                            break  # end checking for early diverging
                                         }
                                     }
                                 }
                                 outlier.tips <- setdiff(taxtips, subtaxtips)  # determine outliers
-                                
-                                if (length(outlier.tips) != 0) {
-                                    outlier.species <- c(outlier.species, list(Tips=outlier.tips))  # update list of outlier tip labels
-                                    outlier.species.full <- c(outlier.species.full, outlier.tips)  # update vector of ALL outlier species
-                                    outlier.names <- c(outlier.names, taxa[i])  # update names vector for outliers
+                                if (length(outlier.tips) != 0) {  # if there ARE outliers...
+                                    outlier.species <- c(outlier.species, list(Tips=outlier.tips))  # ...update list of outlier tip labels
+                                    outlier.species.full <- c(outlier.species.full, outlier.tips)  # ...update vector of ALL outlier species
+                                    outlier.names <- c(outlier.names, taxa[i])  # ...update names vector for outliers
                                 }
-                                
-                                intruder.tips <- setdiff(subancnames, subtaxtips)
-                                
+                                intruder.tips <- setdiff(subancnames, subtaxtips)  # determine intruders
                                 if (is.null(taxonomy)){  # get intruder genus names if no taxonomy file loaded
                                      f2 <- function(s) strsplit(s, ("_| "))[[1]][1]  # function with split criteria: split names at underscore and keep first part (genus name)
                                     split.taxa2 <- sapply(intruder.tips, f2)  # apply split function to intruder tip labels
                                     intruder.taxa <- as.vector(unique(split.taxa2))  # create vector of intruder genera
                                 } else {  # get intruder taxonomic levels from taxonomy file
-                                    subtaxa <- c()
-                                    for (j in 1:length(intruder.tips)) {
+                                    subtaxa <- c()  # create empty vector to be filled with taxon names
+                                    for (j in 1:length(intruder.tips)) {  # loop through intruder tips
                                         subtaxon <- rbind(subset(taxonomy, taxonomy[, 1] == intruder.tips[j]))  # extract taxon for each intruder tip...
                                         subtaxa <- rbind(subtaxa, subtaxon)  # ... and add them up
                                     }                      
-                                    intruder.taxa <- as.vector(unique(subtaxa[, ifullround+1]))  # create vector of intruder taxa
+                                    intruder.taxa <- as.vector(unique(subtaxa[, ifullround+1]))  # create vector of intruder taxa (without doubles)
                                 }
                             }
                         }
-                        if (length(intruder.taxa) != 0) {
-                            intruder.genus <- c(intruder.genus, list(Taxa=intruder.taxa))  # update list of intruder genera
-                            intruder.genus.full <- c(intruder.genus.full,intruder.taxa)  # update vector of ALL intruder genera
-                            intruder.species <- c(intruder.species, list(Tips=intruder.tips))  # update list of intruder tip labels
-                            intruder.species.full <- c(intruder.species.full,intruder.tips)  # update vector of ALL intruder species
-                            intruder.names <- c(intruder.names, taxa[i])  # update names vector for intruders
+                        if (length(intruder.taxa) != 0) {  # if there ARE intruders...
+                            intruder.genus <- c(intruder.genus, list(Taxa=intruder.taxa))  # ...update list of intruder genera
+                            intruder.genus.full <- c(intruder.genus.full,intruder.taxa)  # ...update vector of ALL intruder genera
+                            intruder.species <- c(intruder.species, list(Tips=intruder.tips))  # ...update list of intruder tip labels
+                            intruder.species.full <- c(intruder.species.full,intruder.tips)  # ...update vector of ALL intruder species
+                            intruder.names <- c(intruder.names, taxa[i])  # ...update names vector for intruders
                         }
-                        if (outliercheck == TRUE) {
-                            if (length(intruder.taxa) <= verbosity) {  # give verbose intruder list if less than 5 intruding genera
-                                if (length(outlier.tips) <= verbosity) {
+                        if (outliercheck == TRUE) {  # if outliers are being checked for
+                            if (length(intruder.taxa) <= verbosity) {  # if less intruding genera than specified in verbosity...
+                                if (length(outlier.tips) <= verbosity) {  # if less intruding tips than specified in verbosity...
                                     outlist[i, ] <- c(taxa[i], "No", ancnode, length(taxtips), (length(ancnames) - length(taxtips)), length(intruder.taxa), paste(intruder.taxa, collapse=", "), length(outlier.tips), paste(outlier.tips, collapse=", "))  # UPDATE OUTPUT MATRIX, mark as non-monophyletic and list intruder genera
-                                } else {
+                                } else {  # if more intruder tips than verbosity level...
                                    outlist[i, ] <- c(taxa[i], "No", ancnode, length(taxtips), (length(ancnames) - length(taxtips)), length(intruder.taxa), paste(intruder.taxa, collapse=", "), length(outlier.tips), paste(outlier.tips[1], "and", (length(outlier.tips) - 1), "more.", collapse=", "))  # UPDATE OUTPUT MATRIX, mark as non-monophyletic and list intruder genera
                                 }
-                            } else {
-                                if (length(outlier.tips) <= verbosity) {
+                            } else {  # if more intruder taxa than verbosity level...
+                                if (length(outlier.tips) <= verbosity) {  # if less intruding tips than specified in verbosity...
                                     outlist[i, ] <- c(taxa[i], "No", ancnode, length(taxtips), (length(ancnames) - length(taxtips)), length(intruder.taxa), paste(intruder.taxa[1], "and", (length(intruder.taxa) - 1), "more.", collapse=", "), length(outlier.tips), paste(outlier.tips, collapse=", "))  # UPDATE OUTPUT MATRIX, mark as non-monophyletic and list intruder genera
-                                } else {
+                                } else {  # if more intruder tips than verbosity level...
                                     outlist[i, ] <- c(taxa[i], "No", ancnode, length(taxtips), (length(ancnames) - length(taxtips)), length(intruder.taxa), paste(intruder.taxa[1], "and", (length(intruder.taxa) - 1), "more.", collapse=", "), length(outlier.tips), paste(outlier.tips[1], "and", (length(outlier.tips) - 1), "more.", collapse=", "))  # UPDATE OUTPUT MATRIX, mark as non-monophyletic and list intruder genera
                                 }
                             }
-                        } else {
-                            if (length(intruder.taxa) <= verbosity) {  # give verbose intruder list if less than 5 intruding genera
+                        } else {  # if outliers are not checked for...
+                            if (length(intruder.taxa) <= verbosity) {  # if less intruding genera than specified in verbosity...
                                 outlist[i, ] <- c(taxa[i], "No", ancnode, length(taxtips), (length(ancnames) - length(taxtips)), length(intruder.taxa), paste(intruder.taxa, collapse=", "))  # UPDATE OUTPUT MATRIX, mark as non-monophyletic and list intruder genera
-                            } else {
+                            } else {  # if more intruder taxa than verbosity level...
                                 outlist[i, ] <- c(taxa[i], "No", ancnode, length(taxtips), (length(ancnames) - length(taxtips)), length(intruder.taxa), paste(intruder.taxa[1], "and", (length(intruder.taxa) - 1), "more.", collapse=", "))  # UPDATE OUTPUT MATRIX, mark as non-monophyletic and list intruder genera
                             }
                         }
                 }
             }
         }
-    # prepare outputs
+# prepare outputs
     intruder.genus.all <- unique(intruder.genus.full)  # vector of ALL intruder genera without doubles
     intruder.species.all <- unique(intruder.species.full)  # vector of ALL intruder species without doubles
-    outlier.species.all <- c()
-    if (outliercheck == TRUE) {
-        outlier.species.all <- unique(outlier.species.full)  # vector of ALL outlier species without doubles
+    outlier.species.all <- c()  # create empty vector to be filled with outlier species names
+    if (outliercheck == TRUE) {  # if outliers are being checked for...
+        outlier.species.all <- unique(outlier.species.full)  # ...create vector of ALL outlier species without doubles
     }
     outframe <- data.frame(outlist)  # turn final output matrix into data frame
     names(outframe) <- dfheaders  # apply headers
@@ -346,33 +343,32 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
     outframe[, 1] <- NULL  # delete first column (since now row names)
     names(intruder.genus) <- intruder.names  # apply names (of intruded genera) to intruder genus lists
     names(intruder.species) <- intruder.names  # apply names (of intruded genera) to intruder species lists
-    
-    if (is.null(taxonomy)){
+    if (is.null(taxonomy)) {  # if no taxonomy is specified (i.e. genus names are grepped from tip labels
         tip.states.matrix[, 1] <- tree$tip.label  # adding species names to matrix
         f3 <- function(s) strsplit(s, ("_| "))[[1]][1]  # function with split criteria: split names at underscore and keep first part (genus name)
         tip.states.matrix[, 2] <- sapply(tip.states.matrix[, 1], f3)  # apply split function, create genus name column
-    } else {
+    } else {  # if taxonomy file was specified (or created using taxize)
         tip.states.matrix[, 1] <- as.vector(taxonomy[, 1])  # adding species names to matrix
         tip.states.matrix[, 2] <- as.vector(taxonomy[, ifullround+1])  # create taxon name column
     }
-    for (i in 1:length(tree$tip.label)){  #for every matrix entry
-        if (tip.states.matrix[i, 2] == "unknown" | is.na(tip.states.matrix[i, 2])) {
-            tip.states.matrix[i, 3] <- "unknown"
-        } else {
-            if (tip.states.matrix[i, 1] %in% intruder.species.all == TRUE){  # score species as intruder if in global intruder list
-                tip.states.matrix[i, 3] <- "Intruder"
-            } else {
-                if (tip.states.matrix[i, 1] %in% outlier.species.all == TRUE){  # score species as intruder if in global intruder list
-                    tip.states.matrix[i, 3] <- "Outlier"
-                } else {
-                    if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Monotypic"){  # if not intruder, score as monophyletic if monotypic
-                        tip.states.matrix[i, 3] <- "Monophyletic"
-                    } else {
-                        if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Yes"){  # if not intruder nor monotypic, score as monophyletic if monophyletic
-                            tip.states.matrix[i, 3] <- "Monophyletic"
-                        } else {
-                            if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "No"){  # if not intruder nor monotypic, score as monophyletic if monophyletic
-                                tip.states.matrix[i, 3] <- "Non-Monophyletic"  # if not intruder, monotypic or monophyletic, score as non-monophyletic
+    for (i in 1:length(tree$tip.label)) {  # loop through tip labels
+        if (tip.states.matrix[i, 2] == "unknown" | is.na(tip.states.matrix[i, 2])) {  # if assignment to taxonomic group is unknown or NA...
+            tip.states.matrix[i, 3] <- "unknown"  # ...set monophyly state to 'unknown'
+        } else {  # ... if a taxonomic group is assigned...
+            if (tip.states.matrix[i, 1] %in% intruder.species.all == TRUE) {  # ...if species is in global intruder list...
+                tip.states.matrix[i, 3] <- "Intruder"  # ...score species as intruder 
+            } else {  # if not intruder...
+                if (tip.states.matrix[i, 1] %in% outlier.species.all == TRUE) {  # ...if species is in global outlier list...
+                    tip.states.matrix[i, 3] <- "Outlier"  # ...score species as outlier 
+                } else {  # if not outlier or intruder...
+                    if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Monotypic") {  # ...if  species is monotypic...
+                        tip.states.matrix[i, 3] <- "Monophyletic"  # ... score as monophyletic
+                    } else {  # if not outlier, intruder or monotypic...
+                        if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Yes"){  # ... if species is monophyletic...
+                            tip.states.matrix[i, 3] <- "Monophyletic"  # ... score as monophyletic
+                        } else {  # if not outlier, intruder, monotypic or monophyletic...
+                            if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "No"){  # ... if species is not monophyletic...
+                                tip.states.matrix[i, 3] <- "Non-Monophyletic"  # ... score as non-monophyletic
                             }
                         }
                     }      
@@ -380,48 +376,46 @@ for (ifullround in 1:length(taxsetnames)){  # Assess monophyly for every taxon s
             }
         } 
     }
-    tip.states.frame <- as.data.frame(tip.states.matrix)  # turn into data frame
-    #rownames(tip.states.frame) <- tip.states.matrix[, 1]  # assign tip labels as row names
-    #tip.states.frame[, 1] <- NULL  # delete first row, since now row names
+    tip.states.frame <- as.data.frame(tip.states.matrix)  # turn tip states matrix into data frame
     colnames(tip.states.frame) <- c("Tip", "Taxon", "Status")  # assign column names
-    if (outliercheck == TRUE) {
-        names(outlier.species) <- outlier.names  # apply names (of intruded genera) to intruder species lists
-        outlist.summary[, 1] <- c("Total", "Monophyletic", "Non-Monophyletic", "Monotypic", "Intruder", "Outlier")  # row names for summary table
-    } else {
-        outlist.summary[, 1] <- c("Total", "Monophyletic", "Non-Monophyletic", "Monotypic", "Intruder")  # row names for summary table
+    if (outliercheck == TRUE) {  # if outliers are being checked for...
+        names(outlier.species) <- outlier.names  # ...apply names (of outlier genera) to outlier species lists
+        outlist.summary[, 1] <- c("Total", "Monophyletic", "Non-Monophyletic", "Monotypic", "Intruder", "Outlier")  # ...add row names for summary table
+    } else {  # if outliers are not checked for...
+        outlist.summary[, 1] <- c("Total", "Monophyletic", "Non-Monophyletic", "Monotypic", "Intruder")  # ...add row names for summary table
     }
+# make counts for summary table    
     counttable <- table(outframe[, "Monophyly"])  # tabulate monophyly results
     countframe <- as.data.frame(counttable)  # turn into data frame
     rownames(countframe) <- countframe[, 1]  # assign first column as row names
     countframe[, 1] <- NULL  # delete first column (since now row names)
-
-    mono.count <- c()
-    nonmono.count <-c()
-
-    for (itaxcount1 in 1:length(taxa)) {
-        if (outlist[itaxcount1,2] == "Yes") {
-            mono.count <- c(mono.count, as.numeric(outlist[itaxcount1,4]))
+# make tip counts
+    mono.count <- c()  # create empty vector to be filled with numbers of monophyletic tips
+    nonmono.count <-c()  # create empty vector to be filled with numbers of non-monophyletic tips
+    for (itaxcount1 in 1:length(taxa)) {  # for every taxon...
+        if (outlist[itaxcount1, 2] == "Yes") {  # ...if monophyly is inferred to be true...
+            mono.count <- c(mono.count, as.numeric(outlist[itaxcount1, 4]))  # ...add the number of tips for that taxon to the monophyly counter
         }
     }
-    for (itaxcount2 in 1:length(taxa)) {
-        if (outlist[itaxcount2,2] == "No") {
-            nonmono.count <- c(nonmono.count, as.numeric(outlist[itaxcount2,4]))
+    for (itaxcount2 in 1:length(taxa)) {  # for every taxon...
+        if (outlist[itaxcount2,2] == "No") {  # ...if monophyly is inferred to be not true...
+            nonmono.count <- c(nonmono.count, as.numeric(outlist[itaxcount2,4]))  # ...add the number of tips for that taxon to the non-monophyly counter
         }
     }
-    if (outliercheck == TRUE) {
-        outlist.summary[, 2] <- c(length(taxa), countframe["Yes","Freq"], countframe["No","Freq"], countframe["Monotypic","Freq"], length(intruder.genus.all), length(outlier.names))  # populate summary table with counts of respective groups
-        outlist.summary[, 3] <- c(length(tree$tip.label), sum(mono.count), sum(nonmono.count), countframe["Monotypic","Freq"], length(intruder.species.all), length(outlier.species.all))
-    } else {
-        outlist.summary[, 2] <- c(length(taxa), countframe["Yes","Freq"], countframe["No","Freq"], countframe["Monotypic","Freq"], length(intruder.genus.all))  # populate summary table with counts of respective groups
-        outlist.summary[, 3] <- c(length(tree$tip.label), sum(mono.count), sum(nonmono.count), countframe["Monotypic","Freq"], length(intruder.species.all))
+    if (outliercheck == TRUE) {  # if outliers are being checked for...
+        outlist.summary[, 2] <- c(length(taxa), countframe["Yes","Freq"], countframe["No","Freq"], countframe["Monotypic","Freq"], length(intruder.genus.all), length(outlier.names))  # populate summary table with counts of respective groups (taxa)
+        outlist.summary[, 3] <- c(length(tree$tip.label), sum(mono.count), sum(nonmono.count), countframe["Monotypic","Freq"], length(intruder.species.all), length(outlier.species.all))  # populate summary table with counts of respective groups (tips)
+    } else {  # ...if outliers are not being checked for...
+        outlist.summary[, 2] <- c(length(taxa), countframe["Yes","Freq"], countframe["No","Freq"], countframe["Monotypic","Freq"], length(intruder.genus.all))  # populate summary table with counts of respective groups (taxa)
+        outlist.summary[, 3] <- c(length(tree$tip.label), sum(mono.count), sum(nonmono.count), countframe["Monotypic","Freq"], length(intruder.species.all))  # populate summary table with counts of respective groups (tips)
     }
     outframe.summary <- data.frame(outlist.summary)  # turn final output matrix summary into data frame
     rownames(outframe.summary) <- outframe.summary[, 1]  # assign first column as row names
     outframe.summary[, 1] <- NULL  # delete first column (since now row names)
-    colnames(outframe.summary) <- c("Taxa", "Tips")
-    if (outliercheck == TRUE) {
+    colnames(outframe.summary) <- c("Taxa", "Tips")  # assign column names to summary data frame
+    if (outliercheck == TRUE) {  # if outliers are being checked for...
         outputlist <- list(IntruderTaxa=intruder.genus, IntruderTips=intruder.species, OutlierTaxa=outlier.names, OutlierTips=outlier.species, result=outframe, summary=outframe.summary, TipStates=tip.states.frame) # concatenate intruder lists, final output table and summmary to one list object
-    } else {
+    } else {  # ...if outliers are not being checked for...
         outputlist <- list(IntruderTaxa=intruder.genus, IntruderTips=intruder.species, result=outframe, summary=outframe.summary, TipStates=tip.states.frame) # concatenate intruder lists, final output table and summmary to one list object
     }
     nameout <- paste("Taxlevel", ifullround, sep = "_")  # name for output subsection
