@@ -93,8 +93,8 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                         taxafromweb <- temp2  # replace retrieved table with cleaned up version
                     }
                 }
-                if (colnames(taxafromweb[1]) == "db") {
-                    taxafromweb <- taxafromweb[, -1]
+                if (colnames(taxafromweb[1]) == "db") {  # if the first column is the name of the database (which is getting lost if duplicates are removed)...
+                    taxafromweb <- taxafromweb[, -1]  # ...that first column will be dropped to get the same table format.
                 }
                 for (iweb in 2:(ncol(taxafromweb))) {  #add acquired taxon names for tips for each taxonomic level acquired
                     taxafromwebtable[, iweb] <- taxafromweb[, iweb]  # add retrieved entries to matrix
