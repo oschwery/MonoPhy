@@ -9,8 +9,7 @@ Requires rooted resolved phylogeny as input and creates a table of taxa, their m
 \usage{
 AssessMonophyly (tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE,
 outlierlevel=0.5, taxizelevel= NULL, taxizedb='ncbi', taxizepref='ncbi',
-taxask=FALSE, taxverbose=FALSE) {
-
+taxask=FALSE, taxverbose=FALSE)
 }
 \arguments{
   \item{tree}{
