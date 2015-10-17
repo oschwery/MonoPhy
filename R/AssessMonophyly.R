@@ -1,7 +1,7 @@
 # assesses monophyly of genera (or customized units) and makes the result available in different ways (tables, onjects, plot...)
 # written by Orlando Schwery 2015
 AssessMonophyly <-
-function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='both', taxizepref='ncbi', taxask=FALSE, taxverbose=FALSE) {
+function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='ncbi', taxizepref='ncbi', taxask=FALSE, taxverbose=FALSE) {
 # initial tests and data preparation
     if (!is.binary.tree(tree)) {  # checks and returns error if tree is not bifurcating
         stop('Phylogeny is not strictly bifurcating/resolved!')
@@ -93,8 +93,11 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                         taxafromweb <- temp2  # replace retrieved table with cleaned up version
                     }
                 }
-                for (iweb in 1:(ncol(taxafromweb) - 2)) {  #add acquired taxon names for tips for each taxonomic level acquired
-                    taxafromwebtable[, iweb + 1] <- taxafromweb[, iweb + 1]  # add retrieved entries to matrix
+                if (colnames(taxafromweb[1]) == "db") {
+                    taxafromweb <- taxafromweb[, -1]
+                }
+                for (iweb in 2:(ncol(taxafromweb))) {  #add acquired taxon names for tips for each taxonomic level acquired
+                    taxafromwebtable[, iweb] <- taxafromweb[, iweb]  # add retrieved entries to matrix
                     rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber rownames
                 }
                 taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"  # replace all NAs with "unknown"
@@ -352,9 +355,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
             tip.states.matrix[, 2] <- as.vector(taxonomy[, ifullround + 1])  # create taxon name column
         }
         for (i in 1:length(tree$tip.label)) {  # loop through tip labels
-            if (tip.states.matrix[i, 2] == "unknown" | is.na(tip.states.matrix[i, 2])) {  # if assignment to taxonomic group is unknown or NA...
-                tip.states.matrix[i, 3] <- "unknown"  # ...set monophyly state to 'unknown'
-            } else if (tip.states.matrix[i, 1] %in% intruder.species.all == TRUE) {  # ...if species is in global intruder list...
+            if (tip.states.matrix[i, 1] %in% intruder.species.all == TRUE) {  # ...if species is in global intruder list...
                 tip.states.matrix[i, 3] <- "Intruder"  # ...score species as intruder 
             } else if (tip.states.matrix[i, 1] %in% outlier.species.all == TRUE) {  # ...if species is in global outlier list...
                 tip.states.matrix[i, 3] <- "Outlier"  # ...score species as outlier 
@@ -364,6 +365,8 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                 tip.states.matrix[i, 3] <- "Monophyletic"  # ... score as monophyletic
             } else if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "No") {  # ... if species is not monophyletic...
                 tip.states.matrix[i, 3] <- "Non-Monophyletic"  # ... score as non-monophyletic
+            } else if (tip.states.matrix[i, 2] == "unknown" | is.na(tip.states.matrix[i, 2])) {  # if assignment to taxonomic group is unknown or NA...
+                tip.states.matrix[i, 3] <- "unknown"  # ...set monophyly state to 'unknown'
             }
         }
         tip.states.frame <- as.data.frame(tip.states.matrix)  # turn tip states matrix into data frame
