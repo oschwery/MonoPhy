@@ -19,14 +19,14 @@ GetOutlierTips(solution, taxa = NULL, taxlevels='ALL')
 Object with saved output of the 'AssessMonophyly' function.
 }
   \item{taxa}{
-Vector containing taxon names (genus or whichever taxonomic unit was used).
+Vector containing taxon names (genus or whichever taxonomic unit was used). Default NULL will return intruders/outliers for all taxa.
 }
   \item{taxlevels}{
-Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), or 'ALL'.  	
+Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), or 'ALL', which is the default.  	
 }
 }
 \details{
-Can be used after 'AssessMonophyly' is run to extract intruder/outlier taxa or intruder/outlier tips from it. The argument 'taxa' allows to limit the output to one or several taxa of interest. It is not available for GetOutlierTaxa, since this is just one vector with names anyway. The argument 'taxlevels' allows to limit the output if several taxonomic levels were used; 'ALL' is default, a single level can be selected by entering its number instead. Outliers can of course only be retrieved if the argument outliercheck was set to TRUE when running AssessMonophyly.
+Can be used after 'AssessMonophyly' is run to extract intruder/outlier taxa or intruder/outlier tips from it. The argument 'taxa' allows to limit the output to one or several taxa of interest. It is not available for GetOutlierTaxa, since this is just one vector with names anyway (a taxon can only be outlier of itself). The argument 'taxlevels' allows to limit the output if several taxonomic levels were used; 'ALL' is default, a single level can be selected by entering its number instead. Outliers can of course only be retrieved if the argument outliercheck was set to TRUE when running AssessMonophyly.
 }
 \value{
 List of character strings
@@ -42,8 +42,9 @@ Noteworthy difference: intruder tips for e.g. Vaccinium will be tips of OTHER ta
 }
 \examples{
 data(Ericactree)
-solution <- AssessMonophyly(Ericactree, verbosity=5)
+solution <- AssessMonophyly(Ericactree)
 GetIntruderTaxa(solution=solution)
-GetIntruderTaxa(solution=solution, taxa="Vaccinium")
+GetOutlierTaxa(solution=solution)
 GetIntruderTips(solution=solution, taxa=c("Phyllodoce", "Vaccinium", "Erica"))
+GetOutlierTips(solution=solution, taxa=c("Vaccinium"))
 }

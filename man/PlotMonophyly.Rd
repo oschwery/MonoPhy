@@ -18,7 +18,7 @@ adj.names='auto', adj.tips=0.5, label.offset='auto', type='phylogram', ...)
 Object with saved output of the 'AssessMonophyly' function.
 }
   \item{tree}{
-An object of type 'phy', rooted and fully resolved phylogeny.
+An object of type 'phy', rooted and fully resolved phylogeny (the same which was used to obtain the solution before).
 }
   \item{taxlevels}{
 An integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names). Default is 1.  	
@@ -27,7 +27,7 @@ An integer corresponding to the desired taxonomic level (i.e. the number of its 
 Either "monophyly", "taxonomy", "intruders" or "monoVStax", see details. Default is "monophyly".
 }
   \item{monocoll}{
-  	If TRUE will collapse all monophyletic taxa to one single tip labelled with the taxon name. Default is FALSE.
+  	If TRUE will collapse all monophyletic taxa to one single tip labeled with the taxon name. Default is FALSE.
 }
   \item{ladderize}{
 If TRUE will ladderize tree before reconstruction and plotting. Default is TRUE.
@@ -45,7 +45,7 @@ Used to customize the width of pdf file created when PDF=TRUE. Default is 'auto'
 Used to customize the height of pdf file created when PDF=TRUE. Default is 'auto', which will scale the height automatically based on the size of the tree.
 }
   \item{mono.colour}{
-Colour vector for plot type "monophyly" (and left side of "monoVStax"). Default is "PRGn", which colours monophyletic taxa green, non-monophyletic (intruded) taxa light purple and intruders purple using colours as specified in the corresponding ColorBrewer palette. Other predefined palettes are 'RdBu' (blue and red), 'PuOr' (purple and orange), 'PiYG' (green and pink) and 'BrBG' (petrol and brown). Alternatively, the colours can be customized as a vector in the order: c('monophyletic', 'non-monophyletic/intruded', 'intruder').
+Colour vector for plot type "monophyly" (and left side of "monoVStax"). Default is "PRGn", which colours monophyletic taxa green, non-monophyletic (intruded) taxa light purple and intruders purple using colours as specified in the corresponding ColorBrewer palette. Other predefined palettes are 'RdBu' (blue and red), 'PuOr' (purple and orange), 'PiYG' (green and pink) and 'BrBG' (petrol and brown). Alternatively, the colours can be customized as a vector in the order: c('monophyletic', 'non-monophyletic/intruded', 'intruder/outlier').
 }
   \item{tax.colour}{
 Colour vector for plot type "taxonomy" (and right side of "monoVStax"). Default is "rainbow", which assigns every taxon a different colour using the command 'rainbow()'.
@@ -54,7 +54,7 @@ Colour vector for plot type "taxonomy" (and right side of "monoVStax"). Default 
 Colour vector for plot type "intruder". Default is "rainbow", which assigns every intruder taxon a different colour using the command 'rainbow()', while monophyletic taxa are gray and non-monophyletic (intruded) taxa are black.
 }
   \item{edge.width}{
-Used to customize the thickness of the tree''s branches. Default is 3.
+Used to customize the thickness of the tree's branches. Default is 3.
 }
   \item{cex}{
 Used to customize the font size of the tip labels. Default is 0.2.
@@ -76,7 +76,7 @@ Other plot.phylo arguments.
 }
 }
 \details{
-Using the output object of \code{\link{AssessMonophyly}}, the result can be visualized in a couple of ways. Specifying the 'plot.type' "monophyly" plots a tree colouring the branches according to whether the respective clades are monophyletic, non-monophyletic or intruders. 'taxonomy' simply colour codes the different taxa. 'intruders' colours monophyletic groups gray, non-monophyletic groups black and the intruders according to the taxonomic group they belong to. Finally, 'monoVStax', plots two trees in a mirrored fashion, with the 'monophyly' type on the left and the 'taxonomy' type on the right.
+Using the output object of \code{\link{AssessMonophyly}}, the result can be visualized in a couple of ways. Specifying the 'plot.type' "monophyly" plots a tree colouring the branches according to whether the respective clades are monophyletic, non-monophyletic or intruders/outliers. 'taxonomy' simply colour codes the different taxa. 'intruders' colours monophyletic groups gray, non-monophyletic groups black and the intruders and outliers according to the taxonomic group they belong to. Finally, 'monoVStax', plots two trees in a mirrored fashion, with the 'monophyly' type on the left and the 'taxonomy' type on the right.
 It is important to note that this is merely supposed to be a useful visualization and not a biologically meaningful reconstruction.
 The colour vectors must be of sufficient length if customized, i.e. three colours for mono.colour, as many as taxa for tax.colour and as many as intruder taxa for intrud.colour.
 Collapsing monophyletic taxa by specifying 'monocoll = TRUE' allows to focus on the problem zones and should especially be useful for larger phylogenies.
@@ -95,7 +95,7 @@ Orlando Schwery
 }
 \examples{
 data(Ericactree)
-solution <- AssessMonophyly(Ericactree, verbosity=5)
+solution <- AssessMonophyly(Ericactree)
 
 PlotMonophyly(solution=solution, tree=Ericactree, plot.type='monophyly', ladderize=TRUE,
 mono.colour='PRGn')

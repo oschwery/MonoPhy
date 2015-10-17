@@ -14,10 +14,10 @@ GetAncNodes(solution, taxa = NULL, taxlevels='ALL')
 Object with saved output of the 'AssessMonophyly' function.
 }
   \item{taxa}{
-Vector containing taxon names (genera or whichever taxonomic unit was used).
+Vector containing taxon names (genera or whichever taxonomic unit was used). Default is 'NULL'
 }
   \item{taxlevels}{
-Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), or 'ALL'.  	
+Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), or 'ALL' (which is the default).  	
 }
 }
 \details{
@@ -34,6 +34,6 @@ Orlando Schwery
 }
 \examples{
 data(Ericactree)
-solution <- AssessMonophyly(Ericactree, verbosity=5)
+solution <- AssessMonophyly(Ericactree)
 GetAncNodes(solution=solution, taxa=c("Phyllodoce", "Vaccinium", "Erica"))
 }

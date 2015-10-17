@@ -4,11 +4,13 @@
 Assesses monophyly (or lack of it) of taxonomic groups in a phylogeny.
 }
 \description{
-Requires rooted resolved phylogeny as input and creates a table of taxa, their monophyly-status, which taxa cause problems in monophyly (as intruders or outliers) etc. Output can be accessed with related functions and a plot function can be used to plot the results in a number of ways.
+Requires rooted resolved phylogeny as input and creates a table of taxa, their monophyly-status, which taxa cause problems in monophyly (as intruders or outliers) etc. Output can be accessed with related functions (see section 'see also') and a plot function can be used to plot the results in a number of ways.
 }
 \usage{
-AssessMonophyly(tree, taxonomy = NULL, verbosity = 5, outliercheck=TRUE, outlierlevel=0.5,
-taxizelevel= NULL, taxizedb='both', taxizepref='ncbi')
+AssessMonophyly (tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE,
+outlierlevel=0.5, taxizelevel= NULL, taxizedb='ncbi', taxizepref='ncbi',
+taxask=FALSE, taxverbose=FALSE) {
+
 }
 \arguments{
   \item{tree}{
@@ -30,10 +32,16 @@ If 'outliercheck' is set to TRUE, this argument defines the threshold for the ou
 If taxonomy is set to 'taxize', it will download the taxonomic level specified here. Default is NULL.
 }
   \item{taxizedb}{
-If taxonomy is set to 'taxize', the desired taxonomic levels from the specified database. Either 'itis' or 'ncbi' or 'both', the latter is default.
+If taxonomy is set to 'taxize', the desired taxonomic levels from the specified database. Either 'itis' or 'ncbi' or 'both'; is default is 'ncbi'. If 'both' is chosen, double entries will be discarded and the database result with did actually yeld an entry will be kept. Note that using 'both' can lead to conflicts within 'taxize'.
 }
   \item{taxizepref}{
 If taxonomy is set to 'taxize' and taxizedb to 'both', either 'itis' or 'ncbi' can be set to be preferred if both databases have records for the tip in question. Default is 'ncbi'.
+}
+  \item{taxask}{
+If taxonomy is set to 'taxize', the called function 'tax_name' may find several potential matches in the queried databases. If 'taxask' is set to TRUE, the function will stop and prompt the user to pick an entry, if set to FALSE (which is default), it will pick the first entry and continue.
+}
+  \item{taxverbose}{
+If taxonomy is set to 'taxize', the called function 'tax_name' can display the progress, i.e. the names that are being queried and the success of the query. The default for this is FALSE, in which case nothing will be displayed while querrying.
 }
 }
 \details{
@@ -41,13 +49,13 @@ The function uses \code{\link[ape]{getMRCA}} from ape and \code{\link[phytools]{
 }
 \value{
 The output object of the function is a list containing the results as lists and data frames. If several taxonomic levels are analyzed, each will get a list-level containing its respective results. The different objects contained are:
-  \item{IntruderTaxa }{List of the names of the taxonomic groups assessed to be non-monophyletic, each containing a character string with the names of the taxa which are intruders (i.e. interfere with the monophyly of that respective taxon)}
-  \item{IntruderTips }{List of the names of the taxonomic groups assessed to be non-monophyletic, each containing a character string with the names of species/tips which are intruders (i.e. interfere with the monophyly of that taxon)}
-  \item{OutlierTaxa }{Vector of the names of the taxonomic groups which were inferred to have outlier tips)}
-  \item{OutlierTips }{List of the names of the taxonomic groups assessed to be non-monophyletic, each containing a character string with the names of species/tips which were inferred to be outliers (i.e. interfere with the monophyly of that taxon)}
-  \item{result }{Data frame containing the main results. Rows are the taxonomic groups used, columns are 'Monophyly' ('Yes', 'No' or 'Monotypic'), 'MRCA' (node number of inferred ancestor), '#Tips' (number of tips assigned to this taxon),'Delta-Tips' (number of tips which share this ancestral node but do not belong to the same taxon), '#Intruders'(how many other taxa interfere with the monophyly of the taxon in quesiton) and 'Intruders' (names of interfering taxa, how many of these are written out is determined by the argument 'verbosity'). If the argument outliercheck was set to TRUE when running 'AssessMonophyly', the table will additionally include '#Outliers' (number of tips which are placed outside the core clade for that group) and 'Outliers' (names of outlier taxa, the number of which also depending on the argument 'verbosity'). The whole data frame can be accessed using GetResultMonophyly}
-  \item{summary }{Data frame containing two rows with the number of taxa (e.g. genera) and tips (e.g. species) for the total tree, and which were inferred to be monophyletic, non-monophyletic, monotypic, intruders and (if applicable) outliers. Can be accessed using GetSummaryMonophyly.}
-  \item{TipStates }{Data frame with the columns 'Tip', 'Taxon' and 'Status', containing the tip labels, their associated taxa and monophyly status (monophyletic, non-monophyletic, intruder or outlier) respectively.}
+  \item{IntruderTaxa }{List of the names of the taxonomic groups assessed to be non-monophyletic, each containing a character string with the names of the taxa which are intruders (i.e. interfere with the monophyly of that respective taxon). Can be accessed using \code{\link{GetIntruderTaxa}}.}
+  \item{IntruderTips }{List of the names of the taxonomic groups assessed to be non-monophyletic, each containing a character string with the names of species/tips which are intruders (i.e. interfere with the monophyly of that taxon). Can be accessed using \code{\link{GetIntruderTips}}.}
+  \item{OutlierTaxa }{Vector of the names of the taxonomic groups which were inferred to have outlier tips). Can be accessed using \code{\link{GetOutlierTaxa}}.}
+  \item{OutlierTips }{List of the names of the taxonomic groups assessed to be non-monophyletic, each containing a character string with the names of species/tips which were inferred to be outliers (i.e. interfere with the monophyly of that taxon by being placed far from its core clade).  Can be accessed using \code{\link{GetOutlierTips}}.}
+  \item{result }{Data frame containing the main results. Rows are the taxonomic groups used, columns are 'Monophyly' ('Yes', 'No' or 'Monotypic'), 'MRCA' (node number of inferred ancestor), '#Tips' (number of tips assigned to this taxon),'Delta-Tips' (number of tips which share this ancestral node but do not belong to the same taxon), '#Intruders'(how many other taxa interfere with the monophyly of the taxon in quesiton) and 'Intruders' (names of interfering taxa, how many of these are written out is determined by the argument 'verbosity'). If the argument outliercheck was set to TRUE when running 'AssessMonophyly', the table will additionally include '#Outliers' (number of tips which are placed outside the core clade for that group) and 'Outliers' (names of outlier taxa, the number of which also depending on the argument 'verbosity'). The whole data frame can be accessed using \code{\link{GetResultMonophyly}}, the MRCA nodes can be accessed using \code{\link{GetAncNodes}}.}
+  \item{summary }{Data frame containing two rows with the number of taxa (e.g. genera) and tips (e.g. species) for the total tree, and which were inferred to be monophyletic, non-monophyletic, monotypic, intruders and (if applicable) outliers. Can be accessed using \code{\link{GetSummaryMonophyly}}.}
+  \item{TipStates }{Data frame with the columns 'Tip', 'Taxon' and 'Status', containing the tip labels, their associated taxa and monophyly status (monophyletic, non-monophyletic, intruder or outlier) respectively. This data frame will be used by the function \code{\link{PlotMonophyly}}.}
 }
 \author{
 Orlando Schwery
@@ -56,13 +64,13 @@ Orlando Schwery
 \code{\link{GetAncNodes}}, \code{\link{GetIntruderTaxa}}, \code{\link{GetIntruderTips}}, \code{\link{GetOutlierTaxa}}, \code{\link{GetOutlierTips}},\code{\link{GetResultMonophyly}}, \code{\link{GetSummaryMonophyly}}, \code{\link{MonophylyData}}, \code{\link{PlotMonophyly}}, \code{\link{MonoPhy-package}}
 }
 \examples{
-data(Ericactree)
-solution <- AssessMonophyly(Ericactree, verbosity=5)
-GetSummaryMonophyly(solution)
+data(Ericactree)  # load tree
+solution <- AssessMonophyly(Ericactree)  # run analysis
+GetSummaryMonophyly(solution)  # extract summary table from output
 
 #use custom taxonomic level
-data(Ericactree)
-data(Ericactribes)
-solutiontribes <- AssessMonophyly(Ericactree, taxonomy=Ericactribes, verbosity=5)
-GetSummaryMonophyly(solutiontribes)
+data(Ericactree)  # load tree
+data(Ericactribes)  # load taxonomy file
+solutiontribes <- AssessMonophyly(Ericactree, taxonomy=Ericactribes)  # run analysis
+GetSummaryMonophyly(solutiontribes)  # extract summary table from output
 }

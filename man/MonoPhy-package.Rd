@@ -13,10 +13,10 @@ Requires rooted resolved phylogeny as input and creates a table of taxa, their m
 Package: \tab MonoPhy\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
-Date: \tab 2015-03-22\cr
+Date: \tab 2015-10-17\cr
 License: \tab GPL-3\cr
 }
-The package allows to explore monophyly in phylogenetic trees in a  and simple  way. AssessMonophyly determines whether taxa in a phylogeny are monophyletic. GetSummaryMonophyly extracts a summary table from the results, GetResultMonophyly extracts the main result table, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa and GetOutlierTips extract names of taxa which interfere with the monophyly of another or the same taxon respectively and GetAncNodes a table of MRCA nodes. PlotMonophyly finally, allows visualizing the results in a couple of different ways.
+The package allows to explore monophyly in phylogenetic trees in a quick and simple  way. AssessMonophyly determines whether taxa in a phylogeny are monophyletic. GetSummaryMonophyly extracts a summary table from the results, GetResultMonophyly extracts the main result table, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa and GetOutlierTips extract names of taxa which interfere with the monophyly of another or the same taxon respectively and GetAncNodes a table of MRCA nodes. PlotMonophyly finally, allows visualizing the results in a couple of different ways.
 }
 \author{
 Orlando Schwery
