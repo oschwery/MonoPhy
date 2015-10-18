@@ -4,3 +4,5 @@ import(ape, phytools, RColorBrewer)
 
 importFrom("taxize", tax_name)
 importFrom("phangorn", Children)
+importFrom("grDevices", "dev.off", "pdf", "rainbow")
+importFrom("graphics", "layout", "par", "plot")
