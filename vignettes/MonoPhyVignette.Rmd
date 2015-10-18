@@ -11,7 +11,7 @@ vignette: >
 ## 1 Introduction ##
 This is a tutorial vignette to provide a quick and easy introduction to the use of MonoPhy. It will make use of the inbuilt example files and lead through the most important functions of the package.
 
-In order to be aware of discrepancies between a newly generated phylogeny and the current taxonomy, it is necessary to assess monophyly of the taxa in the tree. MonoPhy allows to do this in a quick and simple way, both using the phylogeny only and including a file assigning tips to taxonomic groups. Notably, such a file can contain any type of information for which to test monophyly in a tree ( _e.g._ traits or geographic occurance), as long as attention is paid on that the assessment makes sense biologically.
+In order to be aware of discrepancies between a newly generated phylogeny and the current taxonomy, it is necessary to assess monophyly of the taxa in the tree. MonoPhy allows doing this in a quick and simple way, both using the phylogeny only and including a file assigning tips to taxonomic groups. Notably, such a file can contain any type of information for which to test monophyly in a tree ( _e.g._ traits or geographic occurrence), as long as attention is paid on that the assessment makes sense biologically.
 
 ## 2 Installation ##
 ### 2.1 CRAN ###
@@ -47,7 +47,7 @@ library(MonoPhy)
 
 ### 3.1 Load Data ###
 #### 3.1.1 Example Files ####
-The package comes with example files for you to try out its functions, which will be used throughout this tutorial. The phylogeny is of the plant family Ericaceae, as published in Schwery _et al._ (2015) pruned down to 77 taxa. Two taxon files assign tribes or tribes and subfamilies to the tips.
+The package comes with example files for you to try out its functions, which will be used throughout this tutorial. The phylogeny is of the plant family Ericaceae, as published in Schwery _et al._ (2015) pruned down to 77 taxa. Two taxon files assign tribes or both tribes and subfamilies to the tips.
 
 ```{r, results="hide"}
 #load data
@@ -84,17 +84,17 @@ head(your_clades)
 ```
 
 ### 3.2 Run Main Analysis ###
-The command for the main analysis-step is `AssessMonophyly`. This will check the monophyly of all taxa in the tree, identify which intruders and outliers are responsible for the non-monophyly of a taxon and determine their status for later plotting. Depending on the number of tips in the tree and the number of monophyly-issues, this step will take more or less time. For the example files, this step should only take few secons, but for a conflict-rich tree with several 10k tips it could easily end up being 3-4 hours. Accessing the information afterwards however is fairly quick.
+The command for the main analysis-step is `AssessMonophyly`. This will check the monophyly of all taxa in the tree, identify which intruders and outliers are responsible for the non-monophyly of a taxon and determine their status for later plotting. Depending on the number of tips in the tree and the number of monophyly-issues, this step will take more or less time. For the example files, this step should only take seconds, for a few thousand tips a couple of minutes, but for a conflict-rich tree with several 10k tips it could easily end up being 3-4 hours. Accessing the information afterwards however is fairly quick.
 
 #### 3.2.1 Taxonomy Based on Tip Labels ####
 If we run the analysis using only the tree, the function will check whether the tip labels are in the format *Genus_species*, and if so, will extract the genus name from each tip label and use it as the taxonomic group associated to this tip.
 ```{r}
 solution0 <- AssessMonophyly(Ericactree)
 ```
-The resulting output object will be a list which will contain all the output information for all taxon levels in a nested fashion. We will explore in the following how to access this information effectively.
+The resulting output object will be a list, which will contain all the output information for all taxon levels in a nested fashion. We will explore in the following how to access this information effectively.
 
 #### 3.2.2 Taxonomy Based on File ####
-If the tip labels have a format different from *Genus_species*, or if we want to asses a different taxonomic level, we can do that by adding a taxonomy file to the command. The taxonomy file should be a simple table (data frame, maybe easiest based off a .csv file) without header, at least two columns and one row per tip. The first column contains the tip labels and all further columns (one or more) the names of the taxa associated to the respective tip, whereas every column stands for a different taxon level. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed.
+If the tip labels have a format different from *Genus_species*, or if we want to assess a different taxonomic level, we can do that by adding a taxonomy file to the command. The taxonomy file should be a simple table (data frame, maybe easiest based off a .csv file) without header, at least two columns and one row per tip. The first column contains the tip labels and all further columns (one or more) the names of the taxa associated to the respective tip, whereas every column stands for a different taxon level. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed.
 
 ```{r}
 solution1 <- AssessMonophyly(Ericactree, Ericacsubfams)
@@ -120,22 +120,22 @@ To get a first look on the results, we can pull the summary table out of the out
 ```{r}
 GetSummaryMonophyly(solution0)  # pull out summary table
 ```
-We can now see in the first column how many taxa are either monophyletic, non-monophyletic or monotypic (consisting of only one representative), as well as how many are outliers or intruders of another taxon. In the second column, we can see how many of the tips fall in those respective categories.
+We can now see in the first column how many taxa are either monophyletic, non-monophyletic or monotypic (consisting of only one representative), as well as how many have outliers or are intruders to another taxon. In the second column, we can see how many of the tips fall in those respective categories.
 
 If we used a taxonomy file and had several taxonomic levels, the summary and result functions will by default return all of them. If we only want to look at a specific one, we can specify the number of the one we want under `taxlevels`.
 ```{r}
 GetResultMonophyly(solution1, taxlevels=2)  # pull out summary only for taxlevel 2, subfamilies in this case
 ```
-The result table shows us the analysis outcomes for each taxonomic unit considered. The row 'Monophyly' states whether the taxon is monophyletic, 'MRCA' gives the node number of the most recent common ancestor of all members of this taxon, '#Tips' gives the number of tips assigned to this taxon, and 'Delta-Tips' gives the number of tips that do not belong to that taxon, but which are also descendants of its MRCA. The columns '#Intruders' and '#Outliers' tell us how many other taxa or tips are intruders or outliers for this taxon respectively. 'Intruders' and 'Outliers' give us their names.
+The result table shows us the analysis outcomes for each taxonomic unit considered. The row 'Monophyly' states for each taxon whether it is monophyletic, 'MRCA' gives the node number of the most recent common ancestor of all its members, '#Tips' gives the number of tips assigned to this taxon, and 'Delta-Tips' gives the number of tips that do not belong to that taxon, but which are also descendants of its MRCA. The columns '#Intruders' and '#Outliers' tell us how many other taxa or tips are intruders or outliers for this taxon respectively. 'Intruders' and 'Outliers' give us their names.
 
 #### 3.3.2 Further Look - Customized Access to Detailed Results ####
-In order to really dig into the analysis outputs, we can access information on wich taxa and tips cause the monophyly issues as either intruders or outliers and which nodes have been inferred as MRCA of each taxon.
+In order to really dig into the analysis outputs, we can access information on which taxa and tips cause the monophyly issues as either intruders or outliers and which nodes have been inferred as MRCA of each taxon.
 
 When exploring intruders, we can either list them for all taxa or limit the list to taxa we're interested in, _e.g._ only for the genus _Erica_: 
 ```{r}
 GetIntruderTaxa(solution0, taxa="Erica")  # get list of genera that cause monophyly-issues for Erica
 ```
-We learn that the genus _Bruckenthalia_ invades _Erica_, which turns out not to be problematic, as _Bruckenthalia_ is now considered part of _Erica_.
+We learn that the genus _Bruckenthalia_ invades _Erica_, which turns out not to be problematic, as _Bruckenthalia_ is now classified to belong to _Erica_ as well.
 
 Similarly, if we have multiple taxonomic levels, we can limit the output to the one of interest:
 ```{r}
@@ -145,7 +145,7 @@ This works similarly for MRCA-nodes, outlier tips and outlier taxa (note that th
 ```{r}
 GetAncNodes(solution1, taxa = NULL, taxlevels='ALL')
 ```
-**Note:** The `NA` for Oxydendreae reflects that it is monotypic and thus doesn't have a MRCA.
+**Note:** The `NA` for Oxydendreae reflects that it is monotypic and thus doesn't have an MRCA.
 ```{r}
 GetOutlierTaxa(solution0, taxlevels='ALL')
 GetOutlierTips(solution1, taxa = NULL, taxlevels='ALL')
@@ -172,7 +172,7 @@ PlotMonophyly(solution0, Ericactree, plot.type='monophyly', ladderize=TRUE, cex=
 This shows us the monophyly situation on the genus level. It is easy to see, how _Orthilia_ invades _Pyrola_, _Kalmiopsis_ invades _Phyllodoce_, _Bruckenthalia_ invades _Erica_ and how _Dimorphanthera_ and _Paphia_ reciprocally invade each other. We further see how _Vaccinium_ is invaded by _Agapetes_ and _Gaylussacia_, while having two outlier species of its own as well. Note how a more conservative ( _i.e._ higher) `outlierlevel` would tell us that only _Gaylussacia_ invades _Vaccinium_, which would then have _Vaccinium bracteatum_ as additional outlier instead.
 
 #### 3.4.2 Taxonomy Plot ####
-This rather auxiliary plot type allows to view clades coloured by the taxon they belong to. Here we want to look at a different __taxonomic level__, the subfamilies, hence we can specify in the command to display `taxlevels=2` (as subfamilies was the second taxonomy column in our input file) and pick the output object `solution1`, which contains the results of the analysis incorporating the taxonomy file. The default colours are `rainbow`, which means that every taxon will get a different colour from the rainbow spectrum.
+This rather auxiliary plot type allows viewing clades coloured by the taxon they belong to. Here we want to look at a different __taxonomic level__, the subfamilies, hence we can specify in the command to display `taxlevels=2` (as subfamilies was the second taxonomy column in our input file) and pick the output object `solution1`, which contains the results of the analysis incorporating the taxonomy file. The default colours are `rainbow`, which means that every taxon will get a different colour from the rainbow spectrum.
 ```{r, fig.width=7, fig.height=14}
 PlotMonophyly(solution1, Ericactree, taxlevels=2, plot.type='taxonomy', cex=0.5)
 ```
@@ -201,12 +201,14 @@ PlotMonophyly(solution1, Ericactree, taxlevels=1, plot.type='intruders', monocol
 
 Collapsing all monophyletic tribes slimmed this plot down and increased the overview. We immediately see that the issues are confined to the Vaccinieae and their sister clade, the Andromedeae, and the colouration reveals that _Andromeda polifolia_, _Vaccinium vitis-ideae_ and _Zenobia pulverulenta_ are causing it. Apparently, _Andromeda_ and the _Vaccinium_ are supposed to belong to the same tribe (Andromedeae), whereas _Zenobia_ should belong to a different one (being an intruder to Andromedeae from Vaccinieae). The solution behind this issue is, that the tribe names assigned to _Vaccinium vitis-ideae_ and _Zenobia pulverulenta_ where (intentionally) switched.
 
-__Note__: Intruders are coloured using `rainbow` as well, but the palette will be newly created and the colours do will not correspond to the ones in the taxonomy plot.
+__Note__: Intruders are coloured using `rainbow` as well, but the palette will be newly created and the colours will not correspond to the ones in the taxonomy plot.
 
 #### 3.4.5 Solutions for Large Trees ####
-A difficulty for viewing phylogenies in R can be that trees can be too large to see much detail in an R plotting window. To this end, we can choose to print the plot directly to a PDF file instead, in which we can then easily search and zoom into the desired portions of the tree. To achieve this, we simply set `PDF=TRUE` and set our desired filename in `PDF_filename='ourdesiredfilename.pdf'`. Space can additionally be saved by using `monocoll=TRUE`. The size of the PDF can be specified using `PDF_width` and `PDF_height`, the default for which is `"auto"`.
+A difficulty for viewing phylogenies in R is that trees can be too large to see much detail in an R plotting window. To this end, we can choose to print the plot directly to a PDF file instead, in which we can then easily search and zoom into the desired portions of the tree. To achieve this, we simply set `PDF=TRUE` and set our desired filename in `PDF_filename='ourdesiredfilename.pdf'`. Space can additionally be saved by using `monocoll=TRUE`. The size of the PDF can be specified using `PDF_width` and `PDF_height`, the default for which is `"auto"`.
 
-Here two examples which are printed to PDF, first a monophyly plot with collapsed monophyletic clades on genus level:
+**Note:** Be aware that plotting very large trees can take quite some time, in some cases longer than running the main analysis.
+
+Here two examples that are printed to PDF, first a monophyly plot with collapsed monophyletic clades on genus level:
 ```{r, eval=FALSE}
 PlotMonophyly(solution0, Ericactree, taxlevels=1, plot.type='monophyly', monocoll=TRUE,
 ladderize=TRUE, PDF=TRUE, PDF_filename='Monophylyplot_Ericac_Example.pdf')
@@ -226,9 +228,9 @@ PDF_filename='Intruderplot_Ericac_Example.pdf', type="fan")
 PlotMonophyly(solution1, Ericactree, taxlevels=2, plot.type='intruders', ladderize=TRUE, type="fan", cex=0.4)
 ```
 
-__Note__: If `PDF_height` and `PDF_width` are set to `"auto"`, the command will automatically scale the PDF document to be created according to the number of taxa in the tree. However, PDF files seem to be constrained to a maximum height of 200 inches, the function will thus cap the size to that (both for automatic and manual sizes). If your tree is very large, the resulting PDF might be difficult to inspect and you might want to consider chopping your tree up into subtrees to plot ( _e.g._ using `treeSlice` from the package `phytools`).
+__Note__: If `PDF_height` and `PDF_width` are set to `"auto"`, the command will automatically scale the PDF document to be created according to the number of taxa in the tree. However, PDF files seem to be constrained to a maximum size of 200 inches, and the function will thus cap the size to that (both for automatic and manual sizes). If your tree is very large, the resulting PDF might be difficult to inspect and you might want to consider chopping your tree up into subtrees to plot ( _e.g._ using `treeSlice` from the package `phytools`).
 
-Also, if the automatic scaling moves tip labels etc. in a way you don't like, you can adjust most parameters by specifying the respective arguments yourself. More details on that can be found in the help files.
+Also, if the automatic scaling moves tip labels etc. in a way you don't like, you can adjust most parameters by specifying the respective arguments yourself. More details on that can be found in the helpfiles.
 
 ##4 Final Notes##
 
