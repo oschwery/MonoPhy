@@ -22,7 +22,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
     } else {
         if (!is.null(taxonomy) && taxonomy != 'taxize') {  # if argument 'taxonomy' is not NULL and not taxize, use loaded taxonomy file
             if (length(taxonomy[, 1]) != length(tree$tip.label)) {  # checks and returns error if taxonomy file has more or less entries than tree has tips
-                stop('Number of rows of taxonomy file is not equal to number of taxa (note: table should not have a header)!')
+                stop('Number of rows of taxonomy file is not equal to number of taxa (note: if your table has a header, you should specify header=TRUE when importing)!')
             }
             if (length(taxonomy[1, ]) < 2) {  # checks and returns error if taxonomy file doesn't have at least two columns
                 stop('Taxonomy file needs at least 2 columns: tip labels and taxonomic group!')
@@ -63,7 +63,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
             for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxon file
                 nametax <- paste("taxa", jtax, sep="")  # create taxon name label
                 taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
-                tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector of taxonomic units (without doubles) 
+                tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector of taxonomic units (without doubles)
                 taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
             }
         } else {  # if not NULL and not taxfile but taxize
@@ -103,14 +103,14 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                 taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"  # replace all NAs with "unknown"
                 taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
                 taxsetnames <- c()  # create empty vector to be filled with taxonomy set names
-                taxsets <- list()  # create empty list to be filled with taxonomy lists 
+                taxsets <- list()  # create empty list to be filled with taxonomy lists
                 for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxonomy file
                     nametax <- paste("taxa", jtax, sep="")  # create taxon name label
                     taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
-                    tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector taxonomic units (without doubles) 
+                    tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector taxonomic units (without doubles)
                     taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
                 }
-            }  
+            }
         }
     }
 # actual assessment
@@ -189,7 +189,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                         for (j in 1:length(intruder.tips)) {  # loop through intruder tips
                             subtaxon <- rbind(subset(taxonomy, taxonomy[, 1] == intruder.tips[j]))  # extract taxon for each intruder tip...
                             subtaxa <- rbind(subtaxa, subtaxon)  # ... and add them up
-                        }                      
+                        }
                         intruder.taxa <- as.vector(unique(subtaxa[, ifullround + 1]))  # create vector of intruder taxa
                     }
                     outlier.tips <- c()  # create empty vector to be filled with outlier tips
@@ -297,7 +297,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                                 for (j in 1:length(intruder.tips)) {  # loop through intruder tips
                                     subtaxon <- rbind(subset(taxonomy, taxonomy[, 1] == intruder.tips[j]))  # extract taxon for each intruder tip...
                                     subtaxa <- rbind(subtaxa, subtaxon)  # ... and add them up
-                                }                      
+                                }
                                 intruder.taxa <- as.vector(unique(subtaxa[, ifullround + 1]))  # create vector of intruder taxa (without doubles)
                             }
                         }
@@ -356,9 +356,9 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
         }
         for (i in 1:length(tree$tip.label)) {  # loop through tip labels
             if (tip.states.matrix[i, 1] %in% intruder.species.all == TRUE) {  # ...if species is in global intruder list...
-                tip.states.matrix[i, 3] <- "Intruder"  # ...score species as intruder 
+                tip.states.matrix[i, 3] <- "Intruder"  # ...score species as intruder
             } else if (tip.states.matrix[i, 1] %in% outlier.species.all == TRUE) {  # ...if species is in global outlier list...
-                tip.states.matrix[i, 3] <- "Outlier"  # ...score species as outlier 
+                tip.states.matrix[i, 3] <- "Outlier"  # ...score species as outlier
             } else if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Monotypic") {  # ...if  species is monotypic...
                 tip.states.matrix[i, 3] <- "Monophyletic"  # ... score as monophyletic
             } else if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Yes"){  # ... if species is monophyletic...
@@ -377,7 +377,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
         } else {  # if outliers are not checked for...
             outlist.summary[, 1] <- c("Total", "Monophyletic", "Non-Monophyletic", "Monotypic", "Intruder")  # ...add row names for summary table
         }
-    # make counts for summary table    
+    # make counts for summary table
         counttable <- table(outframe[, "Monophyly"])  # tabulate monophyly results
         countframe <- as.data.frame(counttable)  # turn into data frame
         rownames(countframe) <- countframe[, 1]  # assign first column as row names
