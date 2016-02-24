@@ -98,7 +98,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                 }
                 for (iweb in 2:(ncol(taxafromweb))) {  #add acquired taxon names for tips for each taxonomic level acquired
                     taxafromwebtable[, iweb] <- taxafromweb[, iweb]  # add retrieved entries to matrix
-                    rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber rownames
+                    rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber row names
                 }
                 taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"  # replace all NAs with "unknown"
                 taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
@@ -413,13 +413,13 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
         }
         if (is.null(taxonomy)) {  #Add taxlevel names if no input taxonomy...
           nameout <- "Genera"  # ...name level "Genera"
-        } else if (!is.null(taxonomy) && taxonomy != 'taxize') {  # if taxtable used...
+        } else if (!is.null(taxonomy) && is.null(taxizelevel)) {  # if taxtable used...
           if (colnames(taxonomy)[ifullround] == paste("V", ifullround, sep="")) {  # if taxonomy table doesn't have header (or it is empty)...
             nameout <- paste("Taxlevel", ifullround, sep="_")  # ...name level of output subsection 'taxlevel#'
           } else {  # if taxonomy table has header...
-            nameout <- colnames(taxonomy)[ifullround]  # ...name level accroding to header entry
+            nameout <- colnames(taxonomy)[ifullround+1]  # ...name level accroding to header entry
           }
-        } else if (taxonomy == 'taxize') {  # if taxonomy from taxize...
+        } else if (!is.null(taxizelevel)) {  # if taxonomy from taxize...
             nameout <- taxizelevel[ifullround]  # ...name level according to taxize query
         }
         finallist[[nameout]] <- outputlist #add list for this round of the loop to final list
