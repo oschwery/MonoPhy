@@ -4,9 +4,6 @@
 GetSummaryMonophyly <-
 function(solution, taxlevels='ALL') {
     Allsummaries <- list()  # create empty list to be filled
-#    if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # test format of taxlevels argument and display error if format is wrong
-#		stop("taxlevels must be either 'ALL' or numeric!")
-#    }
     if (taxlevels == 'ALL') {  # if all taxlevels are looked for
         for (i in 1:length(solution)) {  # loop through all taxlevels
             namesum <- paste('Taxlevel', i, sep='_')  # create namelabel for current taxlevel
