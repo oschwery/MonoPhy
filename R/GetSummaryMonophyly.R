@@ -1,7 +1,7 @@
 # get summary only displayed out of the outputlist of AssessMonophyly
 # written by Orlando Schwery 2015
 
-GetSummaryMonophyly2 <-
+GetSummaryMonophyly <-
 function(solution, taxlevels='ALL') {
     Allsummaries <- list()  # create empty list to be filled
 #    if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # test format of taxlevels argument and display error if format is wrong
