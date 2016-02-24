@@ -1,7 +1,7 @@
 #get list of MRCA nodes of desired genera only displayed out of the outputlist of AssessMonophyly
 # written by Orlando Schwery 2015
 
-GetAncNodes2 <-
+GetAncNodes <-
 function(solution, taxa=NULL, taxlevels='ALL') {
     allnodes <- list() 	# create empty list to be filled
     if (taxlevels == 'ALL') {  #if no specific taxlevel should be focused on
