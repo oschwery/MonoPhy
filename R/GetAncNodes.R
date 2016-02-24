@@ -18,7 +18,6 @@ function(solution, taxa=NULL, taxlevels='ALL') {
     }  # if a specific taxlevel should be focused on
     if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # if named taxlevel requested
         namenod <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
-        namenod <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
 		    if (length(taxa) == 0){  # display all if no genera specified
           tmp <- solution[[taxlevels]]$result[, "MRCA", drop=FALSE]  # extract MRCA column out of result table
           allnodes[[namenod]] <- tmp  # add the extracted table as sub-entry to output list, named according to taxlevel
