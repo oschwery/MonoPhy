@@ -39,7 +39,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
           allnodes[[namenod]] <- tmp  # add the extracted table as sub-entry to output list, named according to taxlevel
         }
     }
-    if (length(allnodes) ==0) {
+    if (length(allnodes) == 0) {
       stop('No results found. Consider reviewing taxlevels argument.')
     }
     allnodes  # return final list with MRCA nodes

@@ -54,7 +54,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
             alltaxa[[nametax]] <- alltaxa2  # add compiled invaders of this taxlevel as sub-list to outputlist, named after current taxlevel
         }
       }
-    if (length(alltaxa) ==0) {
+    if (length(alltaxa) == 0) {
       stop('No results found. Consider reviewing taxlevels argument.')
     }
     alltaxa  # export output list
