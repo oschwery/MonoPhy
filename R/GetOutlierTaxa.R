@@ -1,7 +1,7 @@
 #get list of outliers (genera) only displayed out of the outputlist of AssessMonophyly
 # written by Orlando Schwery 2015
 
-GetOutlierTaxa2 <-
+GetOutlierTaxa <-
 function(solution, taxlevels='ALL') {
     alltaxa <- list()  # create empty list to be filled
     if (taxlevels == 'ALL') {  # if all taxlevels are looked for
