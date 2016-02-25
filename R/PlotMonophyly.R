@@ -3,10 +3,10 @@
 PlotMonophyly <-
 function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', PDF_width='auto', PDF_height='auto', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, adj.names='auto', adj.tips=0.5, label.offset='auto', type='phylogram', ...) {
 # warnings and data preparation
-    if (taxlevels == 'ALL' | class(taxlevels) != 'numeric') {  # test if taxlevels argumetn has correct format and display error if not
-		stop("taxlevels must be numeric (also 'ALL' is not an option for plotting)!")
-    }    
-    if (taxlevels > length(solution)) {  # check if specified taxlevel is among the ones in the solution object and display error if not
+    if (taxlevels == 'ALL') {  # test if taxlevels argumetn has correct format and display error if not
+		stop(" 'ALL' is not an option for plotting!")
+    }
+    if (class(taxlevels) == 'numeric' & taxlevels > length(solution)) {  # check if specified taxlevel is among the ones in the solution object and display error if not
 		stop('Requested taxonomic level not available (less levels specified as analysis input)!')
     }
     if (plot.type != 'monophyly' & plot.type != 'monoVStax' & plot.type != 'intruders' & plot.type != 'taxonomy') {  # check if plot type is one of the implemented ones
@@ -44,7 +44,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
 			if (solution[[taxlevels]]$result[tip.states.temp$Taxon[inameadj], "Monophyly"] == "Yes") {  # ...and check if they belong to a monophyletic group (according to results table in solution)...
 				tip.states.temp$Tip[inameadj] <- tip.states.temp$Taxon[inameadj]  # ...and then replace tip name with taxon name
 			}
-		}	
+		}
 		newlabels <- tree$tip.label  # create temporary vector of tip labels
 		for (itips in 1:length(keeptips)) {  # loop through vector of tips to keep
 		    newlabels[keeptips[itips]] <- as.character(tip.states[keeptips[itips], "Taxon"])  # replace tip names of tips to keep with the name of their taxon
@@ -76,7 +76,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
                 edgestates.i <- as.vector(tipdata[mono.tree$edge[i, 2]])  # use tip state
             }
             edgestates <- c(edgestates, edgestates.i)  # add to vector
-        } 
+        }
         mono.tree$edge <- cbind(mono.tree$edge, round(as.numeric(edgestates), digits=0))  # round values to full digits (i.e. initial states) and add to edges of tree
     }
 ##########################
@@ -161,7 +161,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
         }
         tax.tree$edge <- cbind(tax.tree$edge, as.numeric(edgestatesT))  # add edge state vector to edges of tree
     }
-##########################        
+##########################
 # plotting itself
     if (PDF == TRUE) {  # if output should be printed to PDF
 		if (PDF_width == 'auto') {  # if PDF width is atuomatically selected
@@ -240,7 +240,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
             coTax <- rainbow(length(taxaT))  # ...define rainbow colours based on number of taxa
         } else {  #if customized colours are specified...
             coTax <- tax.colour  # ... assign custom taxonomy colours
-        }        
+        }
         names(coTax) <- 1:length(taxaT)  # assign taxon numbers as names
         if (PDF == TRUE) {  # if output should be printed to PDF
 			pdf(PDF_filename, width=pdf_width, height=pdf_height)  # create PDF frame using width and height (see above)
@@ -268,7 +268,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
         } else {  # if not plotted to PDF but R plot window
             plot(int.tree, edge.col=coInt[as.numeric(int.tree$edge[, 3])], show.tip.label=TRUE, cex=cex, adj=adj.name, label.offset=labelOffset, edge.width=edge.width, type=type, ...)  # plot tree with edge colours according to reconstruction and all other parameters as specified (see above)
             tiplabels(pch=22, bg=coInt[tipdataIII], cex=1, adj=adj.tips)  # add square tip labels with tip state colour
-        } 
+        }
     }
 # monophyly vs taxonomy mirror tree plot
     if (plot.type == 'monoVStax') {  # for monophyly vs. taxonomy mirror plot
@@ -292,7 +292,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
             coTax <- rainbow(length(taxaT))  # ...use default rainbow colours based on number of taxa
         } else {  # if none of the predefined palettes chosen...
             coTax <- tax.colour  # ...assign custom taxonomy colours
-        }        
+        }
         names(coTax) <- 1:length(taxaT)  # assign taxon numbers as names
         if (PDF == TRUE) {  # if output should be printed to PDF
             pdf(PDF_filename, width=pdf_width, height=pdf_height)  # create PDF frame using width and height (see above)
