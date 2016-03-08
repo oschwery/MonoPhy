@@ -192,6 +192,9 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                     }
                     outlier.tips <- c()  # create empty vector to be filled with outlier tips
                     if (outliercheck == TRUE) {  # distinguish outliers if TRUE
+                      if (length(Children(tree, ancnode)) > 2) {
+                        outlier.tips <- c()
+                      } else {
                         tiplevels <- length(taxtips) / length(ancnames)  # determine fraction of total tips to members of focal taxon among descendants of current MRCA
                         if (tiplevels < outlierlevel ) {  # check if meeting criteria
                             start.node <- ancnode  # set MRCA node as starting point
@@ -328,6 +331,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                             outlist[i, ] <- c(taxa[i], "No", ancnode, length(taxtips), (length(ancnames) - length(taxtips)), length(intruder.taxa), paste(intruder.taxa[1], "and", (length(intruder.taxa) - 1), "more.", collapse=", "))  # UPDATE OUTPUT MATRIX, mark as non-monophyletic and list intruder genera
                         }
                     }
+                  }
                 }
             }
         }
