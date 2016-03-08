@@ -6,13 +6,13 @@ function(solution, taxlevels='ALL') {
     alltaxa <- list()  # create empty list to be filled
     if (taxlevels == 'ALL') {  # if all taxlevels are looked for
         for (i in 1:length(solution)) {  # loop through all taxlevels
-            nametax <- paste('Taxlevel', i, sep='_')  # create namelabel for current taxlevel
+            nametax <- names(solution)[i]  # create namelabel for current taxlevel
             tmp <- solution[[i]]$OutlierTaxa  # extract sub-list of outlier taxa from solution
             alltaxa[[nametax]] <- tmp # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.
         }
     }  # if a specific taxlevel should be focused on
     if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # if named taxlevel requested
-      nametax <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
+      nametax <- paste(taxlevels)  # create namelabel for current taxlevel
       tmp <- solution[[taxlevels]]$OutlierTaxa  # extract sub-list of outlier taxa from solution
       alltaxa[[nametax]] <- tmp  # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.
     }
@@ -20,7 +20,7 @@ function(solution, taxlevels='ALL') {
         if (taxlevels > length(solution)) {  # test whether requested taxlevel is among available ones and display error if not
             stop('Requested taxonomic level not available (less levels specified as analysis input)!')
         }
-		    nametax <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
+		    nametax <- names(solution)[taxlevels]  # create namelabel for current taxlevel
         tmp <- solution[[taxlevels]]$OutlierTaxa  # extract sub-list of outlier taxa from solution
         alltaxa[[nametax]] <- tmp  # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.
     }

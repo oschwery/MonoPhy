@@ -6,7 +6,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
     alltips <- list()  # create empty list to be filled
     if (taxlevels == 'ALL') {  # if all taxlevels are looked for
         for (i in 1:length(solution)){  # loop through all taxlevels
-            nametip <- paste('Taxlevel', i, sep='_')  # create namelabel for current taxlevel
+            nametip <- names(solution)[i]  # create namelabel for current taxlevel
             if (length(taxa) == 0) {  # pick all if no taxon specified
                 tmp <- solution[[i]]$OutlierTips  # extract sub-list of outlier tips from solution
                 alltips[[nametip]] <- tmp  # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.
@@ -22,7 +22,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
         }
     }  # if a specific taxlevel should be focused on
     if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # if named taxlevel requested
-        nametip <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
+        nametip <- paste(taxlevels)  # create namelabel for current taxlevel
         if (length(taxa) == 0){  # pick all if no taxa specified
             tmp <- solution[[taxlevels]]$OutlierTips   # extract sub-list of outlier tips from solution
             alltips[[nametip]] <- tmp  # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.
@@ -40,7 +40,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
         if (taxlevels > length(solution)) {  # test whether requested taxlevel is among available ones and display error if not
             stop('Requested taxonomic level not available (less levels specified as analysis input)!')
         }
-        nametip <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
+        nametip <- names(solution)[taxlevels]  # create namelabel for current taxlevel
         if (length(taxa) == 0){  # pick all if no taxa specified
             tmp <- solution[[taxlevels]]$OutlierTips   # extract sub-list of outlier tips from solution
             alltips[[nametip]] <- tmp  # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.

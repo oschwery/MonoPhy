@@ -6,13 +6,13 @@ function(solution, taxlevels='ALL') {
     Allresults <- list()  # create empty list to be filled
     if (taxlevels == 'ALL') {  # if all taxlevels are looked for
         for (i in 1:length(solution)) {  # loop through all taxlevels
-            nameres <- paste('Taxlevel', i, sep='_')  # create namelabel for current taxlevel
+            nameres <- names(solution)[i]  # create namelabel for current taxlevel
             tmp <- (solution[[i]]$result)  # extract result object from solution
             Allresults[[nameres]] <- tmp  # add extracted table as sub-object to output list and label it with the appropriate taxlevel nr.
         }
     }  # if only a specific taxlevel is requested
     if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # if named taxlevel requested
-        nameres <- paste('Taxlevel', taxlevels, sep='_')
+        nameres <- paste(taxlevels)
         tmp <- (solution[[taxlevels]]$result)
         Allresults[[nameres]] <- tmp
     }
@@ -20,7 +20,7 @@ function(solution, taxlevels='ALL') {
         if (taxlevels > length(solution)) {  # test whether requested taxlevel is among available ones and display error if not
             stop('Requested taxonomic level not available (less levels specified as analysis input)!')
         }
-        nameres <- paste('Taxlevel', taxlevels, sep='_')  # create namelabel for current taxlevel
+        nameres <- names(solution)[taxlevels]  # create namelabel for current taxlevel
         tmp <- (solution[[taxlevels]]$result)  # extract result object from solution
         Allresults[[nameres]] <- tmp  # add extracted list as sub-object to output list and label it with the appropriate taxlevel nr.
     }
