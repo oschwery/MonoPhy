@@ -203,6 +203,13 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                                 subancnames <- c()  # reset ancnames
                                 parent.node <- start.node # set parent node
                                 daughter.nodes <- Children(tree, parent.node) # find direct descendant nodes
+                              #  if (length(daughter.nodes > 2)) {  # if start node is multifurcating
+                              #    subanctips <- getDescendants(tree, parent.node)  # use initial groups...
+                              #    subancnames <- tree$tip.label[c(subanctips)]
+                              #    subancnames <- subancnames[!is.na(subancnames)]
+                              #    subtaxtips <- intersect(taxtips, subancnames1)
+                              #    break  # and stop search
+                              #  } else {
                                 daughter1 <- daughter.nodes[1]  # assign daughter node 1 separately
                                 daughter2 <- daughter.nodes[2]  # assign daughter node 2 separately
                             # prepare descendants of daughter 1
@@ -243,6 +250,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                                     start.node <- daughter2  # set node as start point
                                 }
                                 tiplevels <- length(subtaxtips) / length(subancnames)  # reassess status of current clade
+                              #}
                             }
                             if (tiplevels < 1) {  # if intruders are present after outliercheck, check if early-diverging
                                 EDtaxtips1 <- c()  # create empty vector to be filled with early diverging tips
