@@ -3,9 +3,9 @@
 AssessMonophyly <-
 function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='ncbi', taxizepref='ncbi', taxask=FALSE, taxverbose=FALSE) {
 # initial tests and data preparation
-    if (!is.binary.tree(tree)) {  # checks and returns error if tree is not bifurcating
-        stop('Phylogeny is not strictly bifurcating/resolved!')
-    }
+#    if (!is.binary.tree(tree)) {  # checks and returns error if tree is not bifurcating
+#        stop('Phylogeny is not strictly bifurcating/resolved!')
+#    }
     if (!is.rooted(tree)) {  # checks and returns error if tree is not rooted
         stop('Phylogeny must be rooted!')
     }
@@ -18,7 +18,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
         f <- function(s) strsplit(s, ("_| "))[[1]][1]  # function with split criteria: split names at underscore and keep first part (genus name)
         split.taxa <- sapply(tree$tip.label, f)  # apply split functon to tree
         taxa <- as.vector(unique(split.taxa))  # create vector of genera in tree without duplicates
-        taxsetnames <- c('taxa')  # assign 'taxa' as taxsetnames
+        taxsets <- c('taxa')  # assign 'taxa' as taxsetnames
     } else {
         if (!is.null(taxonomy) && taxonomy != 'taxize') {  # if argument 'taxonomy' is not NULL and not taxize, use loaded taxonomy file
             if (length(taxonomy[, 1]) != length(tree$tip.label)) {  # checks and returns error if taxonomy file has more or less entries than tree has tips
@@ -58,11 +58,11 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
             if ('FALSE' %in% (taxcheckfile)) {  # if missing names in tree, stop and display error
                 stop('The taxon names of tree and taxonfile do not match (see above)!')
             }
-            taxsetnames <- c()  # create empty vector to fill with names for taxsets
+            #taxsetnames <- c()  # create empty vector to fill with names for taxsets
             taxsets <- list()  # create empty list to fill with taxonomic units
             for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxon file
                 nametax <- paste("taxa", jtax, sep="")  # create taxon name label
-                taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
+                #taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
                 tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector of taxonomic units (without doubles)
                 taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
             }
@@ -102,11 +102,11 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                 }
                 taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"  # replace all NAs with "unknown"
                 taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
-                taxsetnames <- c()  # create empty vector to be filled with taxonomy set names
+                #taxsetnames <- c()  # create empty vector to be filled with taxonomy set names
                 taxsets <- list()  # create empty list to be filled with taxonomy lists
                 for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxonomy file
                     nametax <- paste("taxa", jtax, sep="")  # create taxon name label
-                    taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
+                    #taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
                     tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector taxonomic units (without doubles)
                     taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
                 }
@@ -115,7 +115,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
     }
 # actual assessment
     finallist <- list()  # create empty list to be filled with final results
-    for (ifullround in 1:length(taxsetnames)) {  # Assess monophyly for every taxon set used
+    for (ifullround in 1:length(taxsets)) {  # Assess monophyly for every taxon set used
         if (is.null(taxonomy)) {  # if no taxonomy file specified...
             taxa <- taxa  # ...assign taxon list
         } else {  # if taxonomy file or taxize...
@@ -132,8 +132,6 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
             outlist.summary <- matrix(NA, nrow=6, ncol=3)  # create final output summary matrix
             dfheaders <- c("Taxon", "Monophyly", "MRCA", "#Tips", "Delta-Tips", "#Intruders", "Intruders", "#Outliers", "Outliers")  # headers for 'outlist'
             outlist <- matrix(NA, nrow=length(taxa), ncol=9)  # final output matrix
-            outlier.genus <- list()  # list of genera causing non-monophyly as outliers
-            outlier.genus.full <- c()  # vector of ALL general causing non-monophyly as outliers
             outlier.species <- list()  # list of species causing non-monophyly as outliers
             outlier.species.full <- c()  # vector of ALL species causing non-monophyly as outliers
             outlier.names <- c()  # names for outlier sub-lists
