@@ -15,7 +15,7 @@ In order to be aware of discrepancies between a newly generated phylogeny and th
 
 ## 2 Installation ##
 ### 2.1 CRAN ###
-In order to install the stable CRAN version of the package: 
+In order to install the stable CRAN version of the package:
 
 ```{r, eval=FALSE}
 install.packages("MonoPhy")
@@ -68,9 +68,9 @@ If you want to analyze your own data (which should ultimately be the goal), you 
 ```{r, eval=FALSE}
 phy <- read.tree(file="/your_path/your_phylogeny.tre")
 ```
-At this point, the package requires the input tree to be rooted and fully resolved; also, it can only handle single input trees so far. This may change in the future.
+At this point, the package requires the input tree to be rooted, though it may be multifurcating; also, it can only handle single input trees so far. This may change in the future. Polytomies will be dealt with in a conservative way: if different taxa occur in a polytomy, it will be assumed that they are non-monophyletic.
 
-The taxonomy file should be a data frame without header and one row per tip in the phylogeny. The first column should be the tip names, any further column should assign the respective tips to taxonomic groups, in the format of one column per group (testing monophyly on several taxonomic levels is possible). If it is unknown or not applicable what group a tip belongs to on a certain taxonomic level, it should be encoded as 'NA'.
+The taxonomy file should be a data frame with or without header and one row per tip in the phylogeny. The first column should be the tip names, any further column should assign the respective tips to taxonomic groups, in the format of one column per group (testing monophyly on several taxonomic levels is possible). If the file has a header, the names therein will be used to name the taxlevels within the function. If it is unknown or not applicable what group a tip belongs to on a certain taxonomic level, it should be encoded as 'NA'.
 You can load the taxonomy file like this:
 ```{r, eval=FALSE}
 your_clades <- read.csv(file="/your_path/your_taxonomy_file.csv", header=FALSE)
@@ -84,7 +84,7 @@ head(your_clades)
 ```
 
 ### 3.2 Run Main Analysis ###
-The command for the main analysis-step is `AssessMonophyly`. This will check the monophyly of all taxa in the tree, identify which intruders and outliers are responsible for the non-monophyly of a taxon and determine their status for later plotting. Depending on the number of tips in the tree and the number of monophyly-issues, this step will take more or less time. For the example files, this step should only take seconds, for a few thousand tips a couple of minutes, but for a conflict-rich tree with several 10k tips it could easily end up being 3-4 hours. Accessing the information afterwards however is fairly quick.
+The command for the main analysis-step is `AssessMonophyly`. This will check the monophyly of all taxa in the tree, identify which intruders and outliers are responsible for the non-monophyly of a taxon and determine their status for later plotting. Depending on the number of tips in the tree and the number of monophyly-issues, this step will take more or less time. For the example files, this step should only take seconds, for a few thousand tips a couple of minutes, but for a conflict-rich tree with several 10k tips it could easily end up being a few hours. Accessing the information afterwards however is fairly quick.
 
 #### 3.2.1 Taxonomy Based on Tip Labels ####
 If we run the analysis using only the tree, the function will check whether the tip labels are in the format *Genus_species*, and if so, will extract the genus name from each tip label and use it as the taxonomic group associated to this tip.
@@ -94,7 +94,7 @@ solution0 <- AssessMonophyly(Ericactree)
 The resulting output object will be a list, which will contain all the output information for all taxon levels in a nested fashion. We will explore in the following how to access this information effectively.
 
 #### 3.2.2 Taxonomy Based on File ####
-If the tip labels have a format different from *Genus_species*, or if we want to assess a different taxonomic level, we can do that by adding a taxonomy file to the command. The taxonomy file should be a simple table (data frame, maybe easiest based off a .csv file) without header, at least two columns and one row per tip. The first column contains the tip labels and all further columns (one or more) the names of the taxa associated to the respective tip, whereas every column stands for a different taxon level. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed.
+If the tip labels have a format different from *Genus_species*, or if we want to assess a different taxonomic level, we can do that by adding a taxonomy file to the command. The taxonomy file should be a simple table (data frame, maybe easiest based off a .csv file)  with or without header, at least two columns and one row per tip. The first column contains the tip labels and all further columns (one or more) the names of the taxa associated to the respective tip, whereas every column stands for a different taxon level (the file has a header, its entries will be used to name the levels). The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed.
 
 ```{r}
 solution1 <- AssessMonophyly(Ericactree, Ericacsubfams)
@@ -131,7 +131,7 @@ The result table shows us the analysis outcomes for each taxonomic unit consider
 #### 3.3.2 Further Look - Customized Access to Detailed Results ####
 In order to really dig into the analysis outputs, we can access information on which taxa and tips cause the monophyly issues as either intruders or outliers and which nodes have been inferred as MRCA of each taxon.
 
-When exploring intruders, we can either list them for all taxa or limit the list to taxa we're interested in, _e.g._ only for the genus _Erica_: 
+When exploring intruders, we can either list them for all taxa or limit the list to taxa we're interested in, _e.g._ only for the genus _Erica_:
 ```{r}
 GetIntruderTaxa(solution0, taxa="Erica")  # get list of genera that cause monophyly-issues for Erica
 ```
@@ -141,7 +141,7 @@ Similarly, if we have multiple taxonomic levels, we can limit the output to the 
 ```{r}
 GetIntruderTips(solution1, taxa="Ericoideae", taxlevels=2)  # get list of species causing monophyly-issues for the subfamily Ericoideae
 ```
-This works similarly for MRCA-nodes, outlier tips and outlier taxa (note that the later cannot be constrained to focal taxa, because a tip can only be an outlier to its own taxon):
+This works similarly for MRCA-nodes, outlier tips and outlier taxa (note that the later cannot be constrained to focal taxa, because a tip can only be an outlier to its own taxon). Instead of numbers or 'ALL', we could allso select taxlevels using their names.
 ```{r}
 GetAncNodes(solution1, taxa = NULL, taxlevels='ALL')
 ```
@@ -182,7 +182,7 @@ This plot shows us nicely how the subfamilies are mostly monophyletic, apart fro
 #### 3.4.3 Monophyly-Taxonomy Mirror Plot ####
 This plot type simply combines the two previous ones and displays them on two mirrored trees. We use the subfamilies again in this case.
 ```{r, fig.width=7, fig.height=14}
-PlotMonophyly(solution1, Ericactree, taxlevels=2, plot.type='monoVStax', cex=0.4, label.offset=18) 
+PlotMonophyly(solution1, Ericactree, taxlevels=2, plot.type='monoVStax', cex=0.4, label.offset=18)
 ```
 
 Seeing the previous plot mirrored with the corresponding monophyly plot lets us understand how the whole Ericoideae and Cassiopoideae come out as intruders to Vaccinioideae: The intruder _Rhodothamnus chamaecystus_ pulls the MRCA node of the Vaccinioideae down to inlcude both other subfamilies. Once again, a more conservative `outlierlevel` would have led to the biologically more meaningful result that only _Rhodothamnus_ is an outlier to Vaccinioideae (and an intruder to Ericoideae), while everything else is well.
