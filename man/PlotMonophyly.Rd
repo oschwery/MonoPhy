@@ -18,10 +18,10 @@ adj.names='auto', adj.tips=0.5, label.offset='auto', type='phylogram', ...)
 Object with saved output of the 'AssessMonophyly' function.
 }
   \item{tree}{
-An object of type 'phy', rooted and fully resolved phylogeny (the same which was used to obtain the solution before).
+An object of type 'phy', rooted phylogeny (the same which was used to obtain the solution before).
 }
   \item{taxlevels}{
-An integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names). Default is 1.  	
+An integer or name corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names). Default is 1.
 }
   \item{plot.type}{
 Either "monophyly", "taxonomy", "intruders" or "monoVStax", see details. Default is "monophyly".
@@ -76,8 +76,8 @@ Other plot.phylo arguments.
 }
 }
 \details{
-Using the output object of \code{\link{AssessMonophyly}}, the result can be visualized in a couple of ways. Specifying the 'plot.type' "monophyly" plots a tree colouring the branches according to whether the respective clades are monophyletic, non-monophyletic or intruders/outliers. 'taxonomy' simply colour codes the different taxa. 'intruders' colours monophyletic groups gray, non-monophyletic groups black and the intruders and outliers according to the taxonomic group they belong to. Finally, 'monoVStax', plots two trees in a mirrored fashion, with the 'monophyly' type on the left and the 'taxonomy' type on the right.
-It is important to note that this is merely supposed to be a useful visualization and not a biologically meaningful reconstruction.
+Using the output object of \code{\link{AssessMonophyly}}, the result can be visualized in a couple of ways. Specifying the 'plot.type' "monophyly" plots a tree colouring the branches according to whether the respective clades are monophyletic, non-monophyletic or intruders/outliers. 'taxonomy' simply colour codes the different taxa. 'intruders' colours monophyletic groups gray, non-monophyletic groups black and the intruders and outliers according to the taxonomic group they belong to. Finally, 'monoVStax', plots two trees in a mirrored fashion, with the 'monophyly' type on the left and the 'taxonomy' type on the right. Note that 'intruder' status will be used for monophyletic taxa that intrude others.
+It is important to remember that this is merely supposed to be a useful visualization and not a biologically meaningful reconstruction.
 The colour vectors must be of sufficient length if customized, i.e. three colours for mono.colour, as many as taxa for tax.colour and as many as intruder taxa for intrud.colour.
 Collapsing monophyletic taxa by specifying 'monocoll = TRUE' allows to focus on the problem zones and should especially be useful for larger phylogenies.
 }

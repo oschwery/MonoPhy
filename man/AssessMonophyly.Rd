@@ -4,7 +4,7 @@
 Assesses monophyly (or lack of it) of taxonomic groups in a phylogeny.
 }
 \description{
-Requires rooted resolved phylogeny as input and creates a table of taxa, their monophyly-status, which taxa cause problems in monophyly (as intruders or outliers) etc. Output can be accessed with related functions (see section 'see also') and a plot function can be used to plot the results in a number of ways.
+Requires rooted phylogeny as input and creates a table of taxa, their monophyly-status, which taxa cause problems in monophyly (as intruders or outliers) etc. Output can be accessed with related functions (see section 'see also') and a plot function can be used to plot the results in a number of ways.
 }
 \usage{
 AssessMonophyly (tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE,
@@ -13,10 +13,10 @@ taxask=FALSE, taxverbose=FALSE)
 }
 \arguments{
   \item{tree}{
-An object of type 'phy', a rooted and fully resolved phylogeny. If tip labels are in the format 'genus_species', the function can extract the genus names and check their monophyly. If tip labels are in another format or if the monophyly of other taxonomic groups should be tested, a taxonomy file (see 'taxonomy') is required.
+An object of type 'phy', a rooted phylogeny. Multifurcating trees are accepted, but will be dealt with in a conservative manner (i.e. if different taxa share a multifurcation, they will be considered non-monophyletic) If tip labels are in the format 'genus_species', the function can extract the genus names and check their monophyly. If tip labels are in another format or if the monophyly of other taxonomic groups should be tested, a taxonomy file (see 'taxonomy') is required.
 }
   \item{taxonomy}{
-A data frame (e.g. an imported .csv file) with at least two columns, one row per tip in the tree and no header. Column one contains the tip labels, column two and higher the names of the taxonomic units the respective tip belongs to. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed. Alternatively, specifying taxonomy as 'taxize' allows to use the package with the same name to download taxonomic names from online databases. Default is NULL.
+A data frame (e.g. an imported .csv file) with at least two columns and one row per tip in the tree. If a header is specified, the names therein will be used in the function output. Column one contains the tip labels, column two and higher the names of the taxonomic units the respective tip belongs to. The order of tip names in the file can be different from the order of the tip labels in the tree, but they have to contain the exact same names. If taxonomic levels are unknown for certain tips, they can be coded as NAs (but they cannot stay empty). Those tips will be considered when assessing monophyly of other groups, but the monophyly of the NA group will not be assessed. Alternatively, specifying taxonomy as 'taxize' allows to use the package with the same name to download taxonomic names from online databases. Default is NULL.
 }
   \item{verbosity}{
 An integer, default is 5. Determines how many outlier/intruder taxa should be listed by name in the result table (it will list up to this many names and then add 'and X more').

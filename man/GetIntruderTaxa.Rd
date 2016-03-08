@@ -22,11 +22,11 @@ Object with saved output of the 'AssessMonophyly' function.
 Vector containing taxon names (genus or whichever taxonomic unit was used). Default NULL will return intruders/outliers for all taxa.
 }
   \item{taxlevels}{
-Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), or 'ALL', which is the default.  	
+Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), the column name in the header of the taxonomy file, or 'ALL', which is the default.
 }
 }
 \details{
-Can be used after 'AssessMonophyly' is run to extract intruder/outlier taxa or intruder/outlier tips from it. The argument 'taxa' allows to limit the output to one or several taxa of interest. It is not available for GetOutlierTaxa, since this is just one vector with names anyway (a taxon can only be outlier of itself). The argument 'taxlevels' allows to limit the output if several taxonomic levels were used; 'ALL' is default, a single level can be selected by entering its number instead. Outliers can of course only be retrieved if the argument outliercheck was set to TRUE when running AssessMonophyly.
+Can be used after 'AssessMonophyly' is run to extract intruder/outlier taxa or intruder/outlier tips from it. The argument 'taxa' allows to limit the output to one or several taxa of interest. It is not available for GetOutlierTaxa, since this is just one vector with names anyway (a taxon can only be outlier of itself). The argument 'taxlevels' allows to limit the output if several taxonomic levels were used; 'ALL' is default, a single level can be selected by entering its number or name instead. Outliers can of course only be retrieved if the argument outliercheck was set to TRUE when running AssessMonophyly.
 }
 \value{
 List of character strings
@@ -35,7 +35,7 @@ List of character strings
 Orlando Schwery
 }
 \note{
-Noteworthy difference: intruder tips for e.g. Vaccinium will be tips of OTHER taxa that are placed inside the Vaccinium clade, whereas outlier tips for Vaccinium will be Vaccinium species that are placed outside of the Vaccinium core clade. Can also be accessed by simply typing 'solution$Taxlevel_i$IntruderTaxa' or 'solution$Taxlevel_i$IntruderTaxa$taxonname' and 'solution$Taxlevel_i$IntruderTips' or 'solution$Taxlevel_i$IntruderTips$taxonname' respectively; same for outliers.
+Noteworthy difference: intruder tips for e.g. Vaccinium will be tips of OTHER taxa that are placed inside the Vaccinium clade, whereas outlier tips for Vaccinium will be Vaccinium species that are placed outside of the Vaccinium core clade. Can also be accessed by simply typing 'solution$Taxlevel_i$IntruderTaxa' or 'solution$Taxlevel_i$IntruderTaxa$taxonname' and 'solution$Taxlevel_i$IntruderTips' or 'solution$Taxlevel_i$IntruderTips$taxonname' respectively (or whichever name the Taxlevels might have been given, e.g. based on the header); same for outliers.
 }
 \seealso{
 \code{\link{AssessMonophyly}}, \code{\link{GetAncNodes}}, \code{\link{MonoPhy-package}}

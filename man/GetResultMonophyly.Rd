@@ -16,7 +16,7 @@ GetSummaryMonophyly(solution, taxlevels='ALL')
 Object with saved output of the 'AssessMonophyly' function.
 }
   \item{taxlevels}{
-Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), or 'ALL'.  	
+Either an integer corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names), the column name in the header of the taxonomy file, or 'ALL'.
 }
 }
 \details{
@@ -31,7 +31,7 @@ List of data frame(s) containing the main results/summary.
 Orlando Schwery
 }
 \note{
-Can also be accessed by simply typing 'solution$Taxlevel_i$result' or 'solution$Taxlevel_i$summary' respectively.
+Can also be accessed by simply typing 'solution$Taxlevel_i$result' or 'solution$Taxlevel_i$summary' (or whichever name the Taxlevels might have been given, e.g. based on the header) respectively.
 }
 \seealso{
 \code{\link{AssessMonophyly}}, \code{\link{MonoPhy-package}}
