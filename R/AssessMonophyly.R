@@ -3,9 +3,6 @@
 AssessMonophyly <-
 function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='ncbi', taxizepref='ncbi', taxask=FALSE, taxverbose=FALSE) {
 # initial tests and data preparation
-#    if (!is.binary.tree(tree)) {  # checks and returns error if tree is not bifurcating
-#        stop('Phylogeny is not strictly bifurcating/resolved!')
-#    }
     if (!is.rooted(tree)) {  # checks and returns error if tree is not rooted
         stop('Phylogeny must be rooted!')
     }
@@ -58,11 +55,9 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
             if ('FALSE' %in% (taxcheckfile)) {  # if missing names in tree, stop and display error
                 stop('The taxon names of tree and taxonfile do not match (see above)!')
             }
-            #taxsetnames <- c()  # create empty vector to fill with names for taxsets
             taxsets <- list()  # create empty list to fill with taxonomic units
             for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxon file
                 nametax <- paste("taxa", jtax, sep="")  # create taxon name label
-                #taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
                 tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector of taxonomic units (without doubles)
                 taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
             }
@@ -102,11 +97,9 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                 }
                 taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"  # replace all NAs with "unknown"
                 taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
-                #taxsetnames <- c()  # create empty vector to be filled with taxonomy set names
                 taxsets <- list()  # create empty list to be filled with taxonomy lists
                 for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxonomy file
                     nametax <- paste("taxa", jtax, sep="")  # create taxon name label
-                    #taxsetnames <- c(taxsetnames, nametax)  # add label to names vector
                     tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector taxonomic units (without doubles)
                     taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
                 }
@@ -203,13 +196,6 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                                 subancnames <- c()  # reset ancnames
                                 parent.node <- start.node # set parent node
                                 daughter.nodes <- Children(tree, parent.node) # find direct descendant nodes
-                              #  if (length(daughter.nodes > 2)) {  # if start node is multifurcating
-                              #    subanctips <- getDescendants(tree, parent.node)  # use initial groups...
-                              #    subancnames <- tree$tip.label[c(subanctips)]
-                              #    subancnames <- subancnames[!is.na(subancnames)]
-                              #    subtaxtips <- intersect(taxtips, subancnames1)
-                              #    break  # and stop search
-                              #  } else {
                                 daughter1 <- daughter.nodes[1]  # assign daughter node 1 separately
                                 daughter2 <- daughter.nodes[2]  # assign daughter node 2 separately
                             # prepare descendants of daughter 1
@@ -250,7 +236,6 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                                     start.node <- daughter2  # set node as start point
                                 }
                                 tiplevels <- length(subtaxtips) / length(subancnames)  # reassess status of current clade
-                              #}
                             }
                             if (tiplevels < 1) {  # if intruders are present after outliercheck, check if early-diverging
                                 EDtaxtips1 <- c()  # create empty vector to be filled with early diverging tips
