@@ -130,13 +130,13 @@ test_that("Multifurcating solution3 is accurate",{
   expect_equal(as.numeric(levels(solution3[[1]]$summary[3,2]))[solution3[[1]]$summary[3,2]], 40)
   expect_equal(as.numeric(levels(solution3[[1]]$summary[4,2]))[solution3[[1]]$summary[4,2]], 17)
   expect_equal(as.numeric(levels(solution3[[1]]$summary[5,2]))[solution3[[1]]$summary[5,2]], 35)
-  expect_equal(as.numeric(levels(solution3[[1]]$summary[6,2]))[solution3[[1]]$summary[6,2]], 13)
+  expect_equal(as.numeric(levels(solution3[[1]]$summary[6,2]))[solution3[[1]]$summary[6,2]], 2)
   #  Test result table
   expect_equal(dim(solution3[[1]]$result)[1], 32)
   expect_equal(dim(solution3[[1]]$result)[2], 8)
   #  Test lenghts of taxa and tip lists
-  expect_equal(length(solution3[[1]]$IntruderTaxa), 7)
-  expect_equal(length(solution3[[1]]$IntruderTips), 7)
+  expect_equal(length(solution3[[1]]$IntruderTaxa), 8)
+  expect_equal(length(solution3[[1]]$IntruderTips), 8)
   expect_equal(length(solution3[[1]]$OutlierTaxa), 1)
   expect_equal(length(solution3[[1]]$OutlierTips), 1)
   #  Test Tipstates

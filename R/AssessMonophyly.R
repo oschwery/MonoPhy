@@ -196,6 +196,14 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                                 subancnames <- c()  # reset ancnames
                                 parent.node <- start.node # set parent node
                                 daughter.nodes <- Children(tree, parent.node) # find direct descendant nodes
+                                if (length(daughter.nodes) > 2) {  # if multifurcation, quit
+                                  anctips1 <- getDescendants(tree, parent.node)
+                                  ancnames1 <- tree$tip.label[c(anctips1)]  # extract names of those descendants
+                                  subancnames <- ancnames1[!is.na(ancnames1)]  # ommit NA's (caused by descendants which are internal nodes and not tips)
+                                  subtaxtips <- intersect(taxtips, subancnames)
+                                  start.node <- parent.node
+                                    break # end loop
+                                }
                                 daughter1 <- daughter.nodes[1]  # assign daughter node 1 separately
                                 daughter2 <- daughter.nodes[2]  # assign daughter node 2 separately
                             # prepare descendants of daughter 1
@@ -237,7 +245,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                                 }
                                 tiplevels <- length(subtaxtips) / length(subancnames)  # reassess status of current clade
                             }
-                            if (tiplevels < 1) {  # if intruders are present after outliercheck, check if early-diverging
+                            if (tiplevels < 1 & length(daughter.nodes) <=2) {  # if intruders are present after outliercheck, check if early-diverging
                                 EDtaxtips1 <- c()  # create empty vector to be filled with early diverging tips
                                 EDtaxtips2 <- c()  # create empty vector to be filled with early diverging tips
                             # search for node whose daughers both include members of the focal taxon
