@@ -3,12 +3,13 @@ bibentry("Article",
           author = c(person("Orlando", "Schwery", email = "oschwery@vols.utk.edu", role = c("aut", "cre")),
                      person("Brian C.", "O'Meara", role = c("aut"))),
           year = 2016,
-          volume = 2,
+          volume = "2",
           pages = "e56",
           journal = "PeerJ Computer Science",
           issn = "2376-5992",
           url = "https://doi.org/10.7717/peerj-cs.56",
           doi = "10.7717/peerj-cs.56",
-          mheader = "To cite package 'MonoPhy' in publications use:",
+          mheader = "To cite the package 'MonoPhy' in publications use:",
           mfooter = paste("You may also want to cite the version number you used (found via 'library(help=MonoPhy)').")
+          textVersion = "Schwery, O. & O’Meara, B.C. (2016), MonoPhy: a simple R package to find and visualize monophyly issues. PeerJ Computer Science 2:e56.")
           )
