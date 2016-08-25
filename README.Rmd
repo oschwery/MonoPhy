@@ -2,9 +2,13 @@
 R package to explore monophyly
 
 [![Build Status](https://travis-ci.org/oschwery/MonoPhy.svg?branch=master)](https://travis-ci.org/oschwery/MonoPhy)
-[![License](http://img.shields.io/:license-mit-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
+[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/badgecreatr)](https://cran.r-project.org/package=MonoPhy)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/master)
+
+
 [![Github All Releases](https://img.shields.io/github/downloads/oschwery/MonoPhy/total.svg?maxAge=2592000)]()
 [![Github Releases](https://img.shields.io/github/downloads/atom/atom/latest/total.svg?maxAge=2592000)]()
 [![Github Releases (by Release)](https://img.shields.io/github/downloads/atom/atom/v0.190.0/total.svg?maxAge=2592000)]()
