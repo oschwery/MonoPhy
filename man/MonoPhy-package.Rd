@@ -12,7 +12,7 @@ Requires rooted phylogeny as input and creates a table of taxa, their monophyly-
 \tabular{ll}{
 Package: \tab MonoPhy\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
+Version: \tab 1.3\cr
 Date: \tab 2016-08-25\cr
 License: \tab GPL-3\cr
 }
