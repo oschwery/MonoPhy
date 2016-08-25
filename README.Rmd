@@ -14,6 +14,4 @@ R package to explore monophyly
 [![Github All Releases](https://img.shields.io/github/downloads/oschwery/MonoPhy/total.svg?maxAge=2592000)]()
 [![Github Releases](https://img.shields.io/github/downloads/oschwery/MonoPhy/latest/total.svg?maxAge=2592000)]()
 [![Github Releases (by Release)](https://img.shields.io/github/downloads/oschwery/MonoPhy/v1.3/total.svg?maxAge=2592000)]()
-[![GitHub release](https://img.shields.io/github/release/MonoPhy/rubidium.svg?maxAge=2592000)]()
-[![GitHub issues](https://img.shields.io/github/issues/MonoPhy/shields.svg?maxAge=2592000)]()
-[![GitHub closed issues](https://img.shields.io/github/issues-closed/Monophy/shields.svg?maxAge=2592000)]()
+[![GitHub release](https://img.shields.io/github/release/oschwery/MonoPhy.svg?maxAge=2592000)]()
