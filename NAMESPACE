@@ -1,4 +1,4 @@
-export(AssessMonophyly, GetSummaryMonophyly, GetResultMonophyly, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa, GetOutlierTips, GetAncNodes, PlotMonophyly)
+export(AssessMonophyly, CollapseMonophyletics, GetSummaryMonophyly, GetResultMonophyly, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa, GetOutlierTips, GetAncNodes, PlotMonophyly)
 
 import(ape, phytools, RColorBrewer)
 

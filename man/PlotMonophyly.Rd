@@ -21,7 +21,7 @@ Object with saved output of the 'AssessMonophyly' function.
 An object of type 'phy', rooted phylogeny (the same which was used to obtain the solution before).
 }
   \item{taxlevels}{
-An integer or name corresponding to the desired taxonomic level (i.e. the number of its column in the taxonimy table, not counting the tip names). Default is 1.
+An integer or name corresponding to the desired taxonomic level (i.e. the number of its column in the taxonomy table, not counting the tip names). Default is 1.
 }
   \item{plot.type}{
 Either "monophyly", "taxonomy", "intruders" or "monoVStax", see details. Default is "monophyly".
