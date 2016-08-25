@@ -1,3 +1,8 @@
 # MonoPhy
 R package to explore monophyly
+
 [![Build Status](https://travis-ci.org/oschwery/MonoPhy.svg?branch=master)](https://travis-ci.org/oschwery/MonoPhy)
+[![Dependency Status](http://img.shields.io/gemnasium/oschwery/MonoPhy.svg)](https://gemnasium.com/oschwery/MonoPhy)
+[![Coverage Status](http://img.shields.io/coveralls/oschwery/MonoPhy.svg)](https://coveralls.io/r/oschwery/MonoPhy)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
