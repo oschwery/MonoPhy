@@ -8,3 +8,4 @@ R package to explore monophyly
 [![packageversion](https://img.shields.io/badge/GitHub%20Package%20version-1.3-orange.svg?style=flat-square)](commits/master)
 
 [![Github All Releases](https://img.shields.io/github/downloads/oschwery/MonoPhy/total.svg?maxAge=2592000)]()
+[![GitHub release](https://img.shields.io/github/release/oschwery/MonoPhy.svg?maxAge=2592000)]()
