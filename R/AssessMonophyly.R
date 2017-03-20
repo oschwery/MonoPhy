@@ -134,7 +134,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
             outlist <- matrix(NA, nrow=length(taxa), ncol=7)  # final output matrix
         }
         tip.states.matrix <- matrix(NA, nrow=length(tree$tip.label), ncol=3)  # states for plotting
-# loop assessing monophyly
+        # loop assessing monophyly
         for (i in 1:length(taxa)) {  # loop through every genus in the tree
             if (is.null(taxonomy)) {  # genera extracted from tip labels if no taxonomy file loaded
                 ancnode <- getMRCA(tree, tip=c(tree$tip.label[c(grep(paste("^", taxa[i], "_", sep=""), tree$tip.label))]))  # determine Most Recent Common Ancestor for all taxa of genus
@@ -336,7 +336,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                 }
             }
         }
-# prepare outputs
+        # prepare outputs
         intruder.genus.all <- unique(intruder.genus.full)  # vector of ALL intruder genera without doubles
         intruder.species.all <- unique(intruder.species.full)  # vector of ALL intruder species without doubles
         outlier.species.all <- c()  # create empty vector to be filled with outlier species names
@@ -362,14 +362,14 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
                 tip.states.matrix[i, 3] <- "Intruder"  # ...score species as intruder
             } else if (tip.states.matrix[i, 1] %in% outlier.species.all == TRUE) {  # ...if species is in global outlier list...
                 tip.states.matrix[i, 3] <- "Outlier"  # ...score species as outlier
+            } else if (tip.states.matrix[i, 2] == "unknown" | is.na(tip.states.matrix[i, 2])) {  # if assignment to taxonomic group is unknown or NA...
+                tip.states.matrix[i, 3] <- "unknown"  # ...set monophyly state to 'unknown'
             } else if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Monotypic") {  # ...if  species is monotypic...
                 tip.states.matrix[i, 3] <- "Monophyletic"  # ... score as monophyletic
             } else if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "Yes"){  # ... if species is monophyletic...
                 tip.states.matrix[i, 3] <- "Monophyletic"  # ... score as monophyletic
             } else if (outframe[tip.states.matrix[i, 2], "Monophyly"] == "No") {  # ... if species is not monophyletic...
                 tip.states.matrix[i, 3] <- "Non-Monophyletic"  # ... score as non-monophyletic
-            } else if (tip.states.matrix[i, 2] == "unknown" | is.na(tip.states.matrix[i, 2])) {  # if assignment to taxonomic group is unknown or NA...
-                tip.states.matrix[i, 3] <- "unknown"  # ...set monophyly state to 'unknown'
             }
         }
         tip.states.frame <- as.data.frame(tip.states.matrix)  # turn tip states matrix into data frame
