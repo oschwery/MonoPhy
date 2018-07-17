@@ -1,8 +1,8 @@
 Package: MonoPhy
 Type: Package
 Title: Allows to Explore Monophyly (or Lack of it) of Taxonomic Groups in a Phylogeny
-Version: 1.3
-Date: 2016-08-25
+Version: 1.4
+Date: 2018-07-17
 Author: Orlando Schwery
 Maintainer: Orlando Schwery <oschwery@vols.utk.edu>
 Depends: ape, phytools, phangorn, RColorBrewer, taxize

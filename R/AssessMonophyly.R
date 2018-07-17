@@ -1,15 +1,32 @@
 # assesses monophyly of genera (or customized units) and makes the result available in different ways (tables, onjects, plot...)
 # written by Orlando Schwery 2015
 AssessMonophyly <-
-function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='ncbi', taxizepref='ncbi', taxask=FALSE, taxverbose=FALSE) {
+function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, taxizelevel= NULL, taxizedb='ncbi', taxizepref='ncbi', taxask=FALSE, taxverbose=FALSE, excludeproblematic=FALSE) {
 # initial tests and data preparation
     if (!is.rooted(tree)) {  # checks and returns error if tree is not rooted
         stop('Phylogeny must be rooted!')
     }
     if (is.null(taxonomy)) {  # if no taxonomy file is specified, extract list of genera from tree's tip labels
+        if(excludeproblematic) {
+            problem.taxa <- c()
+        }
         for (i in 1:length(tree$tip.label)) {  # loop through tip labels of tree
             if (grepl(("_| "), tree$tip.label[i]) == FALSE) {  # checks if genus and species epithet of tip labels are separated by space or underscore and returns error if not
-                stop('Tip labels do not contain underscore separating genus name from species epithet!')
+                if(!excludeproblematic) {
+                    stop(paste('Tip labels do not contain underscore separating genus name from species epithet (first such taxon is', tree$tip.label[i], ")"))
+                } else {
+                    problem.taxa <- c(problem.taxa, tree$tip.label[i])
+                }
+            }
+        }
+        if(excludeproblematic) {
+            if(length(problem.taxa)>1) {
+                if(ape::Ntip(tree)<3+length(problem.taxa)) {
+                    stop("Too many taxa in the tree were not recognized as having an underscore and genus_species")
+                } else {
+                    tree <- ape::drop.tip(tree, problem.taxa)
+                    warning(paste(length(problem.taxa), "taxa were dropped from the tree because they did not follow the genus_species format. The first such taxon was ", problem.taxa[1]))
+                }
             }
         }
         f <- function(s) strsplit(s, ("_| "))[[1]][1]  # function with split criteria: split names at underscore and keep first part (genus name)
