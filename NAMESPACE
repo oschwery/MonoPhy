@@ -1,4 +1,4 @@
-export(AssessMonophyly, CollapseMonophyletics, GetSummaryMonophyly, GetResultMonophyly, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa, GetOutlierTips, GetAncNodes, PlotMonophyly)
+export(AssessMonophyly, CollapseMonophyletics, GetSummaryMonophyly, GetResultMonophyly, GetIntruderTaxa, GetIntruderTips, GetOutlierTaxa, GetOutlierTips, GetAncNodes, PlotMonophyly, GenerateTaxonomy)
 
 import(ape, phytools, RColorBrewer)
 
@@ -6,3 +6,4 @@ importFrom("taxize", tax_name)
 importFrom("phangorn", Children)
 importFrom("grDevices", "dev.off", "pdf", "rainbow")
 importFrom("graphics", "layout", "par", "plot")
+importFrom("plyr", "dplyr")
