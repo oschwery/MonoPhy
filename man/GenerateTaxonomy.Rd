@@ -7,7 +7,7 @@ Generate a taxonomy table for all the taxa in a tree
 Requires rooted phylogeny as input and creates a data.frame of the taxonomic hierarchy (one row per species)
 }
 \usage{
-GenerateTaxonomy(tree, taxizedb='ncbi', purgerankless=FALSE)
+GenerateTaxonomy(tree, taxizepref='ncbi')
 }
 \arguments{
   \item{tree}{
@@ -15,9 +15,6 @@ An object of type 'phy', a rooted phylogeny. Multifurcating trees are accepted, 
 }
   \item{taxizepref}{
 Your choice of database: could be one of 'ncbi, itis, eol, col, tropicos, gbif, nbn, worms, natserv, bold,' or 'wiki'. See ?taxize::classification for more info.
-}
-\item{purgerankless}{
-Some databases return entries for unnamed ranks: NCBI returns a level for "cellular organisms" that has no formal rank. If TRUE, such entries are deleted.
 }
 }
 \details{
@@ -31,9 +28,4 @@ Brian O'Meara
 }
 \seealso{
 \code{\link{GetAncNodes}}, \code{\link{GetIntruderTaxa}}, \code{\link{GetIntruderTips}}, \code{\link{GetOutlierTaxa}}, \code{\link{GetOutlierTips}},\code{\link{GetResultMonophyly}}, \code{\link{GetSummaryMonophyly}}, \code{\link{MonophylyData}}, \code{\link{PlotMonophyly}}, \code{\link{MonoPhy-package}}
-}
-\examples{
-data(Ericactree)  # load tree
-taxonomy <- GenerateTaxonomy(Ericactree)
-print(head(taxonomy))
 }
