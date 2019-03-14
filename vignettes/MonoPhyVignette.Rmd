@@ -1,6 +1,6 @@
 ---
 title: "MonoPhy Tutorial"
-author: "[Orlando Schwery](https://sites.google.com/site/orlandoschwery/)"
+author: "[Orlando Schwery](https://oschwery.github.io/)"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
