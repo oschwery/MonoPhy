@@ -9,7 +9,7 @@ Requires rooted phylogeny as input and creates a table of taxa, their monophyly-
 \usage{
 AssessMonophyly (tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE,
 outlierlevel=0.5, taxizelevel= NULL, taxizedb='ncbi', taxizepref='ncbi',
-taxask=FALSE, taxverbose=FALSE)
+taxask=FALSE, taxverbose=FALSE, excludeproblematic=FALSE)
 }
 \arguments{
   \item{tree}{
@@ -41,6 +41,9 @@ If taxonomy is set to 'taxize', the called function 'tax_name' may find several 
 }
   \item{taxverbose}{
 If taxonomy is set to 'taxize', the called function 'tax_name' can display the progress, i.e. the names that are being queried and the success of the query. The default for this is FALSE, in which case nothing will be displayed while querrying.
+}
+  \item{excludeproblematic}{
+If TRUE, this will exclude taxa that do not follow the 'genus_species' format, unless that would leave a tree with two or fewer tips (in which case it throws an error).
 }
 }
 \details{
