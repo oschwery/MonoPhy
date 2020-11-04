@@ -17,7 +17,7 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
         taxa <- as.vector(unique(split.taxa))  # create vector of genera in tree without duplicates
         taxsets <- c('taxa')  # assign 'taxa' as taxsetnames
     } else {
-        if (!is.null(taxonomy) && taxonomy != 'taxize') {  # if argument 'taxonomy' is not NULL and not taxize, use loaded taxonomy file
+        if (!is.null(taxonomy) && !is.character(taxonomy)) {  # if argument 'taxonomy' is not NULL and not taxize, use loaded taxonomy file
             if (length(taxonomy[, 1]) != length(tree$tip.label)) {  # checks and returns error if taxonomy file has more or less entries than tree has tips
                 stop('Number of rows of taxonomy file is not equal to number of taxa (note: if your table has a header, you should specify header=TRUE when importing)!')
             }
