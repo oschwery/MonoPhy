@@ -103,8 +103,8 @@ PlotMonophyly(solution=solution, tree=Ericactree, plot.type='taxonomy', ladderiz
 
 # especially for larger phylogenies it is recommended to print the plot to a pdf file instead of
 #plotting, for easier inspection
-PlotMonophyly(solution=solution, tree=Ericactree, plot.type='monoVStax', ladderize=TRUE,
+\dontrun{PlotMonophyly(solution=solution, tree=Ericactree, plot.type='monoVStax', ladderize=TRUE,
 PDF=TRUE, mono.colour='PRGn', PDF_filename='MonoTaxplot.pdf')
 PlotMonophyly(solution=solution, tree=Ericactree, plot.type='taxonomy', ladderize=TRUE,
-PDF=TRUE, PDF_filename='Taxplot.pdf')
+PDF=TRUE, PDF_filename='Taxplot.pdf')}
 }

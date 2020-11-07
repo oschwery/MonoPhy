@@ -238,7 +238,7 @@ Further information on all the functions of the package and their use can be fou
 
 The data for the examples is based on:
 
-**Schwery, O.**, Onstein, R. E., Bouchenak-Khelladi, Y., Xing, Y., Carter, R. J. and Linder, H. P. (2015), As old as the mountains: the radiations of the Ericaceae. *New Phytologist*. doi: 10.1111/nph.13234 [Link to PDF](http://onlinelibrary.wiley.com/doi/10.1111/nph.13234/abstract)
+**Schwery, O.**, Onstein, R. E., Bouchenak-Khelladi, Y., Xing, Y., Carter, R. J. and Linder, H. P. (2015), As old as the mountains: the radiations of the Ericaceae. *New Phytologist*. doi: 10.1111/nph.13234 [Link to PDF](https://nph.onlinelibrary.wiley.com/doi/full/10.1111/nph.13234)
 
 
 __________________________________________
