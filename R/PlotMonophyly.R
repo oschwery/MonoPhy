@@ -2,6 +2,8 @@
 # written by Orlando Schwery 2015
 PlotMonophyly <-
 function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, ladderize=TRUE, PDF=FALSE, PDF_filename='Monophylyplot.pdf', PDF_width='auto', PDF_height='auto', mono.colour='PRGn', tax.colour='rainbow', intrud.colour='rainbow', edge.width=3, cex=0.2, adj.names='auto', adj.tips=0.5, label.offset='auto', type='phylogram', ...) {
+    orig_par <- par(no.readonly = TRUE)  # save current par settings to restore later
+    on.exit(par(orig_par))  # restore original par after function exits (i.e. after plotted or after exited with error)
 # warnings and data preparation
     if (taxlevels == 'ALL') {  # test if taxlevels argumetn has correct format and display error if not
 		stop(" 'ALL' is not an option for plotting!")

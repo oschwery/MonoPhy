@@ -1,12 +1,14 @@
 Package: MonoPhy
 Type: Package
-Title: Allows to Explore Monophyly (or Lack of it) of Taxonomic Groups in a Phylogeny
+Title: Explore Monophyly of Taxonomic Groups in a Phylogeny
 Version: 1.3
-Date: 2020-11-04
-Author: Orlando Schwery
-Maintainer: Orlando Schwery <oschwery@vols.utk.edu>
+Date: 2021-02-15
+Authors@R: c(person("Orlando", "Schwery", role=c("aut", "cre"), email="oschwery@vols.utk.edu"),
+             person("Brian C.", "O'Meara", role=c("aut", "ctb")),
+             person("Peter", "Cowman", role=c("ctb")))
 Depends: ape, phytools, phangorn, RColorBrewer, taxize
 Description: Requires rooted phylogeny as input and creates a table of genera, their monophyly-status, which taxa cause problems in monophyly etc. Different information can be extracted from the output and a plot function allows visualization of the results in a number of ways.
+"MonoPhy: a simple R package to find and visualize monophyly issues." Schwery, O. & O'Meara, B.C. (2016) <doi=10.7717/peerj-cs.56>
 License: GPL-3
 Suggests: knitr, testthat, paleotree, rmarkdown
 VignetteBuilder: knitr
