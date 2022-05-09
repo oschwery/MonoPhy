@@ -1,1 +1,3 @@
 Now we're looking at how git works.
+
+I'm learning WEEEEEe
