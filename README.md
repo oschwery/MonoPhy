@@ -13,18 +13,24 @@
 
 # MonoPhy <img src="man/figures/logo.png" align="right" height="139" />
 ## Explore Monophyly of Taxonomic Groups in a Phylogeny
-R package to explore monophyly (or lack thereof) of taxonomic groups in a phylogenetic tree. Requires rooted phylogeny as input and creates a table of genera, their monophyly-status, which taxa cause problems in monophyly etc. Different information can be extracted from the output and a plot function allows visualization of the results in a number of ways.
+R package to explore monophyly (or lack thereof) of taxonomic groups in a phylogenetic tree.
+Requires rooted phylogeny as input and creates a table of genera, their monophyly-status, which taxa cause problems in monophyly etc.Different information can be extracted from the output and a plot function allows visualization of the results in a number of ways.
 
 Usage instructions can be found in the manual and [tutorial vignette](https://cran.r-project.org/web/packages/MonoPhy/vignettes/MonoPhyVignette.html).
+This is the developing branch, a stable version can be found on [**CRAN**](https://cran.r-project.org/web/packages/MonoPhy/index.html).
 
-Published as:  
+<br>
+
+**Citation**:  
 Schwery, O. & O'Meara, B.C. (**2016**), _MonoPhy_: a simple R package to find and visualize monophyly issues. _PeerJ Computer Science_ 2:e56. [10.7717/peerj-cs.56](https://doi.org/10.7717/peerj-cs.56)
 
-
-This is the developing branch, a stable version can be found on [**CRAN**](https://cran.r-project.org/web/packages/MonoPhy/index.html).
+<br>
 
 
 <img src="man/figures/logo1.png" align="left" height="139" /> <img src="man/figures/logo2.png" align="left" height="139" /> <img src="man/figures/logo3.png" align="left" height="139" /> <img src="man/figures/logo4.png" align="left" height="139" /> <img src="man/figures/logo5.png" align="left" height="139" /> 
+
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -32,4 +38,4 @@ This is the developing branch, a stable version can be found on [**CRAN**](https
 <br>
 
 
-_HexLogos made using [`hexSticker`](https://github.com/GuangchuangYu/hexSticker), integrated using [`usethis`](https://usethis.r-lib.org/reference/use_logo.html)_
+_HexLogos made using [`hexSticker`](https://github.com/GuangchuangYu/hexSticker), integrated using [`usethis`](https://usethis.r-lib.org/reference/use_logo.html)._
