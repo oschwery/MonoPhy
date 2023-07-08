@@ -11,7 +11,7 @@
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/MonoPhy)](http://www.r-pkg.org/pkg/MonoPhy)
 <!-- badges: end -->
 
-# MonoPhy
+# MonoPhy <img src="man/figures/logo.png" align="right" height="139" />
 ## Explore Monophyly of Taxonomic Groups in a Phylogeny
 R package to explore monophyly (or lack thereof) of taxonomic groups in a phylogenetic tree. Requires rooted phylogeny as input and creates a table of genera, their monophyly-status, which taxa cause problems in monophyly etc. Different information can be extracted from the output and a plot function allows visualization of the results in a number of ways.
 
@@ -22,3 +22,6 @@ Schwery, O. & O'Meara, B.C. (**2016**), _MonoPhy_: a simple R package to find an
 This is the developing branch, a stable version can be found on **CRAN**.
 
 
+<img src="man/figures/logo1.png" align="left" height="139" /> <img src="man/figures/logo2.png" align="left" height="139" /> <img src="man/figures/logo3.png" align="left" height="139" /> <img src="man/figures/logo4.png" align="left" height="139" /> <img src="man/figures/logo5.png" align="left" height="139" /> 
+
+_HexLogos made using [`hexSticker`](https://github.com/GuangchuangYu/hexSticker), integrated using [`usethis`](https://usethis.r-lib.org/reference/use_logo.html)_
