@@ -19,9 +19,11 @@ Published as:
 Schwery, O. & O'Meara, B.C. (**2016**), _MonoPhy_: a simple R package to find and visualize monophyly issues. _PeerJ Computer Science_ 2:e56. [10.7717/peerj-cs.56](https://doi.org/10.7717/peerj-cs.56)
 
 
-This is the developing branch, a stable version can be found on **CRAN**.
+This is the developing branch, a stable version can be found on [**CRAN**](https://cran.r-project.org/web/packages/MonoPhy/index.html).
 
 
 <img src="man/figures/logo1.png" align="left" height="139" /> <img src="man/figures/logo2.png" align="left" height="139" /> <img src="man/figures/logo3.png" align="left" height="139" /> <img src="man/figures/logo4.png" align="left" height="139" /> <img src="man/figures/logo5.png" align="left" height="139" /> 
+
+
 
 _HexLogos made using [`hexSticker`](https://github.com/GuangchuangYu/hexSticker), integrated using [`usethis`](https://usethis.r-lib.org/reference/use_logo.html)_
