@@ -23,7 +23,7 @@ This is the developing branch, a stable version can be found on [**CRAN**](https
 
 
 <img src="man/figures/logo1.png" align="left" height="139" /> <img src="man/figures/logo2.png" align="left" height="139" /> <img src="man/figures/logo3.png" align="left" height="139" /> <img src="man/figures/logo4.png" align="left" height="139" /> <img src="man/figures/logo5.png" align="left" height="139" /> 
-
+<br>
 
 
 _HexLogos made using [`hexSticker`](https://github.com/GuangchuangYu/hexSticker), integrated using [`usethis`](https://usethis.r-lib.org/reference/use_logo.html)_
