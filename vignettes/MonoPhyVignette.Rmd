@@ -11,7 +11,7 @@ vignette: >
 ## 1 Introduction ##
 This is a tutorial vignette to provide a quick and easy introduction to the use of MonoPhy. It will make use of the inbuilt example files and lead through the most important functions of the package.
 
-In order to be aware of discrepancies between a newly generated phylogeny and the current taxonomy, it is necessary to assess monophyly of the taxa in the tree. MonoPhy allows doing this in a quick and simple way, both using the phylogeny only and including a file assigning tips to taxonomic groups. Notably, such a file can contain any type of information for which to test monophyly in a tree ( _e.g._ traits or geographic occurrence), as long as attention is paid on that the assessment makes sense biologically.
+In order to be aware of discrepancies between a newly generated phylogeny and the current taxonomy, it is necessary to assess monophyly of the taxa in the tree. MonoPhy allows doing this in a quick and simple way, both using the phylogeny only and including a file assigning tips to taxonomic groups. Notably, such a file can contain any type of information for which to test monophyly in a tree ( _e.g._, traits or geographic occurrence), as long as attention is paid to that the assessment makes sense biologically.
 
 ## 2 Installation ##
 ### 2.1 CRAN ###
@@ -76,7 +76,7 @@ You can load the taxonomy file like this:
 your_clades <- read.csv(file="/your_path/your_taxonomy_file.csv", header=FALSE)
 ```
 
-Again to check whether the format of the data is correct:
+To check again whether the format of the data is correct:
 ```{r, eval=FALSE}
 #check data
 phy
@@ -84,7 +84,7 @@ head(your_clades)
 ```
 
 ### 3.2 Run Main Analysis ###
-The command for the main analysis-step is `AssessMonophyly`. This will check the monophyly of all taxa in the tree, identify which intruders and outliers are responsible for the non-monophyly of a taxon and determine their status for later plotting. Depending on the number of tips in the tree and the number of monophyly-issues, this step will take more or less time. For the example files, this step should only take seconds, for a few thousand tips a couple of minutes, but for a conflict-rich tree with several 10k tips it could easily end up being a few hours. Accessing the information afterwards however is fairly quick.
+The command for the main analysis-step is `AssessMonophyly`. This will check the monophyly of all taxa in the tree, identify which intruders and outliers are responsible for the non-monophyly of a taxon and determine their status for latter plotting. Depending on the number of tips in the tree and the number of monophyly-issues, this step will take more or less time. For the example files, this step should only take seconds, for a few thousand tips a couple of minutes, but for a conflict-rich tree with several 10k tips it could easily end up being a few hours. Accessing the information afterwards, however, is fairly quick.
 
 #### 3.2.1 Taxonomy Based on Tip Labels ####
 If we run the analysis using only the tree, the function will check whether the tip labels are in the format *Genus_species*, and if so, will extract the genus name from each tip label and use it as the taxonomic group associated to this tip.
@@ -141,7 +141,7 @@ Similarly, if we have multiple taxonomic levels, we can limit the output to the 
 ```{r}
 GetIntruderTips(solution1, taxa="Ericoideae", taxlevels=2)  # get list of species causing monophyly-issues for the subfamily Ericoideae
 ```
-This works similarly for MRCA-nodes, outlier tips and outlier taxa (note that the later cannot be constrained to focal taxa, because a tip can only be an outlier to its own taxon). Instead of numbers or 'ALL', we could allso select taxlevels using their names.
+This works similarly for MRCA-nodes, outlier tips and outlier taxa (note that the later cannot be constrained to focal taxa, because a tip can only be an outlier to its own taxon). Instead of numbers or 'ALL', we could also select taxlevels using their names.
 ```{r}
 GetAncNodes(solution1, taxa = NULL, taxlevels='ALL')
 ```
@@ -169,7 +169,7 @@ The simplest way of plotting monophyly is like this:
 PlotMonophyly(solution0, Ericactree, plot.type='monophyly', ladderize=TRUE, cex=0.5)
 ```
 
-This shows us the monophyly situation on the genus level. It is easy to see, how _Orthilia_ invades _Pyrola_, _Kalmiopsis_ invades _Phyllodoce_, _Bruckenthalia_ invades _Erica_ and how _Dimorphanthera_ and _Paphia_ reciprocally invade each other. We further see how _Vaccinium_ is invaded by _Agapetes_ and _Gaylussacia_, while having two outlier species of its own as well. Note how a more conservative ( _i.e._ higher) `outlierlevel` would tell us that only _Gaylussacia_ invades _Vaccinium_, which would then have _Vaccinium bracteatum_ as additional outlier instead.
+This shows us the monophyly situation on the genus level. It is easy to see how _Orthilia_ invades _Pyrola_, _Kalmiopsis_ invades _Phyllodoce_, _Bruckenthalia_ invades _Erica_ and how _Dimorphanthera_ and _Paphia_ reciprocally invade each other. We further see how _Vaccinium_ is invaded by _Agapetes_ and _Gaylussacia_, while having two outlier species of its own as well. Note how a more conservative ( _i.e._ higher) `outlierlevel` would tell us that only _Gaylussacia_ invades _Vaccinium_, which would then have _Vaccinium bracteatum_ as additional outlier instead.
 
 #### 3.4.2 Taxonomy Plot ####
 This rather auxiliary plot type allows viewing clades coloured by the taxon they belong to. Here we want to look at a different __taxonomic level__, the subfamilies, hence we can specify in the command to display `taxlevels=2` (as subfamilies was the second taxonomy column in our input file) and pick the output object `solution1`, which contains the results of the analysis incorporating the taxonomy file. The default colours are `rainbow`, which means that every taxon will get a different colour from the rainbow spectrum.
@@ -185,7 +185,7 @@ This plot type simply combines the two previous ones and displays them on two mi
 PlotMonophyly(solution1, Ericactree, taxlevels=2, plot.type='monoVStax', cex=0.4, label.offset=18)
 ```
 
-Seeing the previous plot mirrored with the corresponding monophyly plot lets us understand how the whole Ericoideae and Cassiopoideae come out as intruders to Vaccinioideae: The intruder _Rhodothamnus chamaecystus_ pulls the MRCA node of the Vaccinioideae down to inlcude both other subfamilies. Once again, a more conservative `outlierlevel` would have led to the biologically more meaningful result that only _Rhodothamnus_ is an outlier to Vaccinioideae (and an intruder to Ericoideae), while everything else is well.
+Seeing the previous plot mirrored with the corresponding monophyly plot lets us understand how the whole Ericoideae and Cassiopoideae come out as intruders to Vaccinioideae: The intruder _Rhodothamnus chamaecystus_ pulls the MRCA node of the Vaccinioideae down to include both other subfamilies. Once again, a more conservative `outlierlevel` would have led to the biologically more meaningful result that only _Rhodothamnus_ is an outlier to Vaccinioideae (and an intruder to Ericoideae), while everything else is well.
 
 #### 3.4.4 Intruder Plot ####
 For a more condensed view on the monophyly issues in your tree and who is causing them, you might want to choose the intruder plot, which will especially highlight intruders and outliers and which taxon they belong to. In order to focus the plot on the issues even more, we set `monocoll=TRUE`, to __collapse monophyletic taxa__ to be represented by one tip each.
@@ -199,7 +199,7 @@ This time, we display tribes. The default colouring is:
 PlotMonophyly(solution1, Ericactree, taxlevels=1, plot.type='intruders', monocoll=TRUE, cex=0.5, label.offset=5)
 ```
 
-Collapsing all monophyletic tribes slimmed this plot down and increased the overview. We immediately see that the issues are confined to the Vaccinieae and their sister clade, the Andromedeae, and the colouration reveals that _Andromeda polifolia_, _Vaccinium vitis-ideae_ and _Zenobia pulverulenta_ are causing it. Apparently, _Andromeda_ and the _Vaccinium_ are supposed to belong to the same tribe (Andromedeae), whereas _Zenobia_ should belong to a different one (being an intruder to Andromedeae from Vaccinieae). The solution behind this issue is, that the tribe names assigned to _Vaccinium vitis-ideae_ and _Zenobia pulverulenta_ where (intentionally) switched.
+Collapsing all monophyletic tribes slimmed this plot down and increased the overview. We immediately see that the issues are confined to the Vaccinieae and their sister clade, the Andromedeae, and the colouration reveals that _Andromeda polifolia_, _Vaccinium vitis-ideae_ and _Zenobia pulverulenta_ are causing it. Apparently, _Andromeda_ and the _Vaccinium_ are supposed to belong to the same tribe (Andromedeae), whereas _Zenobia_ should belong to a different one (being an intruder to Andromedeae from Vaccinieae). The solution behind this issue is that the tribe names assigned to _Vaccinium vitis-ideae_ and _Zenobia pulverulenta_ where (intentionally) switched.
 
 __Note__: Intruders are coloured using `rainbow` as well, but the palette will be newly created and the colours will not correspond to the ones in the taxonomy plot.
 
@@ -228,13 +228,13 @@ PDF_filename='Intruderplot_Ericac_Example.pdf', type="fan")
 PlotMonophyly(solution1, Ericactree, taxlevels=2, plot.type='intruders', ladderize=TRUE, type="fan", cex=0.4)
 ```
 
-__Note__: If `PDF_height` and `PDF_width` are set to `"auto"`, the command will automatically scale the PDF document to be created according to the number of taxa in the tree. However, PDF files seem to be constrained to a maximum size of 200 inches, and the function will thus cap the size to that (both for automatic and manual sizes). If your tree is very large, the resulting PDF might be difficult to inspect and you might want to consider chopping your tree up into subtrees to plot ( _e.g._ using `treeSlice` from the package `phytools`).
+__Note__: If `PDF_height` and `PDF_width` are set to `"auto"`, the command will automatically scale the PDF document to be created according to the number of taxa in the tree. However, PDF files seem to be constrained to a maximum size of 200 inches, and the function will thus cap the size to that (both for automatic and manual sizes). If your tree is very large, the resulting PDF might be difficult to inspect, and you might want to consider chopping your tree up into subtrees to plot ( _e.g._ using `treeSlice` from the package `phytools`).
 
 Also, if the automatic scaling moves tip labels etc. in a way you don't like, you can adjust most parameters by specifying the respective arguments yourself. More details on that can be found in the helpfiles.
 
-##4 Final Notes##
+## 4 Final Notes ##
 
-Further information on all the functions of the package and their use can be found in the helpfiles `help(package=MonoPhy)`. For any further issues and questions send an email with subject 'MonoPhy support' to `oschwery@vols.utk.edu`.
+Further information on all the functions of the package and their use can be found in the helpfiles `help(package=MonoPhy)`. For any further issues and questions send an email with subject 'MonoPhy support' to `schwery.macroevo@pm.me`.
 
 The data for the examples is based on:
 

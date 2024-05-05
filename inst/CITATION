@@ -1,6 +1,6 @@
 bibentry("Article",
           title = "MonoPhy: a simple R package to find and visualize monophyly issues",
-          author = c(person("Orlando", "Schwery", email = "oschwery@vols.utk.edu", role = c("aut", "cre")),
+          author = c(person("Orlando", "Schwery", email = "schwery.macroevo@pm.me", role = c("aut", "cre")),
                      person("Brian C.", "O'Meara", role = c("aut"))),
           year = 2016,
           volume = "2",
