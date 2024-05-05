@@ -16,7 +16,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
             }
         }
     }  # if a specific taxlevel should be focused on
-    if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # if named taxlevel requested
+    if (taxlevels != 'ALL' & inherits(taxlevels, 'numeric')) {  # if named taxlevel requested
         namenod <- paste(taxlevels)  # create namelabel for current taxlevel
 		    if (length(taxa) == 0){  # display all if no genera specified
           tmp <- solution[[taxlevels]]$result[, "MRCA", drop=FALSE]  # extract MRCA column out of result table
@@ -26,7 +26,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
           allnodes[[namenod]] <- tmp  # add the extracted table as sub-entry to output list, named according to taxlevel
         }
     }
-     if (class(taxlevels) == 'numeric') {
+     if (inherits(taxlevels, 'numeric')) {
         if (taxlevels > length(solution)){  # test if taxlevel number exceeds number of present taxlevels in solution and display error if the case
             stop('Requested taxonomic level not available (less levels specified as analysis input)!')
         }

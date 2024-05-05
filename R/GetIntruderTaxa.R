@@ -21,7 +21,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
             }
         }
     }  # if a specific taxlevel should be focused on
-    if (taxlevels != 'ALL' & class(taxlevels) != 'numeric') {  # if named taxlevel requested
+    if (taxlevels != 'ALL' & inherits(taxlevels, 'numeric')) {  # if named taxlevel requested
       nametax <- paste(taxlevels)  # create namelabel for current taxlevel
       if (length(taxa) == 0) {  # pick all if no taxa specified
           tmp <- solution[[taxlevels]]$IntruderTaxa   # extract sub-list of intruder taxa from solution
@@ -36,7 +36,7 @@ function(solution, taxa=NULL, taxlevels='ALL') {
           alltaxa[[nametax]] <- alltaxa2  # add compiled invaders of this taxlevel as sub-list to outputlist, named after current taxlevel
       }
     }
-    if (class(taxlevels) == 'numeric') {
+    if (inherits(taxlevels, 'numeric')) {
         if (taxlevels > length(solution)) {  # test whether requested taxlevel is among available ones and display error if not
             stop('Requested taxonomic level not available (less levels specified as analysis input)!')
         }

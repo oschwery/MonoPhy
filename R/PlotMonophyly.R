@@ -8,7 +8,7 @@ function(solution, tree, taxlevels=1, plot.type='monophyly', monocoll=FALSE, lad
     if (taxlevels == 'ALL') {  # test if taxlevels argumetn has correct format and display error if not
 		stop(" 'ALL' is not an option for plotting!")
     }
-    if (class(taxlevels) == 'numeric' & taxlevels > length(solution)) {  # check if specified taxlevel is among the ones in the solution object and display error if not
+    if (inherits(taxlevels, 'numeric') & taxlevels > length(solution)) {  # check if specified taxlevel is among the ones in the solution object and display error if not
 		stop('Requested taxonomic level not available (less levels specified as analysis input)!')
     }
     if (plot.type != 'monophyly' & plot.type != 'monoVStax' & plot.type != 'intruders' & plot.type != 'taxonomy') {  # check if plot type is one of the implemented ones
