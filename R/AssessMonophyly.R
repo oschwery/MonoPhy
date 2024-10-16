@@ -63,46 +63,50 @@ function(tree, taxonomy=NULL, verbosity=5, outliercheck=TRUE, outlierlevel=0.5, 
             }
         } else {  # if not NULL and not taxfile but taxize
             if (taxonomy == 'taxize') {  # build taxonomy file from web ressources using taxize
-                taxafromweb <- tax_name(tree$tip.label, get=taxizelevel, db=taxizedb, pref=taxizepref, ask=taxask, verbose=taxverbose)  # get taxonomy data from web
-                taxafromwebtable <- matrix(data = NA, nrow=length(tree$tip.label),ncol=ncol(taxafromweb) - 1)  #build empty matrix with dimensions by number of tips and retrieved taxonomic data
-                taxafromwebtable[, 1] <- tree$tip.label  # add tip names from tree
-                if (length(unique(taxafromweb[, 3])) == 1 & is.na(unique(taxafromweb[, 3])[1])) {  # check if there was any information retrieved and display error if not
-                    stop('There was no data found for any of the tips!')
-                }
-                if (nrow(taxafromweb) > length(tree$tip.label)) {  # check if more record entires retrieved than tips in tree
-                    taxafromweb <- unique(taxafromweb[, 2:3])  # if entires from two databases are the same, delete one
-                    rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber rows
-                }
-                if (nrow(taxafromweb) > length(tree$tip.label)) {  # check again if more record entires retrieved than tips in tree
-                    temp <- taxafromweb  # copy table to temporary object
-                    droppers <- c()  # create empty vector to be filled with entires to be dropped
-                    counterweb <- table(temp[, 1], useNA='ifany')  # create counting table with number of entries per taxon in retrieved data table
-                    for (iwebtax in 1:nrow(temp)) {  # loop through retrieved table
-                        if (counterweb[temp[iwebtax, 1]] > 1) {  # check if more than one entry per species is retrieved (according to count table)
-                            if (is.na(temp[iwebtax, 2])) {  # if the duplicate currently being looked at did not retrieve a result...
-                                droppers <- c(droppers, iwebtax)  # ...add it to droplist
+                if (requireNamespace("taxize", quietly = TRUE)) {  # use taxize conditionally as long as it's orphaned on CRAN
+                    taxafromweb <- taxize::tax_name(tree$tip.label, get=taxizelevel, db=taxizedb, pref=taxizepref, ask=taxask, verbose=taxverbose)  # get taxonomy data from web
+                    taxafromwebtable <- matrix(data = NA, nrow=length(tree$tip.label),ncol=ncol(taxafromweb) - 1)  #build empty matrix with dimensions by number of tips and retrieved taxonomic data
+                    taxafromwebtable[, 1] <- tree$tip.label  # add tip names from tree
+                    if (length(unique(taxafromweb[, 3])) == 1 & is.na(unique(taxafromweb[, 3])[1])) {  # check if there was any information retrieved and display error if not
+                        stop('There was no data found for any of the tips!')
+                    }
+                    if (nrow(taxafromweb) > length(tree$tip.label)) {  # check if more record entires retrieved than tips in tree
+                        taxafromweb <- unique(taxafromweb[, 2:3])  # if entires from two databases are the same, delete one
+                        rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber rows
+                    }
+                    if (nrow(taxafromweb) > length(tree$tip.label)) {  # check again if more record entires retrieved than tips in tree
+                        temp <- taxafromweb  # copy table to temporary object
+                        droppers <- c()  # create empty vector to be filled with entires to be dropped
+                        counterweb <- table(temp[, 1], useNA='ifany')  # create counting table with number of entries per taxon in retrieved data table
+                        for (iwebtax in 1:nrow(temp)) {  # loop through retrieved table
+                            if (counterweb[temp[iwebtax, 1]] > 1) {  # check if more than one entry per species is retrieved (according to count table)
+                                if (is.na(temp[iwebtax, 2])) {  # if the duplicate currently being looked at did not retrieve a result...
+                                    droppers <- c(droppers, iwebtax)  # ...add it to droplist
+                                }
                             }
+                            temp2 <- temp[-droppers, ]  # remove drop entires
+                            rownames(temp2) <- c(1:nrow(temp2))  # renumber rows
+                            taxafromweb <- temp2  # replace retrieved table with cleaned up version
                         }
-                        temp2 <- temp[-droppers, ]  # remove drop entires
-                        rownames(temp2) <- c(1:nrow(temp2))  # renumber rows
-                        taxafromweb <- temp2  # replace retrieved table with cleaned up version
+                    }
+                    if (colnames(taxafromweb[1]) == "db") {  # if the first column is the name of the database (which is getting lost if duplicates are removed)...
+                        taxafromweb <- taxafromweb[, -1]  # ...that first column will be dropped to get the same table format.
+                    }
+                    for (iweb in 2:(ncol(taxafromweb))) {  #add acquired taxon names for tips for each taxonomic level acquired
+                        taxafromwebtable[, iweb] <- taxafromweb[, iweb]  # add retrieved entries to matrix
+                        rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber row names
+                    }
+                    taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"  # replace all NAs with "unknown"
+                    taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
+                    taxsets <- list()  # create empty list to be filled with taxonomy lists
+                    for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxonomy file
+                        nametax <- paste("taxa", jtax, sep="")  # create taxon name label
+                        tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector taxonomic units (without doubles)
+                        taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
                     }
                 }
-                if (colnames(taxafromweb[1]) == "db") {  # if the first column is the name of the database (which is getting lost if duplicates are removed)...
-                    taxafromweb <- taxafromweb[, -1]  # ...that first column will be dropped to get the same table format.
-                }
-                for (iweb in 2:(ncol(taxafromweb))) {  #add acquired taxon names for tips for each taxonomic level acquired
-                    taxafromwebtable[, iweb] <- taxafromweb[, iweb]  # add retrieved entries to matrix
-                    rownames(taxafromweb) <- c(1:nrow(taxafromweb))  # renumber row names
-                }
-                taxafromwebtable[is.na(taxafromwebtable)] <- "unknown"  # replace all NAs with "unknown"
-                taxonomy <- as.data.frame(taxafromwebtable)  # turn matrix into data frame and feed to further function
-                taxsets <- list()  # create empty list to be filled with taxonomy lists
-                for (jtax in 1:(length(taxonomy[1, ]) - 1)) {  # loop through taxonomy file
-                    nametax <- paste("taxa", jtax, sep="")  # create taxon name label
-                    tmp <- as.vector(unique(taxonomy[, (jtax) + 1]))  # if all is correct, makes vector taxonomic units (without doubles)
-                    taxsets[[nametax]] <- tmp  # add names vector to taxets list, labelled with taxon name label
-                }
+            } else {
+                stop('The package "taxize" needs to be installed to get taxonomic information from the web (as long as the package is orphaned, MonoPhy cannot import the required functions automatically)')
             }
         }
     }
